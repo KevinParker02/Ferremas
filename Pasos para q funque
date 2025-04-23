@@ -1,0 +1,12 @@
+Para frontend
+
+cd frontend 
+npm start
+
+
+Para backend
+cd backend
+python manage.py runserver
+
+
+Tienen que crear un entorno virtual xd

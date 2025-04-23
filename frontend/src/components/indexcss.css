@@ -1,0 +1,31 @@
+
+.box-gen{
+}
+
+
+.box-top{
+    margin-top: 5%;
+    font-family: "Anton", sans-serif;
+}
+
+
+.box-mid{
+}
+
+
+.box-bottom{
+}
+
+.titulo{
+    font-family: "Anton", sans-serif;
+    font-size: 90px;
+}
+
+
+@media (max-width: 576px) {
+    /* Aquí van los estilos específicos para celular */
+    .titulo {
+        font-size: 80px; /* Por ejemplo, hacer el título más pequeño */
+        text-align: center;
+    }
+}
