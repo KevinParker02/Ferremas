@@ -32,3 +32,10 @@ pip freeze > requirements.txt  -- ESTE COMANDO ES PARA REINICIAR LAS DEPENDENCIA
 
 pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTAS EN REQUIREMENTS.TXT 
 (SE EJECUTA EN ROOT TAMBIEN CON EL ENTORNO VIRTUAL CREADO)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+!Superuser
+admin
+12345678
+admin@gmail.com
