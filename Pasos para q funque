@@ -11,3 +11,12 @@ python manage.py runserver
 
 Tienen que crear un entorno virtual xd
 python -m venv env
+
+
+
+#SCRIPT PARA INICIAR FRONTEND/BACKEND AL MISMO TIEMPO
+
+1- DEBEN INGRESAR A FRONTEND / CD FRONTEND
+2- INSTALAR DEPENDENCIAS / NPM INSTALL
+3- VOLVER AL ROOT / CD ..
+4- ABRIR CONSOLA Y PONER EL SIGUIENTE COMANDO ".\start.ps1"
