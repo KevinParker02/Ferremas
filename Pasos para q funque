@@ -21,6 +21,13 @@ python -m venv env
 
 %%%%%%%%%%%% INSTALACIÓN DE DEPENDENCIAS %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+--Para dependencias de react 
+1- cd frontend
+2- npm install
+
+
+--Esto es para las dependencias de django
+
 pip freeze > requirements.txt  -- ESTE COMANDO ES PARA REINICIAR LAS DEPENDENCIAS (SE EJECUTA EN ROOT)
 
 pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTAS EN REQUIREMENTS.TXT 
