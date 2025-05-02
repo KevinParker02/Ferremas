@@ -1,15 +1,13 @@
+#Ejecución de los servidores por medio de terminal y singularmente.
 Para frontend
-
 cd frontend 
 npm start
-
-
 Para backend
 cd backend
 python manage.py runserver
 
 
-Tienen que crear un entorno virtual xd
+Tienen que crear un entorno virtual
 python -m venv env
 
 
@@ -20,3 +18,10 @@ python -m venv env
 2- INSTALAR DEPENDENCIAS / NPM INSTALL
 3- VOLVER AL ROOT / CD ..
 4- ABRIR CONSOLA Y PONER EL SIGUIENTE COMANDO ".\start.ps1"
+
+%%%%%%%%%%%% INSTALACIÓN DE DEPENDENCIAS %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pip freeze > requirements.txt  -- ESTE COMANDO ES PARA REINICIAR LAS DEPENDENCIAS (SE EJECUTA EN ROOT)
+
+pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTAS EN REQUIREMENTS.TXT 
+(SE EJECUTA EN ROOT TAMBIEN CON EL ENTORNO VIRTUAL CREADO)
