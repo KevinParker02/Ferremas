@@ -10,3 +10,4 @@ python manage.py runserver
 
 
 Tienen que crear un entorno virtual xd
+python -m venv env
