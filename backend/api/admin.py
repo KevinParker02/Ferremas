@@ -30,3 +30,46 @@ class SucursalAdmin(admin.ModelAdmin):
     list_display = ('id_sucursal', 'direccion_sucursal', 'comuna')
     search_fields = ('direccion_sucursal',)
     list_filter = ('comuna',)
+
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = ('id_prod', 'nom_prod', 'marca_prod', 'codigo_fabricante', 'precio_prod', 'estado_prod', 'inventario')
+    search_fields = ('nom_prod', 'marca_prod', 'codigo_fabricante')
+    list_filter = ('marca_prod', 'estado_prod', 'inventario')
+
+@admin.register(Inventario)
+class InventarioAdmin(admin.ModelAdmin):
+    list_display = ('id_inventario', 'stock_disponible', 'sucursal')
+    search_fields = ('id_inventario',)
+    list_filter = ('sucursal',)
+
+@admin.register(TipoDespacho)
+class TipoDespachoAdmin(admin.ModelAdmin):
+    list_display = ('id_despacho', 'nom_despacho')
+    search_fields = ('nom_despacho',)
+
+@admin.register(EstadoPedido)
+class EstadoPedidoAdmin(admin.ModelAdmin):
+    list_display = ('id_estado', 'nom_estado')
+    search_fields = ('nom_estado',)
+
+@admin.register(TipoComprobante)
+class TipoComprobanteAdmin(admin.ModelAdmin):
+    list_display = ('id_tipo_comprobante', 'nom_tipo_comprobante')
+    search_fields = ('nom_tipo_comprobante',)
+
+
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = (
+        'id_pedido', 'usuario', 'fecha_pedido', 'total_pedido',
+        'confirmacion_entrega', 'estado', 'tipo_despacho',
+        'tipo_comprobante'
+    )
+    search_fields = ('id_pedido', 'usuario__nombre_user', 'usuario__apellido_user')
+    list_filter = ('estado', 'tipo_despacho', 'tipo_comprobante', 'confirmacion_entrega')
+
+@admin.register(MedioDePago)
+class MedioDePagoAdmin(admin.ModelAdmin):
+    list_display = ('id_medpago', 'nom_medpago')
+    search_fields = ('nom_medpago',)
