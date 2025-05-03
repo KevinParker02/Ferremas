@@ -18,3 +18,15 @@ class ComunaAdmin(admin.ModelAdmin):
     list_display = ('id_comuna', 'nom_comuna', 'region')
     search_fields = ('nom_comuna',)
     list_filter = ('region',)
+
+@admin.register(Usuario)
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ('id_user', 'nombre_user', 'apellido_user', 'email_user', 'rol', 'comuna')
+    search_fields = ('nombre_user', 'apellido_user', 'email_user')
+    list_filter = ('rol', 'comuna', 'estado_user')
+
+@admin.register(Sucursal)
+class SucursalAdmin(admin.ModelAdmin):
+    list_display = ('id_sucursal', 'direccion_sucursal', 'comuna')
+    search_fields = ('direccion_sucursal',)
+    list_filter = ('comuna',)
