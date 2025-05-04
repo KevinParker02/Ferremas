@@ -1,14 +1,18 @@
 import React from 'react';
-import { Helmet } from 'react-helmet'; 
-import FerremasPage from './components/FerremasPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './estructura/login/Login';
+import Catalogo from './estructura/catalogo/Catalogo';
+
 function App() {
   return (
-    <div className="App">
-    <Helmet>
-    </Helmet>
-    <FerremasPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/catalogo" element={<Catalogo />} />
+      </Routes>
+    </Router>
   );
 }
 

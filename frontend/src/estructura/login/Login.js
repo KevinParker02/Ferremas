@@ -1,24 +1,22 @@
 import React from 'react';
-import './indexcss.css';  // Asegúrate de que tu archivo CSS esté en la carpeta src
-
-const FerremasPage = () => {
+import './logincs.css';
+import { useNavigate } from 'react-router-dom'; 
+const Login = () => {
+    const navigate = useNavigate();
   return (
     <div className="box-gen">
       <header>
         <div className="container box-mid">
-          {/* Columna 1 */}
           <div className="col-md-4">
             <div className="box text-center">
-              <h2>Ferreteria y constructora</h2>
+              <h2>Ferretería y constructora</h2>
             </div>
           </div>
-          {/* Columna 2 */}
           <div className="col-md-4">
             <div className="box text-center box-titulo">
               <h1 className="titulo">Ferremas</h1>
             </div>
           </div>
-          {/* Columna 3 */}
           <div className="col-md-4">
             <div className="box text-center">
               <h3>zapayo</h3>
@@ -29,11 +27,8 @@ const FerremasPage = () => {
 
       <div className="container box-top">
         <div className="row">
-          {/* Columna 1 */}
-          <div className="col-md-4">
-            <div className="box text-center"></div>
-          </div>
-          {/* Columna 2 */}
+          <div className="col-md-4"></div>
+
           <div className="col-md-4">
             <div className="box text-center box-titulo">
               <div>
@@ -45,14 +40,12 @@ const FerremasPage = () => {
                 <input type="password" className="form-control" placeholder="Escribe algo" />
               </div>
               <div>
-                <button type="button" className="btn btn-primary">Enviar</button>
+                <button type="button" className="btn btn-primary"  onClick={() => navigate('/catalogo')}>Enviar</button>
               </div>
             </div>
           </div>
-          {/* Columna 3 */}
-          <div className="col-md-4">
-            <div className="box text-center"></div>
-          </div>
+
+          <div className="col-md-4"></div>
         </div>
       </div>
 
@@ -63,4 +56,4 @@ const FerremasPage = () => {
   );
 };
 
-export default FerremasPage;
+export default Login;
