@@ -73,3 +73,34 @@ class PedidoAdmin(admin.ModelAdmin):
 class MedioDePagoAdmin(admin.ModelAdmin):
     list_display = ('id_medpago', 'nom_medpago')
     search_fields = ('nom_medpago',)
+
+@admin.register(Notificacion)
+class NotificacionAdmin(admin.ModelAdmin):
+    list_display = ('id_notifi', 'usuario', 'motivo_notifi', 'fecha_notifi')
+    search_fields = ('motivo_notifi', 'contenido_notifi', 'usuario__nombre_user')
+    list_filter = ('motivo_notifi', 'fecha_notifi')
+
+@admin.register(Carrito)
+class CarritoAdmin(admin.ModelAdmin):
+    list_display = ('id_carrito', 'fecha_carrito', 'usuario')
+    search_fields = ('usuario__nombre_user', 'usuario__apellido_user')
+    list_filter = ('fecha_carrito',)
+
+
+@admin.register(DetalleCarrito)
+class DetalleCarritoAdmin(admin.ModelAdmin):
+    list_display = ('id_detcarrito', 'producto', 'carrito', 'cantidad_producto')
+    search_fields = ('producto__nom_prod', 'carrito__id_carrito')
+    list_filter = ('producto',)
+
+@admin.register(Pago)
+class PagoAdmin(admin.ModelAdmin):
+    list_display = ('id_pago', 'pedido', 'medio_pago', 'estado_pago', 'fecha_pago', 'monto_pago')
+    search_fields = ('pedido__id_pedido',)
+    list_filter = ('medio_pago', 'estado_pago', 'fecha_pago')
+
+@admin.register(DetallePedido)
+class DetallePedidoAdmin(admin.ModelAdmin):
+    list_display = ('id_detalle', 'pedido', 'producto', 'cantidad_producto')
+    search_fields = ('pedido__id_pedido', 'producto__nom_prod')
+    list_filter = ('producto',)
