@@ -19,11 +19,16 @@ const Login = () => {
           },
           body: JSON.stringify({ usuario, password }),
         });
-  
+      
         const data = await res.json();
-  
+      
         if (res.ok) {
           console.log('Login exitoso:', data);
+      
+          // Guarda los datos del usuario en localStorage
+          localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      
+          // Redirige al catálogo
           navigate('/catalogo');
         } else {
           setError(data.error || 'Error desconocido');
