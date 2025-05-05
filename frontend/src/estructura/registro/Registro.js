@@ -104,6 +104,7 @@ const Registro = () => {
           </select>
         </div>
         <button type="submit" className="btn btn-success w-100">Registrarse</button>
+        <button type="button" className="btn btn-danger mt-3 w-100" onClick={() => navigate('/login')}>Cancelar</button>
       </div>
     </form>
   );
