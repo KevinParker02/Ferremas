@@ -41,7 +41,7 @@ const Login = () => {
         <h1 className="titulo">Ferremas</h1>
         <h3>Construye con confianza</h3>
       </header>
-
+  
       <div className="col-md-4">
         <div className="card p-4 shadow">
           <div className="mb-3">
@@ -64,9 +64,23 @@ const Login = () => {
               required
             />
           </div>
-          <div>
+          <div className="d-grid gap-2">
             <button type="submit" className="btn btn-primary w-100">
               Enviar
+            </button>
+            <button
+              type="button"
+              className="btn btn-warning w-100"
+              onClick={() => navigate('/recuperar')}
+            >
+              Olvide mi contraseña
+            </button>
+            <button
+              type="button"
+              className="btn btn-success w-100"
+              onClick={() => navigate('/registro')}
+            >
+              Registrarse
             </button>
           </div>
         </div>
