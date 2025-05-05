@@ -1,3 +1,27 @@
+%%%%%%%%%%%% INSTALACIÓN DE DEPENDENCIAS %%%%%%%%%%%%%%%%%%%%%%%%%%
+pip freeze > requirements.txt  -- ESTE COMANDO ES PARA REINICIAR LAS DEPENDENCIAS (SE EJECUTA EN ROOT)
+
+pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTAS EN REQUIREMENTS.TXT 
+(SE EJECUTA EN ROOT TAMBIEN CON EL ENTORNO VIRTUAL CREADO)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+--Para dependencias de react 
+1- cd frontend
+2- npm install
+
+
+Tienen que crear un entorno virtual
+python -m venv env
+.\env\Scripts\activate
+
+(En SETTINGS.PY colocar la contraseña de tu base de datos local)
+
+(BORRAR la carpeta existente antes de realizar migraciones "migrations")
+cd backend
+python manage.py makemigrations
+python manage.py migrate
+
 #Ejecución de los servidores por medio de terminal y singularmente.
 Para frontend
 cd frontend 
@@ -6,10 +30,12 @@ Para backend
 cd backend
 python manage.py runserver
 
-
-Tienen que crear un entorno virtual
-python -m venv env
-
+#CREAR UN USUARIO
+python manage.py createsuperuser
+!Superuser
+admin
+12345678
+admin@gmail.com
 
 
 #SCRIPT PARA INICIAR FRONTEND/BACKEND AL MISMO TIEMPO
@@ -18,24 +44,3 @@ python -m venv env
 2- INSTALAR DEPENDENCIAS / NPM INSTALL
 3- VOLVER AL ROOT / CD ..
 4- ABRIR CONSOLA Y PONER EL SIGUIENTE COMANDO ".\start.ps1"
-
-%%%%%%%%%%%% INSTALACIÓN DE DEPENDENCIAS %%%%%%%%%%%%%%%%%%%%%%%%%%
-
---Para dependencias de react 
-1- cd frontend
-2- npm install
-
-
---Esto es para las dependencias de django
-
-pip freeze > requirements.txt  -- ESTE COMANDO ES PARA REINICIAR LAS DEPENDENCIAS (SE EJECUTA EN ROOT)
-
-pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTAS EN REQUIREMENTS.TXT 
-(SE EJECUTA EN ROOT TAMBIEN CON EL ENTORNO VIRTUAL CREADO)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-!Superuser
-admin
-12345678
-admin@gmail.com

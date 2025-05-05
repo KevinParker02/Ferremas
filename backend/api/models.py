@@ -149,6 +149,7 @@ class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
     usuario = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, db_column='Id_user')
     fecha_pedido = models.DateTimeField()
+    fecha_entrega_stm = models.DateTimeField()
     total_pedido = models.IntegerField()
     confirmacion_entrega = models.BooleanField(null=True, blank=True, db_column='confirmación_entrega')
     estado = models.ForeignKey('EstadoPedido', on_delete=models.DO_NOTHING, db_column='id_estado')
