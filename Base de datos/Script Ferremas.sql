@@ -75,6 +75,8 @@ CREATE TABLE IF NOT EXISTS USUARIO (
     ON UPDATE NO ACTION
 );
 
+ALTER TABLE USUARIO MODIFY COLUMN Id_user INT NOT NULL AUTO_INCREMENT;
+
 -- -----------------------------------------------------
 -- Table SUCURSAL
 -- -----------------------------------------------------
