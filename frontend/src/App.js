@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './estructura/login/Login';
 import Catalogo from './estructura/catalogo/Catalogo';
-
+import Registro from './estructura/registro/Registro';
+import Recuperar from './estructura/recuperar/Recuperar';
 function App() {
   return (
     <Router>
@@ -11,6 +12,8 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/registro" element={<Registro />} />
+        <Route path="/recuperar" element={<Recuperar />} />
       </Routes>
     </Router>
   );
