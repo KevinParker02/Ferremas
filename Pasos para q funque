@@ -30,12 +30,12 @@ Para backend
 cd backend
 python manage.py runserver
 
-#CREAR UN USUARIO
+#CREAR UN SUPERUSER USUARIO
+CD backend
 python manage.py createsuperuser
-!Superuser
 admin
 12345678
-admin@gmail.com
+admin@gmail.com 
 
 
 #SCRIPT PARA INICIAR FRONTEND/BACKEND AL MISMO TIEMPO
