@@ -20,15 +20,18 @@ def login_view(request):
     try:
         user = Usuario.objects.get(email_user=correo)
         if user.pass_user == password:
-            user_data = {
-                'id_user': user.id_user,
-                'nombre_user': user.nombre_user,
-                'email_user': user.email_user,
-                'id_rol': user.rol.id_rol,
-                'nom_rol': user.rol.nom_rol,
-                # aqui podemos agregar algo si nos faltan datos 
-            }
-            return Response(user_data, status=status.HTTP_200_OK)
+            return Response({
+                'mensaje': 'Login correcto',
+                'usuario': {
+                    'id_user': user.id_user,
+                    'nombre_user': user.nombre_user,
+                    'email_user': user.email_user,
+                    'rol': {
+                        'id': user.rol.id_rol,
+                        'nombre': user.rol.nom_rol
+                    }
+                }
+            }, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
     except Usuario.DoesNotExist:
