@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS USUARIO (
     ON UPDATE NO ACTION
 );
 
+-- Hacer que el Id_user sea auto incremental
 ALTER TABLE USUARIO MODIFY COLUMN Id_user INT NOT NULL AUTO_INCREMENT;
 
 -- -----------------------------------------------------
@@ -95,14 +96,21 @@ CREATE TABLE IF NOT EXISTS SUCURSAL (
 -- -----------------------------------------------------
 -- Table INVENTARIO
 -- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Table INVENTARIO
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS INVENTARIO (
-  id_inventario INT NOT NULL UNIQUE,
-  stock_disponible INT NOT NULL,
+  id_inventario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   id_sucursal INT NOT NULL,
-  PRIMARY KEY (id_inventario, id_sucursal),
-  CONSTRAINT fk_INVENTARIO_SUCURSAL1
+  id_prod INT NOT NULL,
+  CONSTRAINT fk_INVENTARIO_SUCURSAL
     FOREIGN KEY (id_sucursal)
     REFERENCES SUCURSAL (id_sucursal)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_INVENTARIO_PRODUCTO
+    FOREIGN KEY (id_prod)
+    REFERENCES PRODUCTO (id_prod)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
@@ -111,20 +119,14 @@ CREATE TABLE IF NOT EXISTS INVENTARIO (
 -- Table PRODUCTO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS PRODUCTO (
-  id_prod INT NOT NULL UNIQUE,
+  id_prod INT NOT NULL PRIMARY KEY,
   nom_prod VARCHAR(60) NOT NULL,
   marca_prod VARCHAR(20) NOT NULL,
   codigo_fabricante INT NOT NULL,
-  id_inventario INT NOT NULL,
   precio_prod INT NOT NULL,
   Estado_prod TINYINT NOT NULL,
   foto_prod BLOB NULL,
-  PRIMARY KEY (id_prod, id_inventario),
-  CONSTRAINT fk_PRODUCTO_INVENTARIO1
-    FOREIGN KEY (id_inventario)
-    REFERENCES INVENTARIO (id_inventario)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+  stock INT NOT NULL
 );
 
 -- -----------------------------------------------------
@@ -161,6 +163,7 @@ CREATE TABLE IF NOT EXISTS PEDIDO (
   id_pedido INT NOT NULL UNIQUE,
   Id_user INT NOT NULL,
   fecha_pedido DATETIME NOT NULL,
+  fecha_entrega_stm DATETIME NOT NULL,
   total_pedido INT NOT NULL,
   confirmación_entrega TINYINT NULL,
   id_estado INT NOT NULL,
@@ -374,8 +377,3 @@ INSERT INTO TIPO_DESPACHO VALUES (2, 'Despacho a domicilio');
 
 INSERT INTO TIPO_COMPROBANTE VALUES (1, 'Boleta');
 INSERT INTO TIPO_COMPROBANTE VALUES (2, 'Factura');
-
-Select * from region;
-Select * from Comuna;
-Select * from sucursal;
-Select * from usuario;
