@@ -1,0 +1,67 @@
+/* Wrapper del catálogo */
+.catalogo-wrapper {
+    position: relative;
+  }
+  
+  /* Menú lateral */
+  .menu-lateral {
+    width: 220px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+  }
+  
+  /* Menú visible */
+  .menu-lateral.abierto {
+    transform: translateX(0);
+  }
+  
+  /* Título del menú */
+  .menu-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Ítems del menú */
+  .menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Cada opción del menú */
+  .menu-items li {
+    margin-bottom: 10px;
+  }
+  
+  /* Estilo de los links */
+  .menu-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: block;
+    transition: color 0.2s;
+  }
+  
+  /* Hover */
+  .menu-link:hover {
+    color: #007bff;
+  }
+  
+  /* Contenido principal */
+  .contenido {
+    padding: 20px;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    z-index: 0; /* Asegura que quede detrás del menú */
+  }
+  
