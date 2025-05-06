@@ -102,3 +102,22 @@ def recuperar_view(request):
         return Response({'mensaje': 'Token enviado por correo'})
     except Usuario.DoesNotExist:
         return Response({'error': 'Correo no registrado'}, status=404)
+    
+@api_view(['POST'])
+def reset_password_view(request):
+    email = request.data.get('email')
+    token = request.data.get('token')
+    new_password = request.data.get('new_password')
+    confirm_password = request.data.get('confirm_password')
+
+    if new_password != confirm_password:
+        return Response({'error': 'Las contraseñas no coinciden'}, status=400)
+
+    try:
+        user = Usuario.objects.get(email_user=email, token=token)
+        user.pass_user = make_password(new_password)
+        user.token = None  # Elimina el token para que no pueda usarse de nuevo
+        user.save()
+        return Response({'mensaje': 'Contraseña restablecida correctamente'})
+    except Usuario.DoesNotExist:
+        return Response({'error': 'Token inválido o usuario no encontrado'}, status=404)

@@ -8,4 +8,5 @@ urlpatterns = [
     path('comunas/', listar_comunas),
     path('recuperar/', recuperar_view),
     path('regiones/', listar_regiones),
+    path('reset_password/', reset_password_view),
 ]
