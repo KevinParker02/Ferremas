@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS COMUNA (
 -- Table USUARIO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS USUARIO (
-  Id_user INT NOT NULL UNIQUE,
+  Id_user INT NOT NULL UNIQUE auto_increment,
   nombre_user VARCHAR(60) NOT NULL,
   apellido_user VARCHAR(60) NOT NULL,
   rut_user INT NOT NULL UNIQUE,
@@ -96,21 +96,12 @@ CREATE TABLE IF NOT EXISTS SUCURSAL (
 -- -----------------------------------------------------
 -- Table INVENTARIO
 -- -----------------------------------------------------
--- -----------------------------------------------------
--- Table INVENTARIO
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS INVENTARIO (
   id_inventario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   id_sucursal INT NOT NULL,
-  id_prod INT NOT NULL,
   CONSTRAINT fk_INVENTARIO_SUCURSAL
     FOREIGN KEY (id_sucursal)
     REFERENCES SUCURSAL (id_sucursal)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_INVENTARIO_PRODUCTO
-    FOREIGN KEY (id_prod)
-    REFERENCES PRODUCTO (id_prod)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
@@ -119,14 +110,20 @@ CREATE TABLE IF NOT EXISTS INVENTARIO (
 -- Table PRODUCTO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS PRODUCTO (
-  id_prod INT NOT NULL PRIMARY KEY,
+  id_prod INT NOT NULL PRIMARY KEY auto_increment,
   nom_prod VARCHAR(60) NOT NULL,
   marca_prod VARCHAR(20) NOT NULL,
   codigo_fabricante INT NOT NULL,
   precio_prod INT NOT NULL,
   Estado_prod TINYINT NOT NULL,
   foto_prod BLOB NULL,
-  stock INT NOT NULL
+  stock INT NOT NULL,
+  id_inventario INT NOT NULL,
+  CONSTRAINT fk_PRODUCTO_INVENTARIO
+    FOREIGN KEY (id_inventario)
+    REFERENCES INVENTARIO (id_inventario)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
@@ -160,7 +157,7 @@ CREATE TABLE IF NOT EXISTS TIPO_COMPROBANTE (
 -- Table PEDIDO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS PEDIDO (
-  id_pedido INT NOT NULL UNIQUE,
+  id_pedido INT NOT NULL UNIQUE auto_increment,
   Id_user INT NOT NULL,
   fecha_pedido DATETIME NOT NULL,
   fecha_entrega_stm DATETIME NOT NULL,
@@ -211,7 +208,7 @@ CREATE TABLE IF NOT EXISTS MEDIO_DE_PAGO (
 -- Table PAGO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS PAGO (
-  id_pago INT NOT NULL UNIQUE,
+  id_pago INT NOT NULL UNIQUE auto_increment,
   id_medpago INT NOT NULL,
   estado_pago TINYINT NOT NULL,
   fecha_pago DATETIME NOT NULL,
@@ -234,7 +231,7 @@ CREATE TABLE IF NOT EXISTS PAGO (
 -- Table DETALLE_PEDIDO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS DETALLE_PEDIDO (
-  id_detalle INT NOT NULL UNIQUE,
+  id_detalle INT NOT NULL UNIQUE auto_increment,
   id_pedido INT NOT NULL,
   id_prod INT NOT NULL,
   cantidad_producto INT NOT NULL,
@@ -255,7 +252,7 @@ CREATE TABLE IF NOT EXISTS DETALLE_PEDIDO (
 -- Table NOTIFICACION (EMAIL)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS NOTIFICACION (
-  id_notifi INT NOT NULL UNIQUE,
+  id_notifi INT NOT NULL UNIQUE auto_increment,
   id_user INT NOT NULL,
   motivo_notifi VARCHAR(20) NOT NULL,
   contenido_notifi VARCHAR(250) NOT NULL,
@@ -267,7 +264,7 @@ CREATE TABLE IF NOT EXISTS NOTIFICACION (
 -- Table CARRITO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS CARRITO (
-  id_carrito INT NOT NULL UNIQUE,
+  id_carrito INT NOT NULL UNIQUE auto_increment,
   fecha_carrito DATETIME NOT NULL,
   Id_user INT NOT NULL,
   PRIMARY KEY (id_carrito, Id_user),
@@ -282,7 +279,7 @@ CREATE TABLE IF NOT EXISTS CARRITO (
 -- Table DETALLE_CARRITO
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS DETALLE_CARRITO (
-  id_detcarrito INT NOT NULL UNIQUE,
+  id_detcarrito INT NOT NULL UNIQUE auto_increment,
   id_prod INT NOT NULL,
   id_carrito INT NOT NULL,
   cantidad_producto INT NOT NULL,
