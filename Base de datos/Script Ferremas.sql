@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS USUARIO (
   rut_user INT NOT NULL UNIQUE,
   dv_user INT NOT NULL,
   celular_user INT NOT NULL,
-  pass_user VARCHAR(12) NOT NULL,
+  pass_user VARCHAR(130) NOT NULL,
   email_user VARCHAR(100) NOT NULL UNIQUE,
   direccion_user VARCHAR(100) NOT NULL,
   token VARCHAR(255) NULL,
