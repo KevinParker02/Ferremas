@@ -6,7 +6,9 @@ from rest_framework import generics
 from .models import Item
 from .serializers import ItemSerializer
 from api.models import *;
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password #Para Crear
+from django.contrib.auth.hashers import check_password #Para Validar
+
 class ItemListCreate(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -19,7 +21,7 @@ def login_view(request):
 
     try:
         user = Usuario.objects.get(email_user=correo)
-        if user.pass_user == password:
+        if check_password(password, user.pass_user):
             return Response({
                 'mensaje': 'Login correcto',
                 'usuario': {
@@ -36,6 +38,7 @@ def login_view(request):
             return Response({'error': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
     except Usuario.DoesNotExist:
         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
 #Registro
 @api_view(['POST'])
 def register_view(request):
@@ -47,7 +50,7 @@ def register_view(request):
             rut_user=data['rut_user'],
             dv_user=data['dv_user'],
             celular_user=data['celular_user'],
-            pass_user=data['password'],  # Aún sin hash
+            pass_user=make_password(data['password']),
             email_user=data['email_user'],
             direccion_user=data['direccion_user'],
             estado_user=True,
