@@ -23,7 +23,7 @@ const Login = () => {
         const data = await res.json();
       
         if (res.ok) {
-          authguard.guardarUsuario(data);
+          authguard.guardarUsuario(data.usuario);
           navigate('/catalogo');
         } else {
           setError(data.error || 'Error desconocido');
