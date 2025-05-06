@@ -11,9 +11,12 @@ pip install -r requirements.txt  -- ESTE COMANDO INSTALA LAS DEPENDENCIAS PUESTA
 2- npm install
 
 
-Tienen que crear un entorno virtual
+#Tienen que crear un entorno virtual
 python -m venv env
 .\env\Scripts\activate
+
+# Luego de activar el entorno virtual hay que install dovent para alamcenar las credenciales senibles
+pip install python-dotenv
 
 (En SETTINGS.PY colocar la contraseña de tu base de datos local)
 
@@ -33,9 +36,10 @@ python manage.py runserver
 #CREAR UN SUPERUSER USUARIO
 CD backend
 python manage.py createsuperuser
-admin
-12345678
-admin@gmail.com 
+Ejemplo:
+ - admin
+ - 12345678
+ - admin@gmail.com 
 
 
 #SCRIPT PARA INICIAR FRONTEND/BACKEND AL MISMO TIEMPO

@@ -9,6 +9,12 @@ from api.models import *;
 from django.contrib.auth.hashers import make_password #Para Crear
 from django.contrib.auth.hashers import check_password #Para Validar
 
+
+import random
+import string
+from django.core.mail import send_mail
+from .models import Usuario
+
 class ItemListCreate(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -72,3 +78,27 @@ def listar_comunas(request):
 def listar_regiones(request):
     regiones = Region.objects.all().values('id_region', 'nom_region')
     return Response(list(regiones))
+
+@api_view(['POST'])
+def recuperar_view(request):
+    email = request.data.get('email')
+
+    try:
+        user = Usuario.objects.get(email_user=email)
+        token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        user.token = token
+        user.save()
+
+        # Aquí iría la integración con NodeMailer (desde backend Node)
+        # Suponiendo que envías desde Django por ahora:
+        send_mail(
+            subject='Recuperación de contraseña Ferremas',
+            message=f'Tu código de recuperación es: {token}',
+            from_email='playtab.app2024@gmail.com',
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        return Response({'mensaje': 'Token enviado por correo'})
+    except Usuario.DoesNotExist:
+        return Response({'error': 'Correo no registrado'}, status=404)

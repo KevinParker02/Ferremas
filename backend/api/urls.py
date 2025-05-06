@@ -6,5 +6,6 @@ urlpatterns = [
     path('login/', login_view),
     path('register/', register_view),
     path('comunas/', listar_comunas),
+    path('recuperar/', recuperar_view),
     path('regiones/', listar_regiones),
 ]
