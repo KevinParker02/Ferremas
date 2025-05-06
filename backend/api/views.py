@@ -61,5 +61,11 @@ def register_view(request):
 #Obtener comunas
 @api_view(['GET'])
 def listar_comunas(request):
-    comunas = Comuna.objects.all().values('id_comuna', 'nom_comuna')
+    comunas = Comuna.objects.all().values('id_comuna', 'nom_comuna', 'region_id')
     return Response(list(comunas))
+
+#Obtener regiones
+@api_view(['GET'])
+def listar_regiones(request):
+    regiones = Region.objects.all().values('id_region', 'nom_region')
+    return Response(list(regiones))
