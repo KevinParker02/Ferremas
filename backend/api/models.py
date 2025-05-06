@@ -86,7 +86,7 @@ class Inventario(models.Model):
         verbose_name_plural = 'Inventarios'
 
     def __str__(self):
-        return f'Inventario {self.id_inventario} '
+        return f'Inventario {self.id_inventario}'
 
 class Producto(models.Model):
     id_prod = models.AutoField(primary_key=True)
@@ -96,6 +96,7 @@ class Producto(models.Model):
     precio_prod = models.IntegerField()
     estado_prod = models.BooleanField()
     foto_prod = models.BinaryField(null=True, blank=True)
+    stock = models.IntegerField()
     inventario = models.ForeignKey('Inventario', on_delete=models.DO_NOTHING, db_column='id_inventario')
 
     class Meta:

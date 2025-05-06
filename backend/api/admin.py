@@ -31,17 +31,21 @@ class SucursalAdmin(admin.ModelAdmin):
     search_fields = ('direccion_sucursal',)
     list_filter = ('comuna',)
 
-@admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('id_prod', 'nom_prod', 'marca_prod', 'codigo_fabricante', 'precio_prod', 'estado_prod', 'inventario')
-    search_fields = ('nom_prod', 'marca_prod', 'codigo_fabricante')
-    list_filter = ('marca_prod', 'estado_prod', 'inventario')
-
 @admin.register(Inventario)
 class InventarioAdmin(admin.ModelAdmin):
     list_display = ('id_inventario', 'sucursal')
     search_fields = ('id_inventario',)
     list_filter = ('sucursal',)
+
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = (
+        'id_prod', 'nom_prod', 'marca_prod',
+        'codigo_fabricante', 'precio_prod',
+        'estado_prod', 'stock', 'inventario'
+    )
+    search_fields = ('nom_prod', 'marca_prod', 'codigo_fabricante')
+    list_filter = ('marca_prod', 'estado_prod', 'inventario')
 
 @admin.register(TipoDespacho)
 class TipoDespachoAdmin(admin.ModelAdmin):
