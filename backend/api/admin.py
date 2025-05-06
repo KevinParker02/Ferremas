@@ -39,7 +39,7 @@ class ProductoAdmin(admin.ModelAdmin):
 
 @admin.register(Inventario)
 class InventarioAdmin(admin.ModelAdmin):
-    list_display = ('id_inventario', 'stock_disponible', 'sucursal')
+    list_display = ('id_inventario', 'sucursal')
     search_fields = ('id_inventario',)
     list_filter = ('sucursal',)
 

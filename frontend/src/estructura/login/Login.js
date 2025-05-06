@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './logincs.css';
 import { useNavigate } from 'react-router-dom'; 
-
+import authguard from '../../Servicios/AuthGuard/authguard';
 const Login = () => {
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +23,7 @@ const Login = () => {
         const data = await res.json();
       
         if (res.ok) {
-          localStorage.setItem('usuario', JSON.stringify(data.usuario));
+          authguard.guardarUsuario(data);
           navigate('/catalogo');
         } else {
           setError(data.error || 'Error desconocido');

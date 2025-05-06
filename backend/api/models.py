@@ -77,18 +77,16 @@ class Sucursal(models.Model):
         return self.direccion_sucursal
 
 class Inventario(models.Model):
-    id_inventario = models.IntegerField(primary_key=True)
-    stock_disponible = models.IntegerField()
+    id_inventario = models.AutoField(primary_key=True)
     sucursal = models.ForeignKey('Sucursal', on_delete=models.DO_NOTHING, db_column='id_sucursal')
 
     class Meta:
         db_table = 'INVENTARIO'
-        unique_together = (('id_inventario', 'sucursal'),)
         verbose_name = 'Inventario'
         verbose_name_plural = 'Inventarios'
 
     def __str__(self):
-        return f'Inventario {self.id_inventario} - Stock: {self.stock_disponible}'
+        return f'Inventario {self.id_inventario} '
 
 class Producto(models.Model):
     id_prod = models.AutoField(primary_key=True)
