@@ -14,12 +14,24 @@ const Registro = () => {
   const [email_user, setEmail] = useState('');
   const [direccion_user, setDireccion] = useState('');
   const [comuna_id, setComuna] = useState('');
+  const [regiones, setRegiones] = useState([]);
+  const [region_id, setRegion] = useState('');
+
 
   useEffect(() => {
     fetch('http://localhost:8000/api/comunas/')
       .then(res => res.json())
       .then(data => setComunas(data));
   }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/regiones/')
+      .then(res => res.json())
+      .then(data => setRegiones(data));
+  }, []);
+
+  const comunasFiltradas = comunas.filter(c => c.region_id === parseInt(region_id));
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -93,10 +105,21 @@ const Registro = () => {
           <input className="form-control" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </div>
         <div className="mb-3">
+          <label>Región</label>
+          <select className="form-control" value={region_id} onChange={e => setRegion(e.target.value)} required>
+            <option value="">Seleccione una región</option>
+            {regiones.map(r => (
+              <option key={r.id_region} value={r.id_region}>
+                {r.nom_region}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
           <label>Comuna</label>
           <select className="form-control" value={comuna_id} onChange={e => setComuna(e.target.value)} required>
             <option value="">Seleccione una comuna</option>
-            {comunas.map((c) => (
+            {comunasFiltradas.map(c => (
               <option key={c.id_comuna} value={c.id_comuna}>
                 {c.nom_comuna}
               </option>
