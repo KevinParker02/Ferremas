@@ -37,15 +37,20 @@ class InventarioAdmin(admin.ModelAdmin):
     search_fields = ('id_inventario',)
     list_filter = ('sucursal',)
 
+@admin.register(CategoriaProducto)
+class CategoriaProductoAdmin(admin.ModelAdmin):
+    list_display = ('id_categoria', 'nom_cat_prod')
+    search_fields = ('nom_cat_prod',)
+
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
     list_display = (
         'id_prod', 'nom_prod', 'marca_prod',
         'codigo_fabricante', 'precio_prod',
-        'estado_prod', 'stock', 'inventario'
+        'estado_prod', 'stock', 'inventario', 'categoria'
     )
     search_fields = ('nom_prod', 'marca_prod', 'codigo_fabricante')
-    list_filter = ('marca_prod', 'estado_prod', 'inventario')
+    list_filter = ('marca_prod', 'estado_prod', 'inventario', 'categoria')
 
 @admin.register(TipoDespacho)
 class TipoDespachoAdmin(admin.ModelAdmin):

@@ -88,6 +88,18 @@ class Inventario(models.Model):
     def __str__(self):
         return f'Inventario {self.id_inventario}'
 
+class CategoriaProducto(models.Model):
+    id_categoria = models.AutoField(primary_key=True)
+    nom_cat_prod = models.CharField(max_length=60)
+
+    class Meta:
+        db_table = 'CATEGORIA_PRODUCTO'
+        verbose_name = 'Categoría de Producto'
+        verbose_name_plural = 'Categorías de Producto'
+
+    def __str__(self):
+        return self.nom_cat_prod
+
 class Producto(models.Model):
     id_prod = models.AutoField(primary_key=True)
     nom_prod = models.CharField(max_length=60)
@@ -98,6 +110,7 @@ class Producto(models.Model):
     foto_prod = models.BinaryField(null=True, blank=True)
     stock = models.IntegerField()
     inventario = models.ForeignKey('Inventario', on_delete=models.DO_NOTHING, db_column='id_inventario')
+    categoria = models.ForeignKey(CategoriaProducto, on_delete=models.DO_NOTHING, db_column='id_categoria')
 
     class Meta:
         db_table = 'PRODUCTO'

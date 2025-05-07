@@ -45,7 +45,7 @@
         password,
         email_user,
         direccion_user,
-        rol_id: 5, // Cliente
+        rol_id: 51, // Cliente
         comuna_id
       };
 
