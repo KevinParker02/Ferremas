@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Recuperar = () => {
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const navigate = useNavigate();
+
 
   const handleRecuperar = async (e) => {
     e.preventDefault();
@@ -14,7 +18,11 @@ const Recuperar = () => {
     const data = await res.json();
     if (res.ok) {
       setMensaje('Se han enviado las instrucciones a tu correo.');
-    } else {
+      setTimeout(() => {
+        navigate('/restablecer');
+      }, 2000); // Espera 2 segundos antes de redirigir
+    }
+     else {
       setMensaje(data.error || 'No se pudo enviar el correo.');
     }
   };
@@ -28,8 +36,17 @@ const Recuperar = () => {
           type="email"
           className="form-control mb-3"
           placeholder="Correo electrónico"
+          maxLength={40}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => {
+            const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
+            if (!regex.test(email)) {
+            setMensaje('Ingrese un correo válido.');
+            } else {
+            setMensaje('');
+            }
+        }}
           required
         />
         <button className="btn btn-primary w-100" type="submit">Enviar</button>

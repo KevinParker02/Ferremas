@@ -7,6 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [mensaje, setMensaje] = useState('');
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -46,30 +47,33 @@ const Login = () => {
         <div className="card p-4 shadow">
 
         {error && (
-          <div className="alert alert-danger text-center" role="alert">
+          <div className="alert alert-info text-center" role="alert">
             {error}
           </div>
         )}
           
-          <div className="mb-3">
-            <label>Correo</label>
-            <input
-              type="text"
-              className="form-control"
-              maxLength={100}
-              placeholder="correo@ejemplo.com"
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-              onBlur={() => {
-                const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
-                if (!regex.test(usuario)) {
-                  alert('Ingrese un correo válido que termine en .com o .cl');
-                }
-              }}
-              required
-            />
-          </div>
-
+          <input
+            type="text"
+            className="form-control"
+            maxLength={40}
+            placeholder="correo@ejemplo.com"
+            value={usuario}
+            onChange={(e) => {
+              setUsuario(e.target.value);
+              setMensaje('');
+            }}
+            onBlur={() => {
+              const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
+              if (!regex.test(usuario)) {
+                setMensaje('Ingrese un correo válido.');
+              }
+            }}
+            required
+          />
+          {mensaje && (
+            <small className="text-danger">{mensaje}</small>
+          )}
+          
           <div className="mb-3">
             <label>Contraseña</label>
             <input

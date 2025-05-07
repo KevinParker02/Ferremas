@@ -168,11 +168,13 @@
               onBlur={() => {
                 const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
                 if (!regex.test(email_user)) {
-                  alert('Ingrese un correo válido que termine en .com o .cl');
                 }
               }}
               required
             />
+            {email_user.length > 0 && !/^[^\s@]+@[^\s@]+\.(com|cl)$/.test(email_user) && (
+              <small className="text-danger">Ingrese un correo válido</small>
+            )}
           </div>
 
           <div className="mb-3">

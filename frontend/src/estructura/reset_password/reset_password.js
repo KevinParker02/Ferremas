@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 
 const Restablecer = () => {
   const [email, setEmail] = useState('');
@@ -6,9 +7,20 @@ const Restablecer = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (newPassword.length < 6 || newPassword.length > 8) {
+        setMensaje('La contraseña debe tener entre 6 y 8 caracteres.');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+    setMensaje('Las contraseñas no coinciden.');
+    return;
+    }
 
     const res = await fetch('http://localhost:8000/api/reset_password/', {
       method: 'POST',
@@ -20,6 +32,9 @@ const Restablecer = () => {
 
     if (res.ok) {
       setMensaje('Contraseña actualizada correctamente');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Espera 2 segundos antes de redirigir
     } else {
       setMensaje(`${data.error || 'Error al restablecer la contraseña'}`);
     }
@@ -29,18 +44,28 @@ const Restablecer = () => {
     <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
       <h2 className="mb-4">Restablecer Contraseña</h2>
       <form onSubmit={handleSubmit} className="w-50">
-        <input
-          type="email"
-          className="form-control mb-3"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+      <input
+        type="email"
+        className="form-control mb-3"
+        placeholder="Correo electrónico"
+        maxLength={40}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onBlur={() => {
+            const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
+            if (!regex.test(email)) {
+            setMensaje('Ingrese un correo válido.');
+            } else {
+            setMensaje('');
+            }
+        }}
+        required
         />
         <input
           type="text"
           className="form-control mb-3"
           placeholder="Token recibido por correo"
+          maxLength={10}
           value={token}
           onChange={(e) => setToken(e.target.value)}
           required
