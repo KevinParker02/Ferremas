@@ -209,33 +209,7 @@ class Notificacion(models.Model):
     def __str__(self):
         return f'Notificación #{self.id_notifi} - {self.motivo_notifi}'
 
-class Carrito(models.Model):
-    id_carrito = models.AutoField(primary_key=True)
-    fecha_carrito = models.DateTimeField()
-    usuario = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, db_column='Id_user')
 
-    class Meta:
-        db_table = 'CARRITO'
-        verbose_name = 'Carrito'
-        verbose_name_plural = 'Carritos'
-
-    def __str__(self):
-        return f'Carrito #{self.id_carrito} - Usuario {self.usuario_id}'
-
-class DetalleCarrito(models.Model):
-    id_detcarrito = models.AutoField(primary_key=True)
-    producto = models.ForeignKey('Producto', on_delete=models.DO_NOTHING, db_column='id_prod')
-    carrito = models.ForeignKey('Carrito', on_delete=models.DO_NOTHING, db_column='id_carrito')
-    cantidad_producto = models.IntegerField()
-
-    class Meta:
-        db_table = 'DETALLE_CARRITO'
-        verbose_name = 'Detalle de Carrito'
-        verbose_name_plural = 'Detalles de Carrito'
-        unique_together = (('producto', 'carrito'),)
-
-    def __str__(self):
-        return f'{self.producto} x{self.cantidad_producto} en Carrito {self.carrito_id}'
 
 class Pago(models.Model):
     id_pago = models.AutoField(primary_key=True)
@@ -268,3 +242,21 @@ class DetallePedido(models.Model):
 
     def __str__(self):
         return f'{self.producto} x{self.cantidad_producto} - Pedido {self.pedido_id}'
+
+
+class Carrito(models.Model):
+    id_carrito = models.AutoField(primary_key=True)
+    fecha_carrito = models.DateTimeField()
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='Id_user')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, db_column='id_prod')
+    cantidad_producto = models.IntegerField()
+
+    class Meta:
+        db_table = 'CARRITO'
+        unique_together = (('id_carrito', 'usuario', 'producto'),)
+        verbose_name = 'Carrito'
+        verbose_name_plural = 'Carritos'
+
+    def __str__(self):
+        return f'Carrito #{self.id_carrito} - {self.usuario.nombre_user} - {self.producto.nom_prod}'
+

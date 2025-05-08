@@ -89,18 +89,6 @@ class NotificacionAdmin(admin.ModelAdmin):
     search_fields = ('motivo_notifi', 'contenido_notifi', 'usuario__nombre_user')
     list_filter = ('motivo_notifi', 'fecha_notifi')
 
-@admin.register(Carrito)
-class CarritoAdmin(admin.ModelAdmin):
-    list_display = ('id_carrito', 'fecha_carrito', 'usuario')
-    search_fields = ('usuario__nombre_user', 'usuario__apellido_user')
-    list_filter = ('fecha_carrito',)
-
-
-@admin.register(DetalleCarrito)
-class DetalleCarritoAdmin(admin.ModelAdmin):
-    list_display = ('id_detcarrito', 'producto', 'carrito', 'cantidad_producto')
-    search_fields = ('producto__nom_prod', 'carrito__id_carrito')
-    list_filter = ('producto',)
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
@@ -113,3 +101,9 @@ class DetallePedidoAdmin(admin.ModelAdmin):
     list_display = ('id_detalle', 'pedido', 'producto', 'cantidad_producto')
     search_fields = ('pedido__id_pedido', 'producto__nom_prod')
     list_filter = ('producto',)
+
+@admin.register(Carrito)
+class CarritoAdmin(admin.ModelAdmin):
+    list_display = ('id_carrito', 'usuario', 'producto', 'cantidad_producto', 'fecha_carrito')
+    search_fields = ('usuario__nombre_user', 'producto__nom_prod')
+    list_filter = ('fecha_carrito',)
