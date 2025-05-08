@@ -121,3 +121,28 @@ def reset_password_view(request):
         return Response({'mensaje': 'Contraseña restablecida correctamente'})
     except Usuario.DoesNotExist:
         return Response({'error': 'Token inválido o usuario no encontrado'}, status=404)
+
+#Listar productos
+@api_view(['GET'])
+def listar_productos(request):
+    productos = Producto.objects.select_related('categoria').all()
+    producto_list = []
+
+    for prod in productos:
+        foto_base64 = None
+        if prod.foto_prod:
+            import base64
+            foto_base64 = base64.b64encode(prod.foto_prod).decode('utf-8')
+
+        producto_list.append({
+            'id_prod': prod.id_prod,
+            'nom_prod': prod.nom_prod,
+            'marca_prod': prod.marca_prod,
+            'precio_prod': prod.precio_prod,
+            'stock': prod.stock,
+            'estado_prod': prod.estado_prod,
+            'categoria__nom_cat_prod': prod.categoria.nom_cat_prod,
+            'foto_prod': foto_base64
+        })
+
+    return Response(producto_list)
