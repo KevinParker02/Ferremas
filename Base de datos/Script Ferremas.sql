@@ -281,31 +281,17 @@ CREATE TABLE IF NOT EXISTS CARRITO (
   id_carrito INT NOT NULL UNIQUE auto_increment,
   fecha_carrito DATETIME NOT NULL,
   Id_user INT NOT NULL,
-  PRIMARY KEY (id_carrito, Id_user),
+  id_prod INT NOT NULL,
+  cantidad_producto INT NOT NULL,
+  PRIMARY KEY (id_carrito, Id_user, id_prod),
   CONSTRAINT fk_CARRITO_USUARIO1
     FOREIGN KEY (Id_user)
     REFERENCES USUARIO (Id_user)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION
-);
-
--- -----------------------------------------------------
--- Table DETALLE_CARRITO
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS DETALLE_CARRITO (
-  id_detcarrito INT NOT NULL UNIQUE auto_increment,
-  id_prod INT NOT NULL,
-  id_carrito INT NOT NULL,
-  cantidad_producto INT NOT NULL,
-  PRIMARY KEY (id_detcarrito, id_prod, id_carrito),
-  CONSTRAINT fk_DETALLE_CARRITO_PRODUCTO1
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_CARRITO_PRODUCTO
     FOREIGN KEY (id_prod)
     REFERENCES PRODUCTO (id_prod)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_DETALLE_CARRITO_CARRITO1
-    FOREIGN KEY (id_carrito)
-    REFERENCES CARRITO (id_carrito)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
