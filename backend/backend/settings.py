@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # Motor MySQL
         'NAME': 'ferremas',  # Aquí va el nombre de la base de datos
         'USER': 'root',  # Usuario de MySQL
-        'PASSWORD': '1111',  # Contraseña del usuario
+        'PASSWORD': 'admin',  # Contraseña del usuario
         'HOST': 'localhost',  # Cambia si usas un servidor remoto
         'PORT': '3306',  # El puerto por defecto de MySQL
     }
