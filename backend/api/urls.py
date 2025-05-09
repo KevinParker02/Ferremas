@@ -10,4 +10,5 @@ urlpatterns = [
     path('regiones/', listar_regiones),
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),
+    
 ]
