@@ -274,3 +274,34 @@ def vaciar_carrito_usuario(request, id_usuario):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+##PARA LA VISTA ADMIN (Aún en proceso)    
+@api_view(['GET'])
+def listar_sucursales(request):
+
+    comuna_id = request.GET.get('comuna_id', None)
+    qs = Sucursal.objects.all()
+    if comuna_id:
+        qs = qs.filter(comuna_id=comuna_id)
+
+    data = [
+        {
+            "id_sucursal": s.id_sucursal,
+            "direccion_sucursal": s.direccion_sucursal,
+            "id_comuna": s.comuna_id,
+        }
+        for s in qs
+    ]
+    return Response(data)
+
+@api_view(['GET'])
+def listar_roles(request):
+    qs = Role.objects.exclude(id_rol=51)   # <— aquí excluimos el cliente
+    data = [
+        {
+            "id_rol": r.id_rol,
+            "nombre_rol": r.nombre_rol
+        }
+        for r in qs
+    ]
+    return Response(data)

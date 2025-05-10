@@ -8,6 +8,10 @@ urlpatterns = [
     path('comunas/', listar_comunas),
     path('recuperar/', recuperar_view),
     path('regiones/', listar_regiones),
+    ##PARA LA VISTA ADMIN (Aún en proceso) 
+    path('sucursales/', listar_sucursales),
+    path('roles/', listar_roles),
+
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),
     ##esto es para el carrito
