@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+
 import Login from './estructura/login/Login';
 import Catalogo from './estructura/catalogo/Catalogo';
 import Registro from './estructura/registro/Registro';
@@ -16,24 +17,46 @@ import Administrador from './estructura/administrador/Admin';
 import Bodega from './estructura/bodega/Bodega';
 import Error from './estructura/error/Error';
 
+import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
+import { GuestRoute} from './Servicios/AuthGuard/GuestRoute';
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/catalogo" element={<Catalogo />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route path="/recuperar" element={<Recuperar />} />
-        <Route path="/restablecer" element={<Restablecer />} />
+        {/* rutas de invitado */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login"    element={<GuestRoute><Login/></GuestRoute>} />
+        <Route path="/registro" element={<GuestRoute><Registro/></GuestRoute>} />
+        <Route path="/recuperar" element={<GuestRoute><Recuperar/></GuestRoute>} />
+        <Route path="/restablecer" element={<GuestRoute><Restablecer/></GuestRoute>} />
 
-        <Route path="/carrito" element={<Carrito />} />
-        <Route path="/miCuenta" element={<MiCuenta />} />
-        <Route path="/vendedor" element={<Vendedor />} />
-        <Route path="/contador" element={<Contador />} />
-        <Route path="/bodega" element={<Bodega />} />
-        <Route path="/admin" element={<Administrador />} />
-        <Route path="/error" element={<Error />} />
+        {/* rutas protegidas */}
+        <Route path="/catalogo"
+          element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}
+        />
+        <Route path="/carrito"
+          element={<ProtectedRoute roles={[51]}><Carrito/></ProtectedRoute>}
+        />
+        <Route path="/miCuenta"
+          element={<ProtectedRoute roles={[51]}><MiCuenta/></ProtectedRoute>}
+        />
+        <Route path="/vendedor"
+          element={<ProtectedRoute roles={[21]}><Vendedor/></ProtectedRoute>}
+        />
+        <Route path="/bodega"
+          element={<ProtectedRoute roles={[31]}><Bodega/></ProtectedRoute>}
+        />
+        <Route path="/admin"
+          element={<ProtectedRoute roles={[11]}><Administrador/></ProtectedRoute>}
+        />
+        <Route path="/contador"
+          element={<ProtectedRoute roles={[41]}><Contador/></ProtectedRoute>}
+        />
+
+        {/* 404 */}
+        <Route path="/error" element={<Error/>} />
+        <Route path="*"       element={<Navigate to="/error" replace />} />
       </Routes>
     </Router>
   );

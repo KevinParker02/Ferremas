@@ -10,27 +10,45 @@ const Login = () => {
     const [mensaje, setMensaje] = useState('');
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-  
+      e.preventDefault()
       try {
         const res = await fetch('http://localhost:8000/api/login/', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ usuario, password }),
-        });
-      
-        const data = await res.json();
-      
-        if (res.ok) {
-          authguard.guardarUsuario(data.usuario);
-          navigate('/catalogo');
-        } else {
-          setError(data.error || 'Error desconocido');
+        })
+        const data = await res.json()
+
+        if (!res.ok) {
+          setError(data.error || 'Error desconocido')
+          return
         }
+
+        authguard.guardarUsuario(data.usuario)
+
+        const rol = data.usuario.rol.id
+        switch (rol) {
+          case 11:
+            navigate('/admin')
+            break
+          case 21:
+            navigate('/vendedor')
+            break
+          case 31:
+            navigate('/bodega')
+            break
+          case 41:
+            navigate('/contador')
+            break
+          case 51:
+            navigate('/catalogo')
+            break
+          default:
+            navigate('/error')
+        }
+
       } catch (err) {
-        setError('Error de conexión con el servidor');
+        setError('Error de conexión con el servidor')
       }
     };
   
