@@ -10,5 +10,11 @@ urlpatterns = [
     path('regiones/', listar_regiones),
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),
-    
+    ##esto es para el carrito
+    path('carrito/agregar/', agregar_al_carrito),
+    path('carrito/<int:id_usuario>/', obtener_carrito_usuario),
+    path('carrito/actualizar/', actualizar_cantidad_carrito),
+    path('carrito/eliminar/', eliminar_producto_carrito),
+    path('carrito/vaciar/<int:id_usuario>/', vaciar_carrito_usuario),
+
 ]

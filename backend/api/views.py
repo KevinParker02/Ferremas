@@ -8,8 +8,8 @@ from .serializers import ItemSerializer
 from api.models import *;
 from django.contrib.auth.hashers import make_password #Para Crear
 from django.contrib.auth.hashers import check_password #Para Validar
-
-
+import traceback
+from django.utils import timezone
 import random
 import string
 from django.core.mail import send_mail
@@ -146,3 +146,131 @@ def listar_productos(request):
         })
 
     return Response(producto_list)
+
+#endpoint agregar al carrito
+@api_view(['POST'])
+def agregar_al_carrito(request):
+    try:
+        print("📦 DATA RECIBIDA:", request.data)
+
+        id_usuario = request.data.get('id_usuario')
+        id_producto = request.data.get('id_producto')
+        cantidad = int(request.data.get('cantidad'))
+
+        print("👉 id_usuario:", id_usuario)
+        print("👉 id_producto:", id_producto)
+        print("👉 cantidad:", cantidad)
+
+        usuario = Usuario.objects.get(id_user=id_usuario)
+        producto = Producto.objects.get(id_prod=id_producto)
+
+        carrito_item, creado = Carrito.objects.get_or_create(
+            usuario=usuario,
+            producto=producto,
+            defaults={'cantidad_producto': cantidad, 'fecha_carrito': timezone.now()}
+        )
+
+        if not creado:
+            carrito_item.cantidad_producto += cantidad
+            carrito_item.fecha_carrito = timezone.now()
+            carrito_item.save()
+
+        return Response({'mensaje': 'Producto agregado al carrito'}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        traceback.print_exc()  # ⬅️ Muestra el error exacto en consola
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#listar al carrito
+@api_view(['GET'])
+def obtener_carrito_usuario(request, id_usuario):
+    try:
+        carrito = Carrito.objects.filter(usuario__id_user=id_usuario).select_related('producto')
+
+        if not carrito.exists():
+            return Response({'mensaje': 'Carrito vacío'}, status=status.HTTP_200_OK)
+
+        data = []
+        for item in carrito:
+            data.append({
+                'id_carrito': item.id_carrito,
+                'id_producto': item.producto.id_prod,
+                'nombre_producto': item.producto.nom_prod,
+                'marca': item.producto.marca_prod,
+                'precio': item.producto.precio_prod,
+                'cantidad': item.cantidad_producto,
+                'fecha_agregado': item.fecha_carrito
+            })
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#actualizar cantidad del carrito
+@api_view(['PUT'])
+def actualizar_cantidad_carrito(request):
+    try:
+        id_usuario = request.data.get('id_usuario')
+        id_producto = request.data.get('id_producto')
+        nueva_cantidad = request.data.get('cantidad')
+
+        if not id_usuario or not id_producto or nueva_cantidad is None:
+            return Response({'error': 'Datos incompletos'}, status=status.HTTP_400_BAD_REQUEST)
+
+        nueva_cantidad = int(nueva_cantidad)
+
+        carrito_item = Carrito.objects.get(
+            usuario__id_user=id_usuario,
+            producto__id_prod=id_producto
+        )
+
+        if nueva_cantidad <= 0:
+            carrito_item.delete()
+            return Response(
+                {'mensaje': 'Producto eliminado del carrito por cantidad <= 0'},
+                status=status.HTTP_200_OK
+            )
+
+        carrito_item.cantidad_producto = nueva_cantidad
+        carrito_item.fecha_carrito = timezone.now()
+        carrito_item.save()
+
+        return Response({'mensaje': 'Cantidad actualizada'}, status=status.HTTP_200_OK)
+
+    except Carrito.DoesNotExist:
+        return Response({'error': 'Producto no encontrado en el carrito'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+#eliminar del carrito
+@api_view(['DELETE'])
+def eliminar_producto_carrito(request):
+    try:
+        id_usuario = request.data.get('id_usuario')
+        id_producto = request.data.get('id_producto')
+        
+        carrito_item = Carrito.objects.get(usuario__id_user=id_usuario, producto__id_prod=id_producto)
+        carrito_item.delete()
+
+        return Response({'mensaje': 'Producto eliminado del carrito'}, status=status.HTTP_200_OK)
+
+    except Carrito.DoesNotExist:
+        return Response({'error': 'Producto no encontrado en el carrito'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#vaciar el carrou
+@api_view(['DELETE'])
+def vaciar_carrito_usuario(request, id_usuario):
+    try:
+        items_eliminados, _ = Carrito.objects.filter(usuario__id_user=id_usuario).delete()
+
+        return Response({'mensaje': f'{items_eliminados} productos eliminados del carrito'}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

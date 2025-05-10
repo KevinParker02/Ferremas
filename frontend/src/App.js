@@ -9,7 +9,6 @@ import Recuperar from './estructura/recuperar/Recuperar';
 import Restablecer from './estructura/reset_password/reset_password';
 
 // Nuevas vistas
-import Carrito from './estructura/carrito/Carrito';
 import MiCuenta from './estructura/miCuenta/MiCuenta';
 import Vendedor from './estructura/vendedor/Vendedor';
 import Contador from './estructura/contador/Contador';
@@ -34,9 +33,6 @@ function App() {
         {/* rutas protegidas */}
         <Route path="/catalogo"
           element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}
-        />
-        <Route path="/carrito"
-          element={<ProtectedRoute roles={[51]}><Carrito/></ProtectedRoute>}
         />
         <Route path="/miCuenta"
           element={<ProtectedRoute roles={[51]}><MiCuenta/></ProtectedRoute>}

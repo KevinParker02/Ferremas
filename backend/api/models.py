@@ -253,10 +253,9 @@ class Carrito(models.Model):
 
     class Meta:
         db_table = 'CARRITO'
-        unique_together = (('id_carrito', 'usuario', 'producto'),)
+        unique_together = (('usuario', 'producto'),)
         verbose_name = 'Carrito'
         verbose_name_plural = 'Carritos'
-
     def __str__(self):
         return f'Carrito #{self.id_carrito} - {self.usuario.nombre_user} - {self.producto.nom_prod}'
 

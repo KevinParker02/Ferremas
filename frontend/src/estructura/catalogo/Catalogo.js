@@ -3,14 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import MenuService from '../../Servicios/Menu/MenuService';
 import './Catalogocs.css';
-
+import CarritoService from '../../Servicios/Carrito/CarritoService';
+import Carrito from '../../Servicios/Carrito/Carrito';
 const Catalogo = () => {
   // Estado y navegación
   const navigate = useNavigate();
   const usuario = authguard.obtenerUsuario();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [productos, setProductos] = useState([]);
-
+  //estado carrito
+  const [mostrarCarrito, setMostrarCarrito] = useState(false);
+  const toggleCarrito = () => setMostrarCarrito(!mostrarCarrito);
+  const [recargarCarrito, setRecargarCarrito] = useState(false);
+  //agregar al carritou
+  const agregarAlCarrito = async (id_producto) => {
+    await CarritoService.agregarAlCarritoConFeedback(
+      usuario.id_user,
+      id_producto,
+      1,
+      () => setRecargarCarrito(prev => !prev) 
+    );
+  };
   // Menú según rol
   const menuItems = MenuService.obtenerMenuPorRol(usuario?.rol?.id);
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
@@ -56,6 +69,9 @@ const Catalogo = () => {
         }}>
           Cerrar sesión
         </button>
+        <button className="btn btn-success mt-3 ms-2" onClick={toggleCarrito}>
+          🛒 {mostrarCarrito ? 'Ocultar' : 'Ver'} carrito
+        </button>
 
         <h1 className="mt-4">Catálogo de Productos</h1>
         <p>Aquí se mostrarán los productos disponibles en Ferremas.</p>
@@ -91,17 +107,24 @@ const Catalogo = () => {
                   <strong>Stock:</strong> {prod.stock}<br />
                   <strong>Categoría:</strong> {prod.categoria__nom_cat_prod}
                 </p>
-                <button className="btn btn-primary w-100 mt-2">
+                <button className="btn btn-primary w-100 mt-2" onClick={() => agregarAlCarrito(prod.id_prod)}>
                   🛒 Agregar al carro
                 </button>
               </div>
             </div>
           </div>
         ))}
+        </div>
       </div>
-
+      {/* Aqui se ve el carrito */}
+      <div className={`carrito-sidebar ${mostrarCarrito ? 'abierto' : ''}`}>
+        <button className="btn btn-sm btn-outline-secondary mb-3" onClick={toggleCarrito}>
+          ✕ Cerrar carrito
+        </button>
+        <Carrito idUsuario={usuario.id_user} recargar={recargarCarrito} />
       </div>
     </div>
+    
   );
 };
 
