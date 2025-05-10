@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS USUARIO (
   pass_user VARCHAR(130) NOT NULL,
   email_user VARCHAR(100) NOT NULL UNIQUE,
   direccion_user VARCHAR(100) NOT NULL,
+  id_sucursal INT NULL,
   token VARCHAR(255) NULL,
   estado_user TINYINT NOT NULL,
   id_rol INT NOT NULL,
@@ -74,9 +75,6 @@ CREATE TABLE IF NOT EXISTS USUARIO (
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
-
--- Hacer que el Id_user sea auto incremental
-ALTER TABLE USUARIO MODIFY COLUMN Id_user INT NOT NULL AUTO_INCREMENT;
 
 -- -----------------------------------------------------
 -- Table SUCURSAL
@@ -387,3 +385,4 @@ INSERT INTO INVENTARIO VALUES (700,7);
 INSERT INTO CATEGORIA_PRODUCTO VALUES (10, 'Herramientas Manuales');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (20, 'Materiales Básicos');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (30, 'Equipos de Seguridad');
+
