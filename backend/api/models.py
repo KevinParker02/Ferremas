@@ -49,6 +49,7 @@ class Usuario(models.Model):
     pass_user = models.CharField(max_length=12)
     email_user = models.EmailField(max_length=100, unique=True)
     direccion_user = models.CharField(max_length=100)
+    id_sucursal = models.IntegerField(null=True, blank=True)
     token = models.CharField(max_length=255, null=True, blank=True)
     estado_user = models.BooleanField()
     

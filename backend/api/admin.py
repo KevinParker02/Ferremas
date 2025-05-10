@@ -21,9 +21,9 @@ class ComunaAdmin(admin.ModelAdmin):
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('id_user', 'nombre_user', 'apellido_user', 'email_user', 'rol', 'comuna')
-    search_fields = ('nombre_user', 'apellido_user', 'email_user')
-    list_filter = ('rol', 'comuna', 'estado_user')
+    list_display = ('id_user', 'nombre_user', 'apellido_user', 'email_user', 'rol', 'comuna','id_sucursal')
+    search_fields = ('nombre_user', 'apellido_user', 'email_user','id_sucursal')
+    list_filter = ('rol', 'comuna', 'id_sucursal','estado_user')
 
 @admin.register(Sucursal)
 class SucursalAdmin(admin.ModelAdmin):
