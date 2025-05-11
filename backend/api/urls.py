@@ -10,7 +10,8 @@ urlpatterns = [
     path('regiones/', listar_regiones),
     ##PARA LA VISTA ADMIN (Aún en proceso) 
     path('sucursales/', listar_sucursales),
-    path('roles/', listar_roles),
+    path('roles/',      listar_roles),
+    path('empleados/',  crear_empleado),
 
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),

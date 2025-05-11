@@ -15,6 +15,8 @@ import string
 from django.core.mail import send_mail
 from .models import Usuario
 
+from django.shortcuts import get_object_or_404
+
 class ItemListCreate(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -278,30 +280,71 @@ def vaciar_carrito_usuario(request, id_usuario):
 ##PARA LA VISTA ADMIN (Aún en proceso)    
 @api_view(['GET'])
 def listar_sucursales(request):
-
-    comuna_id = request.GET.get('comuna_id', None)
     qs = Sucursal.objects.all()
-    if comuna_id:
-        qs = qs.filter(comuna_id=comuna_id)
-
     data = [
         {
             "id_sucursal": s.id_sucursal,
             "direccion_sucursal": s.direccion_sucursal,
-            "id_comuna": s.comuna_id,
+            "id_comuna": s.comuna_id
         }
         for s in qs
     ]
     return Response(data)
 
+
 @api_view(['GET'])
 def listar_roles(request):
-    qs = Role.objects.exclude(id_rol=51)   # <— aquí excluimos el cliente
+
+    qs = Role.objects.exclude(id_rol=51)
     data = [
         {
             "id_rol": r.id_rol,
-            "nombre_rol": r.nombre_rol
+            "nom_rol": r.nom_rol
         }
         for r in qs
     ]
     return Response(data)
+
+
+@api_view(['POST'])
+def crear_empleado(request):
+    data = request.data.copy()
+
+    try:
+        sucursal_id = int(data.get('id_sucursal'))
+    except (TypeError, ValueError):
+        return Response({"error": "id_sucursal inválido"}, status=400)
+
+    # 1) Obtener la sucursal y su comuna
+    sucursal = get_object_or_404(Sucursal, pk=sucursal_id)
+
+    # 2) Inyectar el entero de la comuna
+    comuna_id = sucursal.comuna_id
+    data['comuna_id'] = comuna_id
+
+    hashed = make_password(data['password'])
+    data['password_hashed'] = hashed
+
+    # 3) Crear el usuario
+    try:
+        usuario = Usuario.objects.create(
+            nombre_user    = data['nombre_user'],
+            apellido_user  = data['apellido_user'],
+            rut_user       = data['rut_user'],
+            dv_user        = data['dv_user'],
+            celular_user   = data['celular_user'],
+            pass_user      = hashed,       # ojo, pasas 'password' → pass_user
+            email_user     = data['email_user'],
+            direccion_user = data['direccion_user'],
+            estado_user    = True,
+            rol_id         = int(data['rol_id']),
+            id_sucursal    = sucursal_id,
+            comuna_id      = comuna_id,             # <-- EL ENTERO
+        )
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+    return Response({
+        "id_user": usuario.id_user,
+        "nombre":  f"{usuario.nombre_user} {usuario.apellido_user}"
+    }, status=201)
