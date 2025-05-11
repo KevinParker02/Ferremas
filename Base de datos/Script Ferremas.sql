@@ -353,15 +353,15 @@ INSERT INTO COMUNA VALUES (335, 'Las Condes', 160);
 INSERT INTO COMUNA VALUES (345, 'Lo Barnechea', 160);
 
 -- NO HAY direcciones reales de FERRAMAS solo se pusieron hipotéticas.
--- Región Metropolitana (ID Región: 160)
-INSERT INTO SUCURSAL VALUES (1, 'Av. Vicuña Mackenna 1347, Santiago', 160);
-INSERT INTO SUCURSAL VALUES (2, 'Av. Concha y Toro 10245, Puente Alto', 160);
-INSERT INTO SUCURSAL VALUES (3, 'Av. Apoquindo 6410, Las Condes', 160);
-INSERT INTO SUCURSAL VALUES (4, 'Camino a Farellones 14500, Lo Barnechea', 160);
+-- Región Metropolitana
+INSERT INTO SUCURSAL VALUES (1, 'Av. Vicuña Mackenna 1347, Santiago', 315);
+INSERT INTO SUCURSAL VALUES (2, 'Av. Concha y Toro 10245, Puente Alto', 325);
+INSERT INTO SUCURSAL VALUES (3, 'Av. Apoquindo 6410, Las Condes', 335);
+INSERT INTO SUCURSAL VALUES (4, 'Camino a Farellones 14500, Lo Barnechea', 345);
 -- Otras regiones
-INSERT INTO SUCURSAL VALUES (5, 'Av. Colón 5965, Antofagasta', 30);     
-INSERT INTO SUCURSAL VALUES (6, 'Camino a San Fernando 785, Curicó', 80);
-INSERT INTO SUCURSAL VALUES (7, 'Ruta 5 Sur km 670, Puerto Montt', 130);
+INSERT INTO SUCURSAL VALUES (5, 'Av. Colón 5965, Antofagasta', 55);     
+INSERT INTO SUCURSAL VALUES (6, 'Camino a San Fernando 785, Curicó', 165);
+INSERT INTO SUCURSAL VALUES (7, 'Ruta 5 Sur km 670, Puerto Montt', 255);
 
 INSERT INTO MEDIO_DE_PAGO VALUES (10, 'Webpay');
 INSERT INTO MEDIO_DE_PAGO VALUES (15, 'Transferencia');
@@ -386,3 +386,10 @@ INSERT INTO CATEGORIA_PRODUCTO VALUES (10, 'Herramientas Manuales');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (20, 'Materiales Básicos');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (30, 'Equipos de Seguridad');
 
+USE FERREMAS;
+SELECT * FROM USUARIO;
+SELECT * FROM ROL_USER;
+
+SELECT * FROM SUCURSAL;
+SELECT * FROM COMUNA;
+select * FROM REGION;
