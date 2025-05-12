@@ -13,7 +13,7 @@ from django.utils import timezone
 import random
 import string
 from django.core.mail import send_mail
-from .models import Usuario
+from .models import Usuario, Sucursal, Role
 
 from django.shortcuts import get_object_or_404
 
@@ -277,7 +277,7 @@ def vaciar_carrito_usuario(request, id_usuario):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-##PARA LA VISTA ADMIN (Aún en proceso)    
+##PARA LA VISTA ADMIN   
 @api_view(['GET'])
 def listar_sucursales(request):
     qs = Sucursal.objects.all()
@@ -333,13 +333,13 @@ def crear_empleado(request):
             rut_user       = data['rut_user'],
             dv_user        = data['dv_user'],
             celular_user   = data['celular_user'],
-            pass_user      = hashed,       # ojo, pasas 'password' → pass_user
+            pass_user      = hashed,   
             email_user     = data['email_user'],
             direccion_user = data['direccion_user'],
             estado_user    = True,
             rol_id         = int(data['rol_id']),
             id_sucursal    = sucursal_id,
-            comuna_id      = comuna_id,             # <-- EL ENTERO
+            comuna_id      = comuna_id,           
         )
     except Exception as e:
         return Response({"error": str(e)}, status=400)
