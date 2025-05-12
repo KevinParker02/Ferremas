@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS PRODUCTO (
   id_prod INT NOT NULL PRIMARY KEY auto_increment,
   nom_prod VARCHAR(60) NOT NULL,
   marca_prod VARCHAR(20) NOT NULL,
-  codigo_fabricante INT NOT NULL UNIQUE ,
+  codigo_fabricante INT NOT NULL,
   precio_prod INT NOT NULL,
   Estado_prod TINYINT NOT NULL,
   foto_prod BLOB NULL,
