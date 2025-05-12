@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -349,3 +350,54 @@ def crear_empleado(request):
         "id_user": usuario.id_user,
         "nombre":  f"{usuario.nombre_user} {usuario.apellido_user}"
     }, status=201)
+
+##PARA LA VISTA de bodega
+@api_view(['GET'])
+def listar_categorias(request):
+    qs = CategoriaProducto.objects.all()
+    data = [
+        {
+            "id_categoria": c.id_categoria,
+            "nom_cat_prod": c.nom_cat_prod
+        }
+        for c in qs
+    ]
+    return Response(data)
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def crear_producto(request):
+
+    # 1) Campos obligatorios
+    id_user = request.data.get('id_user')
+    if not id_user:
+        return Response({'error': 'Falta id_user'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 2) Obtengo usuario e inventario
+    usuario   = get_object_or_404(Usuario, pk=id_user)
+    inventario = get_object_or_404(Inventario, sucursal_id=usuario.id_sucursal)
+
+    # 3) Busco categoría
+    categoria = get_object_or_404(CategoriaProducto, pk=request.data.get('id_categoria'))
+
+    # 4) Leo el archivo de imagen
+    foto_file = request.FILES.get('foto_prod', None)
+    foto_bytes = foto_file.read() if foto_file else None
+
+    # 5) Creo el producto
+    producto = Producto.objects.create(
+        nom_prod            = request.data.get('nom_prod'),
+        marca_prod          = request.data.get('marca_prod'),
+        codigo_fabricante   = request.data.get('codigo_fabricante'),
+        precio_prod         = request.data.get('precio_prod'),
+        estado_prod         = True,
+        stock               = request.data.get('stock'),
+        inventario          = inventario,
+        categoria           = categoria,
+        foto_prod           = foto_bytes
+    )
+
+    return Response({
+        'success': True,
+        'id_prod': producto.id_prod
+    }, status=status.HTTP_201_CREATED)
