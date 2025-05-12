@@ -14,7 +14,7 @@ urlpatterns = [
     path('empleados/',  crear_empleado),
     path('usuarios/', listar_usuarios),
     path('usuarios/<int:id_user>/toggle_estado/', toggle_estado),
-
+    path('usuarios/<int:id_user>/', eliminar_usuario),
 
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),

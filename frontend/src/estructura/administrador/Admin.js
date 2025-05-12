@@ -56,6 +56,27 @@ const Administrador = () => {
       .catch(console.error);
   }, [search, filtroSuc]);
 
+  // Reset filtros
+    const handleReset = () => {
+      setSearch('');
+      setFiltroSuc('');
+      setSelectedUser(null);
+    };
+
+    const eliminarUsuario = async (id_user) => {
+    if (!window.confirm('¿Seguro que deseas eliminar este usuario?')) return;
+    const res = await fetch(`http://localhost:8000/api/usuarios/${id_user}/`, {
+      method: 'DELETE'
+    });
+    if (res.status === 204) {
+      // remuevo del listado y oculto detalle
+      setUsuarios(us => us.filter(u => u.id_user !== id_user));
+      setSelectedUser(null);
+    } else {
+      alert('Error al eliminar');
+    }
+  };
+
   // Cambios en el formulario de ADD EMPLOYEE
   const handleChange = e => {
     const { name, value } = e.target;
@@ -181,6 +202,9 @@ const Administrador = () => {
             </option>
           ))}
         </select>
+        <button className="btn btn-outline-secondary" onClick={handleReset}>
+          Mostrar todos
+        </button>
       </div>
 
       {/* TABLA DE USUARIOS */}
@@ -222,20 +246,37 @@ const Administrador = () => {
 
       {/* DETALLE DEL USUARIO SELECCIONADO */}
       {selectedUser && (
-        <div className="mt-4 border p-3">
-          <h5>Detalle de {selectedUser.nombre_user} {selectedUser.apellido_user}</h5>
-          <p><strong>RUT:</strong> {selectedUser.rut_user}-{selectedUser.dv_user}</p>
-          <p><strong>Correo:</strong> {selectedUser.email_user}</p>
-          <p><strong>Dirección:</strong> {selectedUser.direccion_user}</p>
-          <p><strong>Rol:</strong> {selectedUser.nom_rol}</p>
-          <p><strong>Estado:</strong> {selectedUser.estado_user ? 'Activo' : 'Inactivo'}</p>
-          <button
-            className="btn btn-warning"
-            onClick={() => toggleEstado(selectedUser.id_user)}
-          >
-            Cambiar estado
-          </button>
-        </div>
+            <div className="mt-4 border p-3">
+              <h5>
+                {selectedUser.nombre_user} {selectedUser.apellido_user}
+                <button
+                  className="btn btn-sm btn-outline-secondary ms-2"
+                  onClick={() => setSelectedUser(null)}
+                >
+                  Cerrar detalle
+                </button>
+              </h5>
+              <p><strong>RUT:</strong> {selectedUser.rut_user}-{selectedUser.dv_user}</p>
+              <p><strong>Correo:</strong> {selectedUser.email_user}</p>
+              <p><strong>Dirección:</strong> {selectedUser.direccion_user}</p>
+              <p><strong>Rol:</strong> {selectedUser.nom_rol}</p>
+              <p><strong>Estado:</strong> {selectedUser.estado_user ? 'Activo' : 'Inactivo'}</p>
+
+              <div className="d-flex gap-2">
+                <button
+                className="btn btn-warning"
+                onClick={() => toggleEstado(selectedUser.id_user)}
+              >
+                Cambiar estado
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={() => eliminarUsuario(selectedUser.id_user)}
+              >
+                Eliminar usuario
+              </button>
+            </div>
+          </div>
       )}
 
       {/* DRAWER AGREGAR EMPLEADO */}

@@ -15,8 +15,9 @@ import random
 import string
 from django.core.mail import send_mail
 from .models import Usuario, Sucursal, Role
-from django.db.models import Q
+from django.db.models import Q, CharField
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Cast
 
 class ItemListCreate(generics.ListCreateAPIView):
     queryset = Item.objects.all()
@@ -353,29 +354,34 @@ def crear_empleado(request):
 
 @api_view(['GET'])
 def listar_usuarios(request):
-    """
-    GET /api/usuarios/?search=<texto>&sucursal=<id_sucursal>
-    - Filtra por nombre_user, apellido_user o rut_user
-    - Filtra por id_sucursal
-    """
-    qs = Usuario.objects.all()
+    # 1) Partimos de un QS donde agregamos rut_str como texto
+    qs = Usuario.objects.annotate(
+        rut_str=Cast('rut_user', CharField())
+    )
 
-    # 1) filtro por texto o RUT
     q = request.query_params.get('search', '').strip()
     if q:
-        # busca en nombre o apellido (case‑insensitive)
+        # buscamos en nombre/apellido
         filtros = Q(nombre_user__icontains=q) | Q(apellido_user__icontains=q)
-        # si todo es dígitos, también compara exacto con rut_user
-        if q.isdigit():
-            filtros |= Q(rut_user=int(q))
+        # buscamos en la versión texto del rut
+        filtros |= Q(rut_str__icontains=q)
+
+        # también si escriben con guion: "12345678-9"
+        if '-' in q:
+            num, dv = q.split('-', 1)
+            if num.isdigit():
+                filtros |= Q(rut_user=int(num))
+            if dv:
+                filtros |= Q(dv_user__iexact=dv.upper())
+
         qs = qs.filter(filtros)
 
-    # 2) filtro por sucursal
+    # filtro por sucursal igual que antes
     suc = request.query_params.get('sucursal')
     if suc and suc.isdigit():
         qs = qs.filter(id_sucursal=int(suc))
 
-    # 3) serializo
+    # serializamos
     data = [{
         'id_user':       u.id_user,
         'nombre_user':   u.nombre_user,
@@ -391,13 +397,19 @@ def listar_usuarios(request):
 
     return Response(data)
 
-
 @api_view(['POST'])
 def toggle_estado(request, id_user):
     usuario = get_object_or_404(Usuario, pk=id_user)
     usuario.estado_user = not usuario.estado_user
     usuario.save()
     return Response({'estado_user': usuario.estado_user})
+
+@api_view(['DELETE'])
+def eliminar_usuario(request, id_user):
+
+    usuario = get_object_or_404(Usuario, pk=id_user)
+    usuario.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 ##PARA LA VISTA de bodega
 @api_view(['GET'])
