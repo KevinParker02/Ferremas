@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS PRODUCTO (
   Estado_prod TINYINT NOT NULL,
   foto_prod BLOB NULL,
   stock INT NOT NULL,
-  id_inventario INT NOT NULL UNIQUE ,
+  id_inventario INT NOT NULL,
   Id_categoria INT NOT NULL,
   CONSTRAINT fk_PRODUCTO_INVENTARIO
     FOREIGN KEY (id_inventario)
