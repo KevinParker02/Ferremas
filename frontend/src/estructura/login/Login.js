@@ -8,6 +8,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const [mensaje, setMensaje] = useState('');
+    
 
     const handleSubmit = async (e) => {
       e.preventDefault()
@@ -24,28 +25,33 @@ const Login = () => {
           return
         }
 
-        authguard.guardarUsuario(data.usuario)
-
-        const rol = data.usuario.rol.id
-        switch (rol) {
-          case 11:
-            navigate('/admin')
-            break
-          case 21:
-            navigate('/vendedor')
-            break
-          case 31:
-            navigate('/bodega')
-            break
-          case 41:
-            navigate('/contador')
-            break
-          case 51:
-            navigate('/catalogo')
-            break
-          default:
-            navigate('/error')
+        if (data.usuario.estado_user === 0 || data.usuario.estado_user === false) {
+          setError('Tu cuenta está deshabilitada. Contacta al administrador.')
+          return
         }
+
+      authguard.guardarUsuario(data.usuario)
+
+      const rol = data.usuario.rol.id
+      switch (rol) {
+        case 11:
+          navigate('/admin')
+          break
+        case 21:
+          navigate('/vendedor')
+          break
+        case 31:
+          navigate('/bodega')
+          break
+        case 41:
+          navigate('/contador')
+          break
+        case 51:
+          navigate('/catalogo')
+          break
+        default:
+          navigate('/error')
+      }
 
       } catch (err) {
         setError('Error de conexión con el servidor')

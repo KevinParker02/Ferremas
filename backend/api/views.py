@@ -43,6 +43,7 @@ def login_view(request):
                         'nombre': user.rol.nom_rol
                     },
                     "id_sucursal": user.id_sucursal,
+                    "estado_user": user.estado_user,
                 }
             }, status=status.HTTP_200_OK)
         else:
