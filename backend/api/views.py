@@ -39,7 +39,8 @@ def login_view(request):
                     'rol': {
                         'id': user.rol.id_rol,
                         'nombre': user.rol.nom_rol
-                    }
+                    },
+                    "id_sucursal": user.id_sucursal,
                 }
             }, status=status.HTTP_200_OK)
         else:
