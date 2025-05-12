@@ -117,7 +117,7 @@ class Producto(models.Model):
         db_table = 'PRODUCTO'
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
-        unique_together = (('nom_prod', 'marca_prod'),)
+        unique_together = (('inventario', 'codigo_fabricante'),)
 
     def __str__(self):
         return f'{self.nom_prod} - {self.marca_prod}'
