@@ -15,7 +15,7 @@ import random
 import string
 from django.core.mail import send_mail
 from .models import Usuario, Sucursal, Role
-
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 class ItemListCreate(generics.ListCreateAPIView):
@@ -350,6 +350,54 @@ def crear_empleado(request):
         "id_user": usuario.id_user,
         "nombre":  f"{usuario.nombre_user} {usuario.apellido_user}"
     }, status=201)
+
+@api_view(['GET'])
+def listar_usuarios(request):
+    """
+    GET /api/usuarios/?search=<texto>&sucursal=<id_sucursal>
+    - Filtra por nombre_user, apellido_user o rut_user
+    - Filtra por id_sucursal
+    """
+    qs = Usuario.objects.all()
+
+    # 1) filtro por texto o RUT
+    q = request.query_params.get('search', '').strip()
+    if q:
+        # busca en nombre o apellido (case‑insensitive)
+        filtros = Q(nombre_user__icontains=q) | Q(apellido_user__icontains=q)
+        # si todo es dígitos, también compara exacto con rut_user
+        if q.isdigit():
+            filtros |= Q(rut_user=int(q))
+        qs = qs.filter(filtros)
+
+    # 2) filtro por sucursal
+    suc = request.query_params.get('sucursal')
+    if suc and suc.isdigit():
+        qs = qs.filter(id_sucursal=int(suc))
+
+    # 3) serializo
+    data = [{
+        'id_user':       u.id_user,
+        'nombre_user':   u.nombre_user,
+        'apellido_user': u.apellido_user,
+        'rut_user':      u.rut_user,
+        'dv_user':       u.dv_user,
+        'nom_rol':       u.rol.nom_rol,
+        'estado_user':   u.estado_user,
+        'email_user':    u.email_user,
+        'direccion_user':u.direccion_user,
+        'id_sucursal':   u.id_sucursal,
+    } for u in qs.order_by('nombre_user')]
+
+    return Response(data)
+
+
+@api_view(['POST'])
+def toggle_estado(request, id_user):
+    usuario = get_object_or_404(Usuario, pk=id_user)
+    usuario.estado_user = not usuario.estado_user
+    usuario.save()
+    return Response({'estado_user': usuario.estado_user})
 
 ##PARA LA VISTA de bodega
 @api_view(['GET'])
