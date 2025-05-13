@@ -7,7 +7,8 @@ import Catalogo from './estructura/catalogo/Catalogo';
 import Registro from './estructura/registro/Registro';
 import Recuperar from './estructura/recuperar/Recuperar';
 import Restablecer from './estructura/reset_password/reset_password';
-
+import FormularioPago from './estructura/pago/FormularioPago';
+import PagoSimulado from './Servicios/Carrito/PagoSimulado';
 // Nuevas vistas
 import MiCuenta from './estructura/miCuenta/MiCuenta';
 import Vendedor from './estructura/vendedor/Vendedor';
@@ -16,8 +17,6 @@ import Administrador from './estructura/administrador/Admin';
 import Bodega from './estructura/bodega/Bodega';
 import Error from './estructura/error/Error';
 
-//ruta temporal de pago
-import PagoSimulado from './Servicios/Carrito/PagoSimulado';
 
 import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
 import { GuestRoute} from './Servicios/AuthGuard/GuestRoute';
@@ -31,7 +30,10 @@ function App() {
         <Route path="/registro" element={<GuestRoute><Registro/></GuestRoute>} />
         <Route path="/recuperar" element={<GuestRoute><Recuperar/></GuestRoute>} />
         <Route path="/restablecer" element={<GuestRoute><Restablecer/></GuestRoute>} />
+
+        {/* definir estas rutas mas tarde */}
         <Route path="/pago-simulado" element={<PagoSimulado />} />
+        <Route path="/formulario-pago" element={<FormularioPago />}/>
         {/* rutas protegidas */}
         <Route path="/catalogo"
           element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}

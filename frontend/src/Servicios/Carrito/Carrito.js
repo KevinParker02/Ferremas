@@ -42,9 +42,7 @@ const Carrito = ({ idUsuario, recargar  }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_usuario: idUsuario })
       });
-  
       const data = await res.json();
-  
       if (res.ok && data.url_pago) {
         // Redirige al usuario a Webpay u otro simulador de pago
         window.location.href = data.url_pago;

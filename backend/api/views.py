@@ -475,7 +475,7 @@ def iniciar_pago(request):
 
     # Llamar a Webpay (o simularlo) y obtener una URL de pago
     # Aquí debería ir tu integración real con Transbank
-    url_pago = f"http://localhost:3000/pago-simulado?usuario={id_usuario}&total={total}"
+    url_pago = f"http://localhost:3000/formulario-pago?usuario={id_usuario}&total={total}"
 
     return Response({'url_pago': url_pago})
 
