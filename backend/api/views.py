@@ -66,8 +66,9 @@ def register_view(request):
             email_user=data['email_user'],
             direccion_user=data['direccion_user'],
             estado_user=True,
-            rol_id=data['rol_id'],          # ID del rol
-            comuna_id=data['comuna_id']     # ID de la comuna
+            rol_id=data['rol_id'],         
+            comuna_id=data['comuna_id'], 
+            id_sucursal= data['id_sucursal'],
         )
         return Response({'mensaje': 'Usuario registrado correctamente'}, status=status.HTTP_201_CREATED)
     except Exception as e:

@@ -3,6 +3,10 @@
 
   const Registro = () => {
     const navigate = useNavigate();
+
+    const [sucursales, setSucursales] = useState([]);
+    const [id_sucursal, setSucursal]   = useState('');
+
     const [comunas, setComunas] = useState([]);
 
     const [nombre_user, setNombre] = useState('');
@@ -30,6 +34,12 @@
         .then(data => setRegiones(data));
     }, []);
 
+    useEffect(() => {
+    fetch('http://localhost:8000/api/sucursales/')
+      .then(res => res.json())
+      .then(data => setSucursales(data));
+  }, []);
+
     const comunasFiltradas = comunas.filter(c => c.region_id === parseInt(region_id));
 
 
@@ -45,8 +55,9 @@
         password,
         email_user,
         direccion_user,
-        rol_id: 51, // Cliente
-        comuna_id
+        rol_id: 51,
+        comuna_id,
+        id_sucursal: parseInt(id_sucursal),
       };
 
       try {
@@ -73,6 +84,7 @@
         <h2 className="mb-4">Registro de Usuario</h2>
         <div className="col-md-6 card p-4 shadow">
 
+          {/* Sector nombre 1 */}
           <div className="mb-3 row">
             <div className="col">
               <label>Nombre</label>
@@ -89,6 +101,7 @@
                 required
               />
             </div>
+            {/* Sector nombre 2 */}
             <div className="col">
               <label>Apellido</label>
               <input 
@@ -106,7 +119,7 @@
             </div>
           </div>
 
-
+          {/* Zona Ruts */}
           <div className="mb-3">
             <label>RUT</label>
             <div className="d-flex align-items-center">
@@ -140,7 +153,7 @@
             </div>
           </div>
 
-
+          {/* va el celular */}
           <div className="mb-3">
             <label>Celular</label>
             <input 
@@ -156,7 +169,8 @@
               required
             />
           </div>
-
+          
+          {/* Aquí el correo */}
           <div className="mb-3">
             <label>Correo</label>
             <input 
@@ -177,6 +191,7 @@
             )}
           </div>
 
+          {/* aquí va la dirección */}
           <div className="mb-3">
             <label>Dirección</label>
             <input 
@@ -193,7 +208,8 @@
               required
             />
           </div>
-
+          
+          {/* aquí pones tu contra */}
           <div className="mb-3">
             <label>Contraseña</label>
             <input 
@@ -211,6 +227,7 @@
             )}
           </div>
 
+          {/* selector de regiones */}
           <div className="mb-3 row">
             <div className="col">
               <label>Región</label>
@@ -223,6 +240,8 @@
                 ))}
               </select>
             </div>
+
+            {/* selector de comunas */}
             <div className="col">
               <label>Comuna</label>
               <select className="form-control" value={comuna_id} onChange={e => setComuna(e.target.value)} required>
@@ -235,7 +254,26 @@
               </select>
             </div>
           </div>
+
+          {/* selector de sucursales */}
+          <div className="mb-3">
+            <label>Sucursal más cercana</label>
+            <select
+              className="form-control"
+              value={id_sucursal}
+              onChange={e => setSucursal(e.target.value)}
+              required
+            >
+              <option value="">Seleccione una sucursal</option>
+              {sucursales.map(s => (
+                <option key={s.id_sucursal} value={s.id_sucursal}>
+                  {s.direccion_sucursal}
+                </option>
+              ))}
+            </select>
+          </div>
           
+          {/* Sector botones */}
           <button type="submit" className="btn btn-success w-100">Registrarse</button>
           <button type="button" className="btn btn-danger mt-3 w-100" onClick={() => navigate('/login')}>Cancelar</button>
         </div>
