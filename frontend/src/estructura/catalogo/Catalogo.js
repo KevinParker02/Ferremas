@@ -32,7 +32,10 @@ const Catalogo = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/productos/');
+        const favSucursal = usuario.id_sucursal;
+        const response = await fetch(
+          `http://localhost:8000/api/productos/?sucursal=${favSucursal}`
+        );
         const data = await response.json();
         setProductos(data);
       } catch (err) {
@@ -40,7 +43,7 @@ const Catalogo = () => {
       }
     };
     fetchProductos();
-  }, []);
+  }, [usuario.id_sucursal]);
 
   return (
     <div className={`catalogo-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>

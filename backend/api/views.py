@@ -129,13 +129,17 @@ def reset_password_view(request):
     except Usuario.DoesNotExist:
         return Response({'error': 'Token inválido o usuario no encontrado'}, status=404)
 
-#Listar productos
 @api_view(['GET'])
 def listar_productos(request):
-    productos = Producto.objects.select_related('categoria').all()
-    producto_list = []
+    sucursal_id = request.query_params.get('sucursal', None)
 
-    for prod in productos:
+    qs = Producto.objects.select_related('categoria', 'inventario__sucursal').all()
+
+    if sucursal_id is not None:
+        qs = qs.filter(inventario__sucursal_id=sucursal_id)
+
+    producto_list = []
+    for prod in qs:
         foto_base64 = None
         if prod.foto_prod:
             import base64
@@ -149,6 +153,7 @@ def listar_productos(request):
             'stock': prod.stock,
             'estado_prod': prod.estado_prod,
             'categoria__nom_cat_prod': prod.categoria.nom_cat_prod,
+            'inventario__sucursal_id': prod.inventario.sucursal_id,
             'foto_prod': foto_base64
         })
 
