@@ -117,7 +117,7 @@ const Catalogo = () => {
         </div>
       </div>
       {/* Aqui se ve el carrito */}
-      <div className={`carrito-sidebar ${mostrarCarrito ? 'abierto' : ''}`}>
+      <div className={`carrito-sidebar ${mostrarCarrito ? 'abierto' : ''} w-full max-w-full`}>
         <button className="btn btn-sm btn-outline-secondary mb-3" onClick={toggleCarrito}>
           ✕ Cerrar carrito
         </button>
