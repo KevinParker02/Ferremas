@@ -364,7 +364,6 @@ INSERT INTO SUCURSAL VALUES (6, 'Camino a San Fernando 785, Curicó', 165);
 INSERT INTO SUCURSAL VALUES (7, 'Ruta 5 Sur km 670, Puerto Montt', 255);
 
 INSERT INTO MEDIO_DE_PAGO VALUES (10, 'Webpay');
-INSERT INTO MEDIO_DE_PAGO VALUES (15, 'Transferencia');
 INSERT INTO MEDIO_DE_PAGO VALUES (20, 'Pago en tienda');
 
 INSERT INTO TIPO_DESPACHO VALUES (100, 'Retiro en tienda');
@@ -386,14 +385,26 @@ INSERT INTO CATEGORIA_PRODUCTO VALUES (10, 'Herramientas Manuales');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (20, 'Materiales Básicos');
 INSERT INTO CATEGORIA_PRODUCTO VALUES (30, 'Equipos de Seguridad');
 
+-- Estados del pedido
+INSERT INTO estado_pedido (id_estado, nom_estado) VALUES
+(1, 'Pendiente'),
+(2, 'Pagado'),
+(3, 'Enviado'),
+(4, 'Entregado'),
+(5, 'Confirmado'),
+(6, 'Preparación'),
+(7, 'Completado');
+
 USE FERREMAS;
 SELECT * FROM USUARIO;
+SELECT * FROM SUCURSAL;
 SELECT * FROM PRODUCTO;
 SELECT * FROM INVENTARIO;
 SELECT * FROM ROL_USER;
 
-SELECT * FROM SUCURSAL;
+
 SELECT * FROM COMUNA;
 select * FROM REGION;
+SELECT * FROM SUCURSAL;
 
 SELECT * FROM CARRITO;
