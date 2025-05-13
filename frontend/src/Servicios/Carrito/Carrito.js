@@ -34,6 +34,29 @@ const Carrito = ({ idUsuario, recargar  }) => {
     setTotal(0);
   };
 
+  //manejo de pago 
+  const handlePagar = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/webpay/iniciar/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_usuario: idUsuario })
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok && data.url_pago) {
+        // Redirige al usuario a Webpay u otro simulador de pago
+        window.location.href = data.url_pago;
+      } else {
+        alert(data.error || 'No se pudo iniciar el pago');
+      }
+    } catch (err) {
+      console.error('Error al iniciar el pago:', err);
+      alert('Ocurrió un error al procesar el pago');
+    }
+  };
+
   return (
   <div className="w-full px-4">
       <h2 className="text-xl font-bold mb-4">🛒 Carrito</h2>
@@ -64,10 +87,16 @@ const Carrito = ({ idUsuario, recargar  }) => {
       ))}
           <div className="mt-4 font-bold text-right">Total: ${total}</div>
           <button
-            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl"
+            className="btn btn-danger btn-block fw-bold"
             onClick={vaciarTodo}
           >
-            Vaciar carrito
+            🗑 Vaciar carrito
+          </button>
+          <button
+            className="btn btn-success w-100 fw-bold mt-3"
+            onClick={handlePagar}
+          >
+            💳 Pagar ahora
           </button>
         </div>
       )}

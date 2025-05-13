@@ -462,3 +462,63 @@ def crear_producto(request):
         'success': True,
         'id_prod': producto.id_prod
     }, status=status.HTTP_201_CREATED)
+
+
+#pago
+@api_view(['POST'])
+def iniciar_pago(request):
+    id_usuario = request.data.get('id_usuario')
+
+    # Calcular total desde el carrito
+    items = Carrito.objects.filter(usuario__id_user=id_usuario)
+    total = sum(item.producto.precio_prod * item.cantidad_producto for item in items)
+
+    # Llamar a Webpay (o simularlo) y obtener una URL de pago
+    # Aquí debería ir tu integración real con Transbank
+    url_pago = f"http://localhost:3000/pago-simulado?usuario={id_usuario}&total={total}"
+
+    return Response({'url_pago': url_pago})
+
+@api_view(['POST'])
+def respuesta_pago(request):
+    try:
+        id_usuario = request.data.get('id_usuario')
+        monto = request.data.get('monto')
+        estado = request.data.get('estado')
+
+        if estado != 'ACEPTADO':
+            return Response({'error': 'Pago rechazado'}, status=status.HTTP_400_BAD_REQUEST)
+
+        carrito = Carrito.objects.filter(usuario__id_user=id_usuario)
+        if not carrito.exists():
+            return Response({'error': 'El carrito está vacío'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Crear Pedido
+        pedido = Pedido.objects.create(
+            usuario_id=id_usuario,
+            fecha_pedido=timezone.now(),
+            fecha_entrega_stm=timezone.now() + timezone.timedelta(days=3),
+            total_pedido=monto,
+            estado_id=1,
+            tipo_despacho_id=100,
+            tipo_comprobante_id=1
+        )
+
+        # Crear Pago asociado
+        pago = Pago.objects.create(
+            pedido=pedido,
+            medio_pago_id=10,
+            estado_pago=True,
+            fecha_pago=timezone.now(),
+            monto_pago=monto
+        )
+
+        # Vaciar carrito
+        carrito.delete()
+
+        return Response({
+            'mensaje': f'Pedido #{pedido.id_pedido} y pago #{pago.id_pago} registrados con éxito.'
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

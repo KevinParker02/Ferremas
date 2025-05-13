@@ -108,3 +108,5 @@ class CarritoAdmin(admin.ModelAdmin):
     search_fields = ('usuario__nombre_user', 'producto__nom_prod')
     list_filter = ('fecha_carrito',)
 
+
+

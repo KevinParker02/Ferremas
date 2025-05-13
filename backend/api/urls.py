@@ -30,4 +30,8 @@ urlpatterns = [
     path('sucursales/', listar_sucursales),
     path('producto/crear/', crear_producto),
 
+    ##PARA PAGO
+    path('webpay/iniciar/', iniciar_pago, name='iniciar_pago'),
+    path('webpay/respuesta/', respuesta_pago, name='respuesta_pago'),
+
 ]

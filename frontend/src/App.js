@@ -16,9 +16,11 @@ import Administrador from './estructura/administrador/Admin';
 import Bodega from './estructura/bodega/Bodega';
 import Error from './estructura/error/Error';
 
+//ruta temporal de pago
+import PagoSimulado from './Servicios/Carrito/PagoSimulado';
+
 import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
 import { GuestRoute} from './Servicios/AuthGuard/GuestRoute';
-
 function App() {
   return (
     <Router>
@@ -29,7 +31,7 @@ function App() {
         <Route path="/registro" element={<GuestRoute><Registro/></GuestRoute>} />
         <Route path="/recuperar" element={<GuestRoute><Recuperar/></GuestRoute>} />
         <Route path="/restablecer" element={<GuestRoute><Restablecer/></GuestRoute>} />
-
+        <Route path="/pago-simulado" element={<PagoSimulado />} />
         {/* rutas protegidas */}
         <Route path="/catalogo"
           element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}
@@ -49,6 +51,7 @@ function App() {
         <Route path="/contador"
           element={<ProtectedRoute roles={[41]}><Contador/></ProtectedRoute>}
         />
+
 
         {/* 404 */}
         <Route path="/error" element={<Error/>} />
