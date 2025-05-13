@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import carritoService from './CarritoService';
+import { useNavigate } from 'react-router-dom';
 import './Carrito.css';
 const Carrito = ({ idUsuario, recargar  }) => {
+  const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
   const [total, setTotal] = useState(0);
 
@@ -34,26 +36,6 @@ const Carrito = ({ idUsuario, recargar  }) => {
     setTotal(0);
   };
 
-  //manejo de pago 
-  const handlePagar = async () => {
-    try {
-      const res = await fetch('http://localhost:8000/api/webpay/iniciar/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: idUsuario })
-      });
-      const data = await res.json();
-      if (res.ok && data.url_pago) {
-        // Redirige al usuario a Webpay u otro simulador de pago
-        window.location.href = data.url_pago;
-      } else {
-        alert(data.error || 'No se pudo iniciar el pago');
-      }
-    } catch (err) {
-      console.error('Error al iniciar el pago:', err);
-      alert('Ocurrió un error al procesar el pago');
-    }
-  };
 
   return (
   <div className="w-full px-4">
@@ -91,10 +73,16 @@ const Carrito = ({ idUsuario, recargar  }) => {
             🗑 Vaciar carrito
           </button>
           <button
-            className="btn btn-success w-100 fw-bold mt-3"
-            onClick={handlePagar}
+            className="btn btn-primary w-100 mt-3"
+            onClick={() => {
+              const query = new URLSearchParams({
+                usuario: idUsuario,      
+                total: total              
+              }).toString();
+              navigate(`/formulario-pago?${query}`);
+            }}
           >
-            💳 Pagar ahora
+            💳 Ir a pagar
           </button>
         </div>
       )}

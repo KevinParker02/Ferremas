@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-const FormularioPago = ({ idUsuario, total }) => {
+const FormularioPago = () => {
+
+
     const navigate = useNavigate();
     //para seleccion de comuna y region
     const [regiones, setRegiones] = useState([]);
@@ -10,6 +13,7 @@ const FormularioPago = ({ idUsuario, total }) => {
     //para seleccion de sucursal
     const [sucursales, setSucursales] = useState([]);
     const [sucursalSeleccionada, setSucursalSeleccionada] = useState('');
+    
     //datos
     const [form, setForm] = useState({
         tipo_despacho: '100',
@@ -19,6 +23,38 @@ const FormularioPago = ({ idUsuario, total }) => {
         rut_factura: '',
         razon_social: ''
     });
+    //obtener valores de la URL
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const totalRaw = query.get('total');
+    const total = Number(totalRaw);
+    const totalSeguro = isNaN(total) ? 0 : total; // 👈 más blindado
+    const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
+    const totalConEnvio = totalSeguro + costoEnvio;
+    const Userid = parseInt(query.get('usuario')) || 0;
+
+    //enviar datos a continuar
+    const handleContinuar = () => {
+        const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
+        const totalConEnvio = parseInt(total) + costoEnvio;
+ 
+        const query = new URLSearchParams({
+          usuario: Userid,
+          total: totalConEnvio,
+          estado: 'ACEPTADO',
+          tipo_despacho_id: form.tipo_despacho,
+          direc_desp: form.direc_desp,
+          id_comuna_dep: form.id_comuna_dep,
+          id_region_desp: regionSeleccionada,
+          tipo_comprobante_id: form.tipo_comprobante,
+          rut_factura: form.rut_factura,
+          razon_social: form.razon_social,
+          id_sucursal: sucursalSeleccionada
+        }).toString();
+      
+        navigate(`/pago-simulado?${query}`);
+    };
+
     
     // Cargar regiones
     useEffect(() => {
@@ -56,16 +92,6 @@ const FormularioPago = ({ idUsuario, total }) => {
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
-    };
-    
-    const handleContinuar = () => {
-        const query = new URLSearchParams({
-            usuario: idUsuario,
-            total,
-            ...form
-        }).toString();
-        
-        navigate(`/pago-simulado?${query}`);
     };
     
     return (
@@ -164,7 +190,10 @@ const FormularioPago = ({ idUsuario, total }) => {
                 </div>
                 </>
             )}
-            
+            <p className="mt-2 text-muted">
+            Total {form.tipo_despacho === '200' ? 'con' : 'sin'} envío:{' '}
+            <strong>${totalConEnvio}</strong>
+            </p>
             <button className="btn btn-success mt-3" onClick={handleContinuar}>
             Continuar al pago
             </button>
