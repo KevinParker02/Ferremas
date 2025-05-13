@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 const FormularioPago = ({ idUsuario, total }) => {
     const navigate = useNavigate();
-    
+    //para seleccion de comuna y region
     const [regiones, setRegiones] = useState([]);
     const [comunas, setComunas] = useState([]);
     const [regionSeleccionada, setRegionSeleccionada] = useState('');
-    
-    const comunasFiltradas = comunas.filter(c => c.region_id === parseInt(regionSeleccionada));
-    
+    //para seleccion de sucursal
+    const [sucursales, setSucursales] = useState([]);
+    const [sucursalSeleccionada, setSucursalSeleccionada] = useState('');
+    //datos
     const [form, setForm] = useState({
         tipo_despacho: '100',
         direc_desp: '',
@@ -34,7 +35,25 @@ const FormularioPago = ({ idUsuario, total }) => {
             .then(data => setComunas(data));
         }
     }, [regionSeleccionada]);
-    
+    //cargar sucursales
+    useEffect(() => {
+        fetch('http://localhost:8000/api/sucursales/')
+          .then(res => res.json())
+          .then(data => setSucursales(data));
+      }, []);
+    //para actualizar direccion con sucursal
+    useEffect(() => {
+        if (form.tipo_despacho === '100' && sucursalSeleccionada) {
+          const sucursal = sucursales.find(s => s.id_sucursal === parseInt(sucursalSeleccionada));
+          if (sucursal) {
+            setForm(prev => ({
+              ...prev,
+              direc_desp: sucursal.direccion_sucursal
+            }));
+          }
+        }
+      }, [sucursalSeleccionada, form.tipo_despacho, sucursales]);
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -59,6 +78,24 @@ const FormularioPago = ({ idUsuario, total }) => {
         <option value="100">Retiro en tienda</option>
         <option value="200">Despacho a domicilio</option>
         </select>
+        {form.tipo_despacho === '100' && (
+        <div className="mb-3">
+            <label className="form-label">Sucursal para retiro</label>
+            <select
+            className="form-select"
+            value={sucursalSeleccionada}
+            onChange={(e) => setSucursalSeleccionada(e.target.value)}
+            >
+            <option value="">Seleccione una sucursal</option>
+            {sucursales.map(s => (
+                <option key={s.id_sucursal} value={s.id_sucursal}>
+                {s.direccion_sucursal}
+                </option>
+            ))}
+            </select>
+        </div>
+        )}
+
         </div>
         
         {form.tipo_despacho === '200' && (
