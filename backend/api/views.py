@@ -298,7 +298,8 @@ def listar_sucursales(request):
         {
             "id_sucursal": s.id_sucursal,
             "direccion_sucursal": s.direccion_sucursal,
-            "id_comuna": s.comuna_id
+            "id_comuna": s.comuna_id,
+            "id_region": s.comuna.region_id
         }
         for s in qs
     ]
@@ -636,3 +637,30 @@ def crear_sesion_pago(request):
         return Response({'id': session.id})
     except Exception as e:
         return Response({'error': str(e)}, status=400)
+
+
+#generar pedido (Ahorasi)
+@api_view(['POST'])
+def crear_pedido(request):
+    data = request.data
+    try:
+        pedido = Pedido.objects.create(
+            usuario_id=data.get('usuario_id'),
+            fecha_pedido=timezone.now(),
+            fecha_entrega_stm=timezone.now() + timezone.timedelta(days=3),
+            total_pedido=data.get('total_pedido'),
+            estado_id=1,
+            tipo_despacho_id=data.get('tipo_despacho_id'),
+            direc_desp=data.get('direc_desp'),
+            id_comuna_dep=data.get('id_comuna_dep'),
+            id_region_desp=data.get('id_region_desp'),
+            tipo_comprobante_id=data.get('tipo_comprobante_id'),
+            rut_factura=data.get('rut_factura'),
+            razon_social=data.get('razon_social'),
+            sucursal_id=data.get('sucursal_id') or None
+        )
+        return Response({'mensaje': 'Pedido creado', 'id_pedido': pedido.id_pedido})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return Response({'error': str(e)}, status=500)

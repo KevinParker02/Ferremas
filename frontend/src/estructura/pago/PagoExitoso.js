@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const PagoExitoso = () => {
   const [mensaje, setMensaje] = useState('Cargando...');
   const [sessionId, setSessionId] = useState(null);
   const [datosSesion, setDatosSesion] = useState(null);
-
+  const pedidoYaGenerado = useRef(false);  //asegurar que no se genere dos veces csmmmm
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('session_id');
     if (!id) {
@@ -33,7 +33,48 @@ const PagoExitoso = () => {
 
     obtenerDatosSesion();
   }, []);
+  useEffect(() => {
+    const generarPedido = async () => {
+      if (!datosSesion || datosSesion.payment_status !== 'paid' || pedidoYaGenerado.current) return;
 
+      pedidoYaGenerado.current = true; 
+
+      try {
+        const response = await fetch('http://localhost:8000/api/pedido/crear/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            usuario_id: datosSesion.metadata.usuario,
+            total_pedido: datosSesion.metadata.total,
+            tipo_despacho_id: datosSesion.metadata.tipo_despacho_id,
+            direc_desp: datosSesion.metadata.direc_desp || 'NoAplica',
+            id_comuna_dep: datosSesion.metadata.id_comuna_dep || null,
+            id_region_desp: datosSesion.metadata.id_region_desp || null,
+            tipo_comprobante_id: datosSesion.metadata.tipo_comprobante_id,
+            rut_factura: datosSesion.metadata.rut_factura || 'NoAplica',
+            razon_social: datosSesion.metadata.razon_social || 'NoAplica',
+            sucursal_id: datosSesion.metadata.id_sucursal || null
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Error HTTP ${response.status}: ${errorText}`);
+        }
+
+        const resultado = await response.json();
+        console.log('📦 Pedido generado:', resultado);
+      } catch (error) {
+        console.error('❌ Error al crear el pedido:', error);
+      }
+    };
+
+    generarPedido();
+  }, [datosSesion]);
+
+
+  console.log('🧾 Metadata:', datosSesion?.metadata);
+  
   return (
     <div style={{ padding: '2rem' }}>
       <h2>Estado del Pago</h2>
@@ -71,12 +112,14 @@ const PagoExitoso = () => {
       ) : (
         <p>Cargando detalles de la sesión...</p>
       )}
+      
 
       <button onClick={() => window.location.href = '/catalogo'} style={{ marginTop: '2rem' }}>
         Volver al catálogo
       </button>
     </div>
   );
+  
 };
 
 export default PagoExitoso;

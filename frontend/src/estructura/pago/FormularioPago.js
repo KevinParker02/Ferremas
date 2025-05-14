@@ -17,6 +17,7 @@ const FormularioPago = () => {
         tipo_despacho: '100',
         direc_desp: '',
         id_comuna_dep: '',
+        id_region_dep: '',
         tipo_comprobante: '1',
         rut_factura: '',
         razon_social: ''
@@ -32,54 +33,57 @@ const FormularioPago = () => {
     const Userid = parseInt(query.get('usuario')) || 0;
 
     const handleContinuar = async () => {
-        const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
-        const totalConEnvio = parseInt(total) + costoEnvio;
-
-        let direccionDespacho = form.direc_desp;
-        let idSucursalFinal = '';
-
-        if (form.tipo_despacho === '100') {
-            const idSucursalCliente = authguard.obtenerUsuario()?.id_sucursal;
-            idSucursalFinal = idSucursalCliente;
-
-            const sucursal = sucursales.find(s => s.id_sucursal === idSucursalCliente);
-            direccionDespacho = sucursal?.direccion_sucursal || '';
-        } else {
-            idSucursalFinal = '';
+      const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
+      const totalConEnvio = parseInt(total) + costoEnvio;
+  
+      let direccionDespacho = form.direc_desp;
+      let idSucursalFinal = '';
+      let idComunaFinal = form.id_comuna_dep;
+      let idRegionFinal = regionSeleccionada;
+  
+      if (form.tipo_despacho === '100') {
+        const idSucursalCliente = authguard.obtenerUsuario()?.id_sucursal;
+        idSucursalFinal = idSucursalCliente;
+    
+        const sucursal = sucursales.find(s => s.id_sucursal === idSucursalCliente);
+        if (sucursal) {
+            direccionDespacho = sucursal.direccion_sucursal || '';
+            idComunaFinal = sucursal.id_comuna;
+            idRegionFinal = sucursal.id_region;
         }
-
-        const datosPedido = {
-            usuario: Userid,
-            total: totalConEnvio,
-            estado: 'ACEPTADO',
-            tipo_despacho_id: form.tipo_despacho,
-            direc_desp: direccionDespacho,
-            id_comuna_dep: form.id_comuna_dep,
-            id_region_desp: regionSeleccionada,
-            tipo_comprobante_id: form.tipo_comprobante,
-            rut_factura: form.rut_factura,
-            razon_social: form.razon_social,
-            id_sucursal: idSucursalFinal
-        };
-
-        console.log('📝 Enviando metadata a Stripe:', datosPedido);
-
-        const res = await fetch('http://localhost:8000/api/stripe/crear-sesion/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosPedido)
-        });
-
-        const data = await res.json();
-
-        if (data.id) {
-            const stripe = await stripePromise;
-            await stripe.redirectToCheckout({ sessionId: data.id });
-        } else {
-            alert(data.error || 'No se pudo iniciar el pago');
-        }
-    };
-
+    }
+  
+      const datosPedido = {
+          usuario: Userid,
+          total: totalConEnvio,
+          estado: 'ACEPTADO',
+          tipo_despacho_id: form.tipo_despacho,
+          direc_desp: direccionDespacho,
+          id_comuna_dep: idComunaFinal,
+          id_region_desp: idRegionFinal,
+          tipo_comprobante_id: form.tipo_comprobante,
+          rut_factura: form.rut_factura,
+          razon_social: form.razon_social,
+          id_sucursal: idSucursalFinal
+      };
+  
+      console.log('📝 Enviando metadata a Stripe:', datosPedido);
+  
+      const res = await fetch('http://localhost:8000/api/stripe/crear-sesion/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datosPedido)
+      });
+  
+      const data = await res.json();
+  
+      if (data.id) {
+          const stripe = await stripePromise;
+          await stripe.redirectToCheckout({ sessionId: data.id });
+      } else {
+          alert(data.error || 'No se pudo iniciar el pago');
+      }
+  };
     useEffect(() => {
         fetch('http://localhost:8000/api/regiones/')
             .then(res => res.json())
