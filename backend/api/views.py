@@ -603,6 +603,7 @@ def respuesta_pago(request):
 def crear_sesion_pago(request):
     try:
         monto = int(request.data.get('total'))
+
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -616,9 +617,23 @@ def crear_sesion_pago(request):
                 'quantity': 1,
             }],
             mode='payment',
-            success_url='http://localhost:3000/pago-exitoso',
+            success_url='http://localhost:3000/pago-exitoso?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='http://localhost:3000/pago-cancelado',
+            metadata={
+                'usuario': request.data.get('usuario'),
+                'total': monto,
+                'tipo_despacho_id': request.data.get('tipo_despacho_id'),
+                'direc_desp': request.data.get('direc_desp'),
+                'id_comuna_dep': request.data.get('id_comuna_dep'),
+                'id_region_desp': request.data.get('id_region_desp'),
+                'tipo_comprobante_id': request.data.get('tipo_comprobante_id'),
+                'rut_factura': request.data.get('rut_factura'),
+                'razon_social': request.data.get('razon_social'),
+                'id_sucursal': request.data.get('id_sucursal')
+            }
         )
+
         return Response({'id': session.id})
     except Exception as e:
         return Response({'error': str(e)}, status=400)
+

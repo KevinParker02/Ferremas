@@ -35,39 +35,38 @@ const FormularioPago = () => {
 
     //enviar datos a continuar
     const handleContinuar = async () => {
-        const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
-        const totalConEnvio = parseInt(total) + costoEnvio;
-      
-        const datosPedido = {
-          usuario: Userid,
-          total: totalConEnvio,
-          estado: 'ACEPTADO',
-          tipo_despacho_id: form.tipo_despacho,
-          direc_desp: form.direc_desp,
-          id_comuna_dep: form.id_comuna_dep,
-          id_region_desp: regionSeleccionada,
-          tipo_comprobante_id: form.tipo_comprobante,
-          rut_factura: form.rut_factura,
-          razon_social: form.razon_social,
-          id_sucursal: sucursalSeleccionada
-        };
-      
-        const res = await fetch('http://localhost:8000/api/stripe/crear-sesion/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datosPedido)
-        });
-      
-        const data = await res.json();
-      
-        if (data.id) {
-          const stripe = await stripePromise;
-          await stripe.redirectToCheckout({ sessionId: data.id });
-        } else {
-          alert(data.error || 'No se pudo iniciar el pago');
-        }
+      const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
+      const totalConEnvio = parseInt(total) + costoEnvio;
+    
+      const datosPedido = {
+        usuario: Userid,
+        total: totalConEnvio,
+        estado: 'ACEPTADO',
+        tipo_despacho_id: form.tipo_despacho,
+        direc_desp: form.direc_desp,
+        id_comuna_dep: form.id_comuna_dep,
+        id_region_desp: regionSeleccionada,
+        tipo_comprobante_id: form.tipo_comprobante,
+        rut_factura: form.rut_factura,
+        razon_social: form.razon_social,
+        id_sucursal: sucursalSeleccionada
       };
     
+      const res = await fetch('http://localhost:8000/api/stripe/crear-sesion/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosPedido)
+      });
+    
+      const data = await res.json();
+    
+      if (data.id) {
+        const stripe = await stripePromise;
+        await stripe.redirectToCheckout({ sessionId: data.id });
+      } else {
+        alert(data.error || 'No se pudo iniciar el pago');
+      }
+    };
     // Cargar regiones
     useEffect(() => {
         fetch('http://localhost:8000/api/regiones/')

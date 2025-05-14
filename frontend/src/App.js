@@ -8,7 +8,6 @@ import Registro from './estructura/registro/Registro';
 import Recuperar from './estructura/recuperar/Recuperar';
 import Restablecer from './estructura/reset_password/reset_password';
 import FormularioPago from './estructura/pago/FormularioPago';
-import PagoSimulado from './Servicios/Carrito/PagoSimulado';
 // Nuevas vistas
 import MiCuenta from './estructura/miCuenta/MiCuenta';
 import Vendedor from './estructura/vendedor/Vendedor';
@@ -32,7 +31,6 @@ function App() {
         <Route path="/restablecer" element={<GuestRoute><Restablecer/></GuestRoute>} />
 
         {/* definir estas rutas mas tarde */}
-        <Route path="/pago-simulado" element={<PagoSimulado />} />
         <Route path="/formulario-pago" element={<FormularioPago />}/>
         {/* rutas protegidas */}
         <Route path="/catalogo"
