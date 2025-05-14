@@ -15,7 +15,7 @@ import random
 import string
 from django.core.mail import send_mail
 from .models import Usuario, Sucursal, Role
-from django.db.models import Q, CharField
+from django.db.models import Q, F, CharField
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Cast
 
@@ -528,3 +528,50 @@ def respuesta_pago(request):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+## API PARA EL VENDEDOR
+@api_view(['GET'])
+def listar_pedidos(request):
+
+    # 1) Partimos del QS y anotamos id_pedido como texto para búsquedas parciales
+    qs = Pedido.objects.annotate(
+        id_str=Cast('id_pedido', CharField())
+    )
+
+    # 2) Filtrado por 'search' en id_pedido parcial
+    q = request.query_params.get('search', '').strip()
+    if q:
+        qs = qs.filter(id_str__icontains=q)
+
+    # 3) Filtrado por tipo de despacho (100 ó 200)
+    despacho = request.query_params.get('despacho')
+    if despacho in ('100', '200'):
+        # en el modelo el FK es campo tipo_despacho, su columna es tipo_despacho_id
+        qs = qs.filter(tipo_despacho_id=int(despacho))
+
+    # 4) Filtrado por sucursal (solo muestra los de la sucursal del vendedor)
+    sucursal = request.query_params.get('sucursal')
+    if sucursal and sucursal.isdigit():
+        qs = qs.filter(sucursal_id=int(sucursal))
+
+    # 5) Serializamos los campos de Pedido
+    data = []
+    for p in qs.order_by('-fecha_pedido'):
+        data.append({
+            'id_pedido':      p.id_pedido,
+            'Id_user':        p.usuario_id,
+            'fecha_pedido':   p.fecha_pedido,
+            'fecha_entrega':  p.fecha_entrega_stm,
+            'total_pedido':   p.total_pedido,
+            'confirmacion':   p.confirmacion_entrega,
+            'id_estado':      p.estado_id,
+            'id_despacho':    p.tipo_despacho_id,
+            'sucursal_id':    p.sucursal_id,
+            'direc_desp':     p.direc_desp,
+            'id_comuna_dep':  p.id_comuna_dep,
+            'id_region_desp': p.id_region_desp,
+            'rut_factura':    p.rut_factura,
+            'razon_social':   p.razon_social,
+        })
+    return Response(data)
+
