@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import MenuService from '../../Servicios/Menu/MenuService'; 
 import authguard from '../../Servicios/AuthGuard/authguard';
 
 const MiCuenta = () => {
-  const navigate = useNavigate();
   const usuario = authguard.obtenerUsuario();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
