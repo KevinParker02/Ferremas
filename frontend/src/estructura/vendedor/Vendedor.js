@@ -4,11 +4,24 @@ import authguard from '../../Servicios/AuthGuard/authguard';
 
 
 const Vendedor = () => {
+  
+  const navigate = useNavigate();
+
   return (
-    <div>
-      <h1>Pantalla de Vendedor</h1>
-      {/* …lo que quieras mostrar… */}
-    </div>
+    <nav className="d-flex justify-content-between align-items-center p-3 bg-light">
+        <h3>Vista Vendedor</h3>
+        <div>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              authguard.cerrarSesion();
+              navigate('/login');
+            }}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </nav>
   )
 }
 
