@@ -1,144 +1,182 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+/* Variables de color */
+:root {
+    --primary-color: #793E1C;
+    --secondary-color: #8b8466;
+    --tertiary-color: #d5aa00;
+    --error-color: #dc3545;
+    --text-color: #333;
+    --light-color: #f8f9fa;
+    --white: #ffffff;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
-.login-background {
+/* Estilos base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor principal */
+.login-container {
     background-image: url('../../img/fondo.png');
     background-size: cover;
-    background-repeat: no-repeat;
     background-position: center;
-    min-height: 100vh; /* Usar min-height para que ocupe al menos toda la pantalla */
-    width: 100%;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
-.box-top {
-    /* margin-top: 5%; */
-    font-family: "Anton", sans-serif;
-    text-align: center; /* Centramos el texto del header */
+/* Tarjeta de login */
+.login-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+    width: 450px;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Encabezado */
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--white);
     margin-bottom: 20px;
 }
 
-.titulo {
-    font-family: "Anton", sans-serif;
-    font-size: 70px;
-    /* margin-bottom: 10px;  */
+.login-title {
+    color: var(--text-color);
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
-.col-md-4 {
-    display: flex; /* Añadimos flex para centrar el contenido dentro */
-    justify-content: center; /* Centrado horizontal */
+/* Alertas */
+.login-alert {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 14px;
 }
 
-.card {
-    padding: 30px;
-    border-radius: 10px;
+/* Grupos de formulario */
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+/* Campos de entrada */
+.input-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #6c757d;
+    width: 20px;
+    height: 20px;
+}
+
+.form-input {
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    position: relative; /* Añadido para permitir el posicionamiento absoluto */
-    height: 550px;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
 }
 
-.profile-container {
-    text-align: center;
-    margin-bottom: 0;
+.form-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Botones */
+.action-buttons {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: absolute; /* Esto permite que el logo y el título estén posicionados dentro del card */
-    left: 50%; /* Posicionamos horizontalmente en la mitad */
-    transform: translate(-50%, -50%); /* Centramos perfectamente */
+    gap: 15px;
+    margin-top: 30px;
 }
 
-.profile-container img {
-    margin-bottom: 15px;
-}
-
-.form-control {
-    margin-top: 15px;
-    margin-bottom: 15px; /* Espacio entre los inputs */
-}
-
-.mb-3{
-    transform: translate(0%, 120%); /* Alineamos el contenedor de los inputs */
-}
-
-.d-grid{
-    transform: translate(0%, 65%); /* Alineamos el contenedor de los inputs */
-
-}
-
-.mb-3 label {
-    display: block; /* Asegura que el label ocupe toda la línea */
-    color: #333; /* Un color de texto más legible */
-    font-weight: bold; /* Resaltamos un poco el label */
-}
-
-.alert {
-    margin-bottom: 15px; /* Espacio debajo del mensaje de error */
-    border-radius: 8px;
-}
-
-.btn-inicio {
-    background-color: #793E1C;
-    color: white;
-    padding: 12px 20px; /* Aumentamos un poco el padding del botón */
+.btn-primary, .btn-secondary, .btn-tertiary {
+    padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    width: 100%; /* Los botones ocupan todo el ancho de su contenedor */
-}
-
-.btn-inicio:hover {
-    background-color: #5d2f15;
-    color: white;
-    transform: scale(1.02); /* Reducimos un poco la escala del hover */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Reducimos un poco la sombra */
-}
-
-.btn-olvidar {
-    background-color: #6c757d; /* Un gris más estándar para botones secundarios */
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     width: 100%;
 }
 
-.btn-olvidar:hover {
-    background-color: #5a6268;
-    color: white;
-    transform: scale(1.02);
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
 }
 
-.btn-success {
-    padding: 12px 20px;
-    border-radius: 8px;
-    width: 100%;
+.btn-primary:hover {
+    background-color: #5D2F15;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.text-danger {
-    display: block; /* Asegura que el mensaje de error ocupe toda la línea */
-    margin-top: 5px; /* Espacio encima del mensaje de error del input */
-    font-size: 0.9em; /* Un tamaño de fuente un poco más pequeño */
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--white);
 }
 
+.btn-secondary:hover {
+    background-color: #7a7560;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-tertiary {
+    background-color: var(--tertiary-color);
+    color: var(--white);
+}
+
+.btn-tertiary:hover {
+    background-color: #c19d00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
 @media (max-width: 576px) {
-    .titulo {
-        font-size: 60px; /* Reducimos aún más el título en pantallas pequeñas */
+    .login-card {
+        padding: 25px;
     }
-
-    .card {
-        padding: 20px; /* Reducimos el padding del card en pantallas pequeñas */
-    }
-
-    .profile-container img {
+    
+    .login-logo {
         width: 120px;
         height: 120px;
     }

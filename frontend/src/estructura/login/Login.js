@@ -1,136 +1,153 @@
 import React, { useState } from 'react';
-import './logincs.css';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock } from 'lucide-react';
 import authguard from '../../Servicios/AuthGuard/authguard';
-import logoImagen from '../../img/logo.png'
+import logoImagen from '../../img/logo.png';
+import './logincs.css';
+
 const Login = () => {
+    // Estados del componente
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const [mensaje, setMensaje] = useState('');
+    const navigate = useNavigate();
 
-
+    // Manejador de envío del formulario
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        
         try {
             const res = await fetch('http://localhost:8000/api/login/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ usuario, password }),
-            })
-            const data = await res.json()
+            });
+            
+            const data = await res.json();
 
             if (!res.ok) {
-                setError(data.error || 'Error desconocido')
-                return
+                setError(data.error || 'Error desconocido');
+                return;
             }
 
             if (data.usuario.estado_user === 0 || data.usuario.estado_user === false) {
-                setError('Tu cuenta está deshabilitada. Contacta al administrador.')
-                return
+                setError('Tu cuenta está deshabilitada. Contacta al administrador.');
+                return;
             }
 
-            authguard.guardarUsuario(data.usuario)
-
-            const rol = data.usuario.rol.id
-            switch (rol) {
-                case 11:
-                    navigate('/admin')
-                    break
-                case 21:
-                    navigate('/vendedor')
-                    break
-                case 31:
-                    navigate('/bodega')
-                    break
-                case 41:
-                    navigate('/contador')
-                    break
-                case 51:
-                    navigate('/catalogo')
-                    break
-                default:
-                    navigate('/error')
-            }
-
+            authguard.guardarUsuario(data.usuario);
+            redirectByRole(data.usuario.rol.id);
+            
         } catch (err) {
-            setError('Error de conexión con el servidor')
+            setError('Error de conexión con el servidor');
         }
     };
 
+    // Redirección según el rol del usuario
+    const redirectByRole = (roleId) => {
+        const routes = {
+            11: '/admin',
+            21: '/vendedor',
+            31: '/bodega',
+            41: '/contador',
+            51: '/catalogo'
+        };
+        
+        navigate(routes[roleId] || '/error');
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="login-background d-flex flex-column align-items-center justify-content-center min-vh-100">
+        <div className="login-container">
+            <form onSubmit={handleSubmit} className="login-form">
+                <div className="login-card">
+                    {/* Encabezado con logo */}
+                    <div className="login-header">
+                        <img 
+                            src={logoImagen} 
+                            alt="Logo de la empresa" 
+                            className="login-logo" 
+                        />
+                        <h2 className="login-title">Iniciar Sesión</h2>
+                    </div>
 
-                <header className="box-top"> {/* Usamos la clase box-top para el header */}
-                    {/* <h2></h2>
-                    <h1 className="titulo">Bienvenido a Ferremas</h1> */}
-                </header>
-
-                <div className="col-md-4">
-                    <div className="card shadow-lg"> {/* Quitamos position-relative del card */}
-                        <div className="profile-container"> {/* El logo y el título en un contenedor */}
-                            <img src={logoImagen} alt="Ferremas Logo" className="rounded-circle" style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
-                            <h2 className="mt-1 mb-2">Iniciar Sesión</h2>
-                        </div>
-
+                    {/* Mensajes de error */}
                     {error && (
-                        <div className="alert alert-info text-center" role="alert">
+                        <div className="login-alert">
                             {error}
                         </div>
                     )}
 
-                    <div className="mb-3">
-                            <label>Correo electrónico</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            maxLength={40}
-                            placeholder="correo@ejemplo.com"
-                            value={usuario}
-                            onChange={(e) => {
-                                setUsuario(e.target.value);
-                                setMensaje('');
-                            }}
-                            onBlur={() => {
-                                const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
-                                if (!regex.test(usuario)) {
-                                    setMensaje('Ingrese un correo válido.');
-                                }
-                            }}
-                            required
-                        />
-                        {mensaje && (
-                            <small className="text-danger">{mensaje}</small>
-                        )}
+                    {/* Campos del formulario */}
+                    <div className="form-group">
+                        <div className="input-field">
+                            <Mail className="input-icon" />
+                            <input
+                                type="text"
+                                className="form-input"
+                                maxLength={40}
+                                placeholder="Correo electrónico"
+                                value={usuario}
+                                onChange={(e) => {
+                                    setUsuario(e.target.value);
+                                    setMensaje('');
+                                }}
+                                onBlur={() => {
+                                    const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
+                                    if (!regex.test(usuario)) {
+                                        setMensaje('Ingrese un correo válido.');
+                                    }
+                                }}
+                                required
+                            />
+                        </div>
+                        {mensaje && <span className="error-message">{mensaje}</span>}
                     </div>
-                        <div className="mb-3">
-                            <label>Contraseña</label>
+
+                    <div className="form-group">
+                        <div className="input-field">
+                            <Lock className="input-icon" />
                             <input
                                 type="password"
-                                className="form-control"
-                                placeholder="6 a 8 caracteres"
+                                className="form-input"
+                                placeholder="Contraseña (6 a 8 caracteres)"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 minLength={6}
                                 maxLength={8}
                                 required
                             />
-                            {password.length > 0 && (password.length < 6 || password.length > 8) && (
-                                <small className="text-danger">La contraseña debe tener entre 6 y 8 caracteres</small>
-                            )}
                         </div>
+                        {password.length > 0 && (password.length < 6 || password.length > 8) && (
+                            <span className="error-message">
+                                La contraseña debe tener entre 6 y 8 caracteres
+                            </span>
+                        )}
+                    </div>
 
-                        <div className="d-grid gap-2">
-                            <button type="submit" className="btn-inicio">Ingresar</button>
-                            <button type="button" className="btn-olvidar" onClick={() => navigate('/recuperar')}>Olvide mi contraseña</button>
-                            <button type="button" className="btn btn-success" onClick={() => navigate('/registro')}>Registrarse</button>
-                        </div>
+                    {/* Botones de acción */}
+                    <div className="action-buttons">
+                        <button type="submit" className="btn-primary">
+                            Ingresar
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn-secondary"
+                            onClick={() => navigate('/recuperar')}
+                        >
+                            Olvidé mi contraseña
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn-tertiary"
+                            onClick={() => navigate('/registro')}
+                        >
+                            Registrarse
+                        </button>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     );
 };
 
