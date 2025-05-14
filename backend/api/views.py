@@ -19,6 +19,9 @@ from django.db.models import Q, CharField
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Cast
 
+import stripe
+stripe.api_key = 'sk_test_51ROTKbC0ISZZKwGbD573Oh5wcePqMB0VCyCo73LJhb2pS5kJ3c1iGB0j7bNum2RYUCTWSBOFiujiFXmzzBGKj8Jk00Dgk6Ue1k'
+
 class ItemListCreate(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -528,3 +531,29 @@ def respuesta_pago(request):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#stripe pagos
+@api_view(['POST'])
+def crear_sesion_pago(request):
+    try:
+        monto = int(request.data.get('total'))
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'clp',
+                    'product_data': {
+                        'name': 'Pedido Ferremas',
+                    },
+                    'unit_amount': monto,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='http://localhost:3000/pago-exitoso',
+            cancel_url='http://localhost:3000/pago-cancelado',
+        )
+        return Response({'id': session.id})
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)

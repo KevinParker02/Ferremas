@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-
+import { loadStripe } from '@stripe/stripe-js';
 const FormularioPago = () => {
 
-
+    const stripePromise = loadStripe('pk_test_51ROTKbC0ISZZKwGbP50NTgZ4WaZIlLBR28pk052WyyYxLEsPwahrBjdQXRFiRHmzXK7peeNG8f9GjhCP9Nd0WMrN00riz24rCi');
     const navigate = useNavigate();
     //para seleccion de comuna y region
     const [regiones, setRegiones] = useState([]);
@@ -34,11 +34,11 @@ const FormularioPago = () => {
     const Userid = parseInt(query.get('usuario')) || 0;
 
     //enviar datos a continuar
-    const handleContinuar = () => {
+    const handleContinuar = async () => {
         const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
         const totalConEnvio = parseInt(total) + costoEnvio;
- 
-        const query = new URLSearchParams({
+      
+        const datosPedido = {
           usuario: Userid,
           total: totalConEnvio,
           estado: 'ACEPTADO',
@@ -50,11 +50,23 @@ const FormularioPago = () => {
           rut_factura: form.rut_factura,
           razon_social: form.razon_social,
           id_sucursal: sucursalSeleccionada
-        }).toString();
+        };
       
-        navigate(`/pago-simulado?${query}`);
-    };
-
+        const res = await fetch('http://localhost:8000/api/stripe/crear-sesion/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datosPedido)
+        });
+      
+        const data = await res.json();
+      
+        if (data.id) {
+          const stripe = await stripePromise;
+          await stripe.redirectToCheckout({ sessionId: data.id });
+        } else {
+          alert(data.error || 'No se pudo iniciar el pago');
+        }
+      };
     
     // Cargar regiones
     useEffect(() => {
