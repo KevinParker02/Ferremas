@@ -38,5 +38,5 @@ urlpatterns = [
     path('webpay/iniciar/', iniciar_pago, name='iniciar_pago'),
     path('webpay/respuesta/', respuesta_pago, name='respuesta_pago'),
     path('stripe/crear-sesion/', crear_sesion_pago),
-    path('stripe/webhook/', stripe_webhook),
+    path('stripe/obtener-datos/<str:session_id>/', obtener_datos_pago),
 ]

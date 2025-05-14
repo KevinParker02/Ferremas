@@ -8,6 +8,7 @@ import Registro from './estructura/registro/Registro';
 import Recuperar from './estructura/recuperar/Recuperar';
 import Restablecer from './estructura/reset_password/reset_password';
 import FormularioPago from './estructura/pago/FormularioPago';
+import PagoExitoso from './estructura/pago/PagoExitoso';
 // Nuevas vistas
 import MiCuenta from './estructura/miCuenta/MiCuenta';
 import Vendedor from './estructura/vendedor/Vendedor';
@@ -32,6 +33,7 @@ function App() {
 
         {/* definir estas rutas mas tarde */}
         <Route path="/formulario-pago" element={<FormularioPago />}/>
+        <Route path="/pago-exitoso" element={<PagoExitoso />} />
         {/* rutas protegidas */}
         <Route path="/catalogo"
           element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}

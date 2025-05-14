@@ -636,4 +636,11 @@ def crear_sesion_pago(request):
         return Response({'id': session.id})
     except Exception as e:
         return Response({'error': str(e)}, status=400)
-
+#obtener datos de sesion
+@api_view(['GET'])
+def obtener_datos_pago(request, session_id):
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        return Response(session.get('metadata', {}))
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
