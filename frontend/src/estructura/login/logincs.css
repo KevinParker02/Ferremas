@@ -1,31 +1,145 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
-.box-gen{
+
+.login-background {
+    background-image: url('../../img/fondo.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh; /* Usar min-height para que ocupe al menos toda la pantalla */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-
-.box-top{
-    margin-top: 5%;
+.box-top {
+    /* margin-top: 5%; */
     font-family: "Anton", sans-serif;
+    text-align: center; /* Centramos el texto del header */
+    margin-bottom: 20px;
 }
 
-
-.box-mid{
-}
-
-
-.box-bottom{
-}
-
-.titulo{
+.titulo {
     font-family: "Anton", sans-serif;
-    font-size: 90px;
+    font-size: 70px;
+    /* margin-bottom: 10px;  */
 }
 
+.col-md-4 {
+    display: flex; /* Añadimos flex para centrar el contenido dentro */
+    justify-content: center; /* Centrado horizontal */
+}
+
+.card {
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative; /* Añadido para permitir el posicionamiento absoluto */
+    height: 550px;
+}
+
+.profile-container {
+    text-align: center;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* Esto permite que el logo y el título estén posicionados dentro del card */
+    left: 50%; /* Posicionamos horizontalmente en la mitad */
+    transform: translate(-50%, -50%); /* Centramos perfectamente */
+}
+
+.profile-container img {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    margin-top: 15px;
+    margin-bottom: 15px; /* Espacio entre los inputs */
+}
+
+.mb-3{
+    transform: translate(0%, 120%); /* Alineamos el contenedor de los inputs */
+}
+
+.d-grid{
+    transform: translate(0%, 65%); /* Alineamos el contenedor de los inputs */
+
+}
+
+.mb-3 label {
+    display: block; /* Asegura que el label ocupe toda la línea */
+    color: #333; /* Un color de texto más legible */
+    font-weight: bold; /* Resaltamos un poco el label */
+}
+
+.alert {
+    margin-bottom: 15px; /* Espacio debajo del mensaje de error */
+    border-radius: 8px;
+}
+
+.btn-inicio {
+    background-color: #793E1C;
+    color: white;
+    padding: 12px 20px; /* Aumentamos un poco el padding del botón */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%; /* Los botones ocupan todo el ancho de su contenedor */
+}
+
+.btn-inicio:hover {
+    background-color: #5d2f15;
+    color: white;
+    transform: scale(1.02); /* Reducimos un poco la escala del hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Reducimos un poco la sombra */
+}
+
+.btn-olvidar {
+    background-color: #6c757d; /* Un gris más estándar para botones secundarios */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+}
+
+.btn-olvidar:hover {
+    background-color: #5a6268;
+    color: white;
+    transform: scale(1.02);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-success {
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.text-danger {
+    display: block; /* Asegura que el mensaje de error ocupe toda la línea */
+    margin-top: 5px; /* Espacio encima del mensaje de error del input */
+    font-size: 0.9em; /* Un tamaño de fuente un poco más pequeño */
+}
 
 @media (max-width: 576px) {
-    /* Aquí van los estilos específicos para celular */
     .titulo {
-        font-size: 80px; /* Por ejemplo, hacer el título más pequeño */
-        text-align: center;
+        font-size: 60px; /* Reducimos aún más el título en pantallas pequeñas */
+    }
+
+    .card {
+        padding: 20px; /* Reducimos el padding del card en pantallas pequeñas */
+    }
+
+    .profile-container img {
+        width: 120px;
+        height: 120px;
     }
 }
