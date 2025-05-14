@@ -1,130 +1,171 @@
-  import React, { useState, useEffect } from 'react';
-  import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Mail, User, Lock, MapPin, Phone, Home, Map, Fingerprint     } from 'lucide-react';
+import logoImagen from '../../img/logo.png';
+import './registro.css';
 
-  const Registro = () => {
-    const navigate = useNavigate();
+const Registro = () => {
+  const navigate = useNavigate();
 
-    const [sucursales, setSucursales] = useState([]);
-    const [id_sucursal, setSucursal]   = useState('');
+  const [sucursales, setSucursales] = useState([]);
+  const [id_sucursal, setSucursal] = useState('');
 
-    const [comunas, setComunas] = useState([]);
+  const [comunas, setComunas] = useState([]);
+  const [nombre_user, setNombre] = useState('');
+  const [apellido_user, setApellido] = useState('');
+  const [rut_user, setRut] = useState('');
+  const [dv_user, setDv] = useState('');
+  const [celular_user, setCelular] = useState('');
+  const [password, setPassword] = useState('');
+  const [email_user, setEmail] = useState('');
+  const [direccion_user, setDireccion] = useState('');
+  const [comuna_id, setComuna] = useState('');
+  const [regiones, setRegiones] = useState([]);
+  const [region_id, setRegion] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-    const [nombre_user, setNombre] = useState('');
-    const [apellido_user, setApellido] = useState('');
-    const [rut_user, setRut] = useState('');
-    const [dv_user, setDv] = useState('');
-    const [celular_user, setCelular] = useState('');
-    const [password, setPassword] = useState('');
-    const [email_user, setEmail] = useState('');
-    const [direccion_user, setDireccion] = useState('');
-    const [comuna_id, setComuna] = useState('');
-    const [regiones, setRegiones] = useState([]);
-    const [region_id, setRegion] = useState('');
+  useEffect(() => {
+    fetch('http://localhost:8000/api/comunas/')
+      .then(res => res.json())
+      .then(data => setComunas(data));
+  }, []);
 
+  useEffect(() => {
+    fetch('http://localhost:8000/api/regiones/')
+      .then(res => res.json())
+      .then(data => setRegiones(data));
+  }, []);
 
-    useEffect(() => {
-      fetch('http://localhost:8000/api/comunas/')
-        .then(res => res.json())
-        .then(data => setComunas(data));
-    }, []);
-
-    useEffect(() => {
-      fetch('http://localhost:8000/api/regiones/')
-        .then(res => res.json())
-        .then(data => setRegiones(data));
-    }, []);
-
-    useEffect(() => {
+  useEffect(() => {
     fetch('http://localhost:8000/api/sucursales/')
       .then(res => res.json())
       .then(data => setSucursales(data));
   }, []);
 
-    const comunasFiltradas = comunas.filter(c => c.region_id === parseInt(region_id));
+  const comunasFiltradas = comunas.filter(c => c.region_id === parseInt(region_id));
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-    const handleRegister = async (e) => {
-      e.preventDefault();
+    if (password.length < 6 || password.length > 8) {
+      setMensaje('La contraseña debe tener entre 6 y 8 caracteres');
+      return;
+    }
 
-      const data = {
-        nombre_user,
-        apellido_user,
-        rut_user,
-        dv_user: dv_user === 'K' ? 0 : parseInt(dv_user),
-        celular_user,
-        password,
-        email_user,
-        direccion_user,
-        rol_id: 51,
-        comuna_id,
-        id_sucursal: parseInt(id_sucursal),
-      };
+    if (!/^[^\s@]+@[^\s@]+\.(com|cl)$/.test(email_user)) {
+      setMensaje('Ingrese un correo válido');
+      return;
+    }
 
-      try {
-        const res = await fetch('http://localhost:8000/api/register/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const resData = await res.json();
-        if (res.ok) {
-          alert('Registro exitoso');
-          navigate('/');
-        } else {
-          alert(resData.error || 'Error al registrar');
-        }
-      } catch {
-        alert('Error de conexión');
-      }
+    setIsLoading(true);
+    
+    const data = {
+      nombre_user,
+      apellido_user,
+      rut_user,
+      dv_user: dv_user === 'K' ? 0 : parseInt(dv_user),
+      celular_user,
+      password,
+      email_user,
+      direccion_user,
+      rol_id: 51,
+      comuna_id,
+      id_sucursal: parseInt(id_sucursal),
     };
 
-    return (
-      <form onSubmit={handleRegister} className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
-        <h2 className="mb-4">Registro de Usuario</h2>
-        <div className="col-md-6 card p-4 shadow">
+    try {
+      const res = await fetch('http://localhost:8000/api/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
 
-          {/* Sector nombre 1 */}
-          <div className="mb-3 row">
-            <div className="col">
-              <label>Nombre</label>
-              <input 
-                className="form-control"
-                value={nombre_user}
-                maxLength={60}
-                onChange={e => {
-                  const value = e.target.value;
-                  if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
-                    setNombre(value);
-                  }
-                }}
-                required
-              />
+      const resData = await res.json();
+      if (res.ok) {
+        setMensaje('Registro exitoso. Redirigiendo...');
+        setTimeout(() => navigate('/login'), 2000);
+      } else {
+        setMensaje(resData.error || 'Error al registrar');
+      }
+    } catch {
+      setMensaje('Error de conexión con el servidor');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="registro-container">
+      <div className="registro-card">
+        {/* Encabezado con logo */}
+        <div className="registro-header">
+          <img 
+            src={logoImagen} 
+            alt="Logo de la empresa" 
+            className="registro-logo" 
+          />
+          <h2 className="registro-title">Registro de Usuario</h2>
+          <p className="registro-subtitle">Complete todos los campos para crear su cuenta</p>
+        </div>
+
+        {/* Formulario */}
+        <form onSubmit={handleRegister} className="registro-form">
+          {/* Mensajes */}
+          {mensaje && (
+            <div className={`registro-message ${mensaje.includes('exitoso') ? 'success' : 'error'}`}>
+              {mensaje}
             </div>
-            {/* Sector nombre 2 */}
-            <div className="col">
-              <label>Apellido</label>
-              <input 
-                className="form-control"
-                value={apellido_user}
-                maxLength={60}
-                onChange={e => {
-                  const value = e.target.value;
-                  if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
-                    setApellido(value);
-                  }
-                }}
-                required
-              />
+          )}
+
+          {/* Nombre y Apellido */}
+          <div className="form-row">
+            <div className="form-group">
+              <div className="input-field">
+                <User className="input-icon" />
+                <input
+                  className="form-input"
+                  placeholder="Nombre"
+                  value={nombre_user}
+                  maxLength={60}
+                  onChange={e => {
+                    const value = e.target.value;
+                    if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                      setNombre(value);
+                    }
+                  }}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="input-field">
+                <User className="input-icon" />
+                <input
+                  className="form-input"
+                  placeholder="Apellido"
+                  value={apellido_user}
+                  maxLength={60}
+                  onChange={e => {
+                    const value = e.target.value;
+                    if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                      setApellido(value);
+                    }
+                  }}
+                  required
+                />
+              </div>
             </div>
           </div>
 
-          {/* Zona Ruts */}
-          <div className="mb-3">
-            <label>RUT</label>
-            <div className="d-flex align-items-center">
-              <input 
-                className="form-control me-2"
+          {/* RUT */}
+          <div className="form-group">
+            <label className="form-label">RUT</label>
+            <div className="input-field-rut">
+              <Fingerprint   className="input-icon" />
+              <input
+                className="form-input rut-input"
                 type="text"
                 placeholder="Ej: 21202977"
                 value={rut_user}
@@ -136,9 +177,9 @@
                 }}
                 required
               />
-              <span>-</span>
-              <input 
-                className="form-control ms-2"
+              <span className="rut-separator">-</span>
+              <input
+                className=" dv-input"
                 placeholder="K"
                 value={dv_user}
                 onChange={e => {
@@ -148,138 +189,171 @@
                   }
                 }}
                 required
-                style={{ width: '60px' }}
               />
             </div>
           </div>
 
-          {/* va el celular */}
-          <div className="mb-3">
-            <label>Celular</label>
-            <input 
-              className="form-control"
-              maxLength={8}
-              value={celular_user}
-              onChange={e => {
-                const value = e.target.value;
-                if (/^\d*$/.test(value)) {
-                  setCelular(value);
-                }
-              }}
-              required
-            />
-          </div>
-          
-          {/* Aquí el correo */}
-          <div className="mb-3">
-            <label>Correo</label>
-            <input 
-              className="form-control"
-              type="email"
-              maxLength={100}
-              value={email_user}
-              onChange={e => setEmail(e.target.value)}
-              onBlur={() => {
-                const regex = /^[^\s@]+@[^\s@]+\.(com|cl)$/;
-                if (!regex.test(email_user)) {
-                }
-              }}
-              required
-            />
-            {email_user.length > 0 && !/^[^\s@]+@[^\s@]+\.(com|cl)$/.test(email_user) && (
-              <small className="text-danger">Ingrese un correo válido</small>
-            )}
+          {/* Celular */}
+          <div className="form-group">
+            <div className="input-field">
+              <Phone className="input-icon" />
+              <input
+                className="form-input"
+                placeholder="Celular"
+                maxLength={8}
+                value={celular_user}
+                onChange={e => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setCelular(value);
+                  }
+                }}
+                required
+              />
+            </div>
           </div>
 
-          {/* aquí va la dirección */}
-          <div className="mb-3">
-            <label>Dirección</label>
-            <input 
-              className="form-control"
-              maxLength={100}
-              placeholder="Ej: Avenida Siempre Viva 123"
-              value={direccion_user}
-              onChange={e => {
-                const value = e.target.value;
-                if (/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
-                  setDireccion(value);
-                }
-              }}
-              required
-            />
-          </div>
-          
-          {/* aquí pones tu contra */}
-          <div className="mb-3">
-            <label>Contraseña</label>
-            <input 
-              className="form-control"
-              type="password"
-              placeholder="6 a 8 caracteres"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              minLength={6}
-              maxLength={8}
-              required
-            />
-            {password.length > 0 && (password.length < 6 || password.length > 8) && (
-              <small className="text-danger">La contraseña debe tener entre 6 y 8 caracteres</small>
-            )}
+          {/* Email */}
+          <div className="form-group">
+            <div className="input-field">
+              <Mail className="input-icon" />
+              <input
+                className="form-input"
+                placeholder="Correo electrónico"
+                type="email"
+                maxLength={100}
+                value={email_user}
+                onChange={e => setEmail(e.target.value)}
+                onBlur={() => {
+                  if (email_user && !/^[^\s@]+@[^\s@]+\.(com|cl)$/.test(email_user)) {
+                    setMensaje('Ingrese un correo válido');
+                  }
+                }}
+                required
+              />
+            </div>
           </div>
 
-          {/* selector de regiones */}
-          <div className="mb-3 row">
-            <div className="col">
-              <label>Región</label>
-              <select className="form-control" value={region_id} onChange={e => setRegion(e.target.value)} required>
-                <option value="">Seleccione una región</option>
-                {regiones.map(r => (
-                  <option key={r.id_region} value={r.id_region}>
-                    {r.nom_region}
+          {/* Dirección */}
+          <div className="form-group">
+            <div className="input-field">
+              <Home className="input-icon" />
+              <input
+                className="form-input"
+                placeholder="Dirección"
+                maxLength={100}
+                value={direccion_user}
+                onChange={e => {
+                  const value = e.target.value;
+                  if (/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                    setDireccion(value);
+                  }
+                }}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Contraseña */}
+          <div className="form-group">
+            <div className="input-field">
+              <Lock className="input-icon" />
+              <input
+                className="form-input"
+                placeholder="Contraseña (6-8 caracteres)"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                minLength={6}
+                maxLength={8}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Región y Comuna */}
+          <div className="form-row">
+            <div className="form-group">
+              <div className="input-field">
+                <Map className="input-icon" />
+                <select 
+                  className="form-input select-input" 
+                  value={region_id} 
+                  onChange={e => setRegion(e.target.value)} 
+                  required
+                >
+                  <option value="">Seleccione región</option>
+                  {regiones.map(r => (
+                    <option key={r.id_region} value={r.id_region}>
+                      {r.nom_region}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="input-field">
+                <MapPin className="input-icon" />
+                <select 
+                  className="form-input select-input" 
+                  value={comuna_id} 
+                  onChange={e => setComuna(e.target.value)} 
+                  disabled={!region_id}
+                  required
+                >
+                  <option value="">Seleccione comuna</option>
+                  {comunasFiltradas.map(c => (
+                    <option key={c.id_comuna} value={c.id_comuna}>
+                      {c.nom_comuna}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Sucursal */}
+          <div className="form-group">
+            <div className="input-field">
+              <MapPin className="input-icon" />
+              <select
+                className="form-input select-input"
+                value={id_sucursal}
+                onChange={e => setSucursal(e.target.value)}
+                required
+              >
+                <option value="">Seleccione sucursal</option>
+                {sucursales.map(s => (
+                  <option key={s.id_sucursal} value={s.id_sucursal}>
+                    {s.direccion_sucursal}
                   </option>
                 ))}
               </select>
             </div>
-
-            {/* selector de comunas */}
-            <div className="col">
-              <label>Comuna</label>
-              <select className="form-control" value={comuna_id} onChange={e => setComuna(e.target.value)} required>
-                <option value="">Seleccione una comuna</option>
-                {comunasFiltradas.map(c => (
-                  <option key={c.id_comuna} value={c.id_comuna}>
-                    {c.nom_comuna}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
-          {/* selector de sucursales */}
-          <div className="mb-3">
-            <label>Sucursal más cercana</label>
-            <select
-              className="form-control"
-              value={id_sucursal}
-              onChange={e => setSucursal(e.target.value)}
-              required
+          {/* Botones */}
+          <div className="action-buttons">
+            <button 
+              type="submit" 
+              className="btn-primary"
+              disabled={isLoading}
             >
-              <option value="">Seleccione una sucursal</option>
-              {sucursales.map(s => (
-                <option key={s.id_sucursal} value={s.id_sucursal}>
-                  {s.direccion_sucursal}
-                </option>
-              ))}
-            </select>
+              {isLoading ? 'Registrando...' : 'Registrarse'}
+            </button>
+            <button 
+              type="button" 
+              className="btn-link"
+              onClick={() => navigate('/login')}
+            >
+              ¿Ya tienes cuenta? Inicia sesión
+            </button>
           </div>
-          
-          {/* Sector botones */}
-          <button type="submit" className="btn btn-success w-100">Registrarse</button>
-          <button type="button" className="btn btn-danger mt-3 w-100" onClick={() => navigate('/login')}>Cancelar</button>
-        </div>
-      </form>
-    );
-  };
+        </form>
+      </div>
+    </div>
+  );
+};
 
-
-  export default Registro;
+export default Registro;
