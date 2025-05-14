@@ -472,6 +472,71 @@ def crear_producto(request):
         'id_prod': producto.id_prod
     }, status=status.HTTP_201_CREATED)
 
+## API PARA EL VENDEDOR
+## API PARA EL VENDEDOR
+@api_view(['GET'])
+def listar_pedidos(request):
+
+    qs = (
+        Pedido.objects
+        .select_related(
+            'usuario',
+            'tipo_despacho',
+            'estado',
+            'tipo_comprobante',
+            'sucursal'
+        )
+        .annotate(id_str=Cast('id_pedido', CharField()))
+    )
+
+
+    q = request.query_params.get('search', '').strip()
+    if q:
+        qs = qs.filter(id_str__icontains=q)
+
+    despacho = request.query_params.get('despacho')
+    if despacho in ('100','200'):
+        qs = qs.filter(tipo_despacho_id=int(despacho))
+
+    sucursal = request.query_params.get('sucursal')
+    if sucursal and sucursal.isdigit():
+        qs = qs.filter(sucursal_id=int(sucursal))
+
+    data = []
+    for p in qs.order_by('-fecha_pedido'):
+
+        data.append({
+            'id_pedido':      p.id_pedido,
+            'cliente':        f"{p.usuario.nombre_user} {p.usuario.apellido_user}",
+            'fecha_pedido':   p.fecha_pedido,
+            'fecha_entrega':  p.fecha_entrega_stm,
+            'despacho':       p.tipo_despacho.nom_despacho,
+            'sucursal':       p.sucursal.direccion_sucursal,
+            'comprobante':    p.tipo_comprobante.nom_tipo_comprobante,
+            'estado':         p.estado.nom_estado,
+            'total_pedido':   p.total_pedido,
+
+
+            'direc_desp':     p.direc_desp,
+            'comuna_dep':     p.id_comuna_dep,
+            'region_dep':     p.id_region_desp,
+        })
+    return Response(data)
+
+@api_view(['POST'])
+def actualizar_estado_pedido(request, id_pedido):
+
+    pedido = get_object_or_404(Pedido, pk=id_pedido)
+    nuevo = request.data.get('id_estado')
+
+    estado = get_object_or_404(EstadoPedido, pk=nuevo)
+    pedido.estado = estado
+    pedido.save()
+    return Response({
+        'id_pedido': pedido.id_pedido,
+        'id_estado': pedido.estado_id,
+        'nom_estado': estado.nom_estado
+    }, status=status.HTTP_200_OK)
 
 #pago
 @api_view(['POST'])

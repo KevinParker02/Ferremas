@@ -30,10 +30,13 @@ urlpatterns = [
     path('sucursales/', listar_sucursales),
     path('producto/crear/', crear_producto),
 
+    ##PARA VENDEDOR
+    path('pedidos/', listar_pedidos),
+    path('pedidos/<int:id_pedido>/estado/',actualizar_estado_pedido),
+
     ##PARA PAGO
     path('webpay/iniciar/', iniciar_pago, name='iniciar_pago'),
     path('webpay/respuesta/', respuesta_pago, name='respuesta_pago'),
     path('stripe/crear-sesion/', crear_sesion_pago),
-    ##PARA VENDEDOR
 
 ]
