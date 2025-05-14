@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom';
 
 const MenuService = {
+  
     obtenerMenuPorRol: (rolId) => {
       switch (rolId) {
         case 11: // Administrador
@@ -29,8 +31,8 @@ const MenuService = {
         case 51: // Cliente
           return [
             { nombre: 'Catálogo', ruta: '/catalogo' },
-            { nombre: 'Mis pedidos', ruta: '/pedidos' },
-            { nombre: 'Perfil', ruta: '/perfil' },
+            { nombre: 'Mis pedidos', ruta: '/MiCuenta' },
+            { nombre: 'Perfil', ruta: '/MiCuenta' },
           ];
         default:
           return [];
