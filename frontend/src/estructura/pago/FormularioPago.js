@@ -40,7 +40,10 @@ const FormularioPago = () => {
       let idSucursalFinal = '';
       let idComunaFinal = form.id_comuna_dep;
       let idRegionFinal = regionSeleccionada;
-  
+      if (form.tipo_despacho === '200'){
+        const idSucursalCliente=authguard.obtenerUsuario()?.id_sucursal;
+        idSucursalFinal = idSucursalCliente;
+      }
       if (form.tipo_despacho === '100') {
         const idSucursalCliente = authguard.obtenerUsuario()?.id_sucursal;
         idSucursalFinal = idSucursalCliente;
@@ -51,6 +54,7 @@ const FormularioPago = () => {
             idComunaFinal = sucursal.id_comuna;
             idRegionFinal = sucursal.id_region;
         }
+        
     }
   
       const datosPedido = {

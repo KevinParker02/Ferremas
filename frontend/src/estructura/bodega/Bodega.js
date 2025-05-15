@@ -244,7 +244,6 @@ const marcarCompletado = async id_pedido => {
           <div className="mt-3 d-flex gap-2">
             <button className="btn btn-sm btn-primary" onClick={() => cambiarEstado(pedidoSel.id_pedido, 6)}>Marcar Preparación</button>
 
-            {/* Si está en Preparación (6), permitimos pasarlo a Completado (7) */}
             {pedidoSel.id_estado === 6 && (
               <button
                 className="btn btn-sm btn-success"
