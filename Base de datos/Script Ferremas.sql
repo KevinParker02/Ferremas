@@ -294,6 +294,26 @@ CREATE TABLE IF NOT EXISTS CARRITO (
     ON UPDATE NO ACTION
 );
 
+-- TRIGGERS
+DELIMITER $$
+CREATE TRIGGER trg_insertar_det_pedido
+AFTER INSERT ON PEDIDO
+FOR EACH ROW
+BEGIN
+  INSERT INTO DETALLE_PEDIDO (
+    id_pedido,
+    id_prod,
+    cantidad_producto
+  )
+  SELECT
+    NEW.id_pedido,
+    c.id_prod,
+    c.cantidad_producto
+  FROM CARRITO AS c
+  WHERE c.Id_user = NEW.Id_user;
+END$$
+DELIMITER ;
+
 INSERT INTO ROL_USER VALUES (11, 'Administrador');
 INSERT INTO ROL_USER VALUES (21, 'Vendedor');
 INSERT INTO ROL_USER VALUES (31, 'Bodeguero');
@@ -395,6 +415,8 @@ INSERT INTO estado_pedido (id_estado, nom_estado) VALUES
 (6, 'Preparación'),
 (7, 'Completado');
 
+SELECT * FROM estado_pedido;
+
 USE FERREMAS;
 SELECT * FROM USUARIO;
 SELECT * FROM SUCURSAL;
@@ -408,3 +430,11 @@ select * FROM REGION;
 SELECT * FROM SUCURSAL;
 
 SELECT * FROM CARRITO;
+
+USE FERREMAS;
+SELECT * FROM USUARIO
+WHERE ID_SUCURSAL=3;
+
+USE FERREMAS;
+SELECT * FROM PEDIDO;
+SELECT * FROM DETALLE_PEDIDO;
