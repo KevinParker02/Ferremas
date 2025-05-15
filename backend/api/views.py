@@ -15,9 +15,10 @@ import random
 import string
 from django.core.mail import send_mail
 from .models import Usuario, Sucursal, Role
-from django.db.models import Q, CharField
+from django.db.models import Q, CharField, Sum, F
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Cast
+import base64
 
 import stripe
 stripe.api_key = 'sk_test_51ROTKbC0ISZZKwGbD573Oh5wcePqMB0VCyCo73LJhb2pS5kJ3c1iGB0j7bNum2RYUCTWSBOFiujiFXmzzBGKj8Jk00Dgk6Ue1k'
@@ -474,7 +475,6 @@ def crear_producto(request):
     }, status=status.HTTP_201_CREATED)
 
 ## API PARA EL VENDEDOR
-## API PARA EL VENDEDOR
 @api_view(['GET'])
 def listar_pedidos(request):
 
@@ -664,3 +664,58 @@ def crear_pedido(request):
         import traceback
         traceback.print_exc()
         return Response({'error': str(e)}, status=500)
+    
+## API PARA EL BODEGUERO
+@api_view(['GET'])
+def listar_pedidos_bodega(request):
+    sucursal = request.query_params.get('sucursal')
+    if not sucursal or not sucursal.isdigit():
+        return Response({"error": "Falta parámetro sucursal"}, status=400)
+    sucursal = int(sucursal)
+
+    qs = Pedido.objects.filter(
+        sucursal_id=sucursal,
+        estado_id__in=[5,6]
+    ).annotate(
+        id_str=Cast('id_pedido', CharField())
+    )
+
+    q = request.query_params.get('search', '').strip()
+    if q:
+        qs = qs.filter(id_str__icontains=q)
+
+    despacho = request.query_params.get('despacho')
+    if despacho in ('100','200'):
+        qs = qs.filter(tipo_despacho_id=int(despacho))
+
+    data = []
+    for p in qs.order_by('-fecha_pedido'):
+        detalles = DetallePedido.objects.filter(pedido=p).select_related('producto')
+        agrup = {}
+        for det in detalles:
+            prod = det.producto
+            key = prod.id_prod
+            if key not in agrup:
+                foto_b64 = ''
+                if prod.foto_prod:
+                    foto_b64 = 'data:image/jpeg;base64,' + base64.b64encode(prod.foto_prod).decode()
+                agrup[key] = {
+                    'id_prod': prod.id_prod,
+                    'nom_prod': prod.nom_prod,
+                    'marca_prod': prod.marca_prod,
+                    'codigo_fabricante': prod.codigo_fabricante,
+                    'precio_prod': prod.precio_prod,
+                    'cantidad': 0,
+                    'foto': foto_b64
+                }
+            agrup[key]['cantidad'] += det.cantidad_producto
+
+        data.append({
+            'id_pedido':     p.id_pedido,
+            'fecha_pedido':  p.fecha_pedido,
+            'fecha_entrega': p.fecha_entrega_stm,
+            'despacho':      p.tipo_despacho.nom_despacho,
+            'estado':        p.estado.nom_estado,
+            'productos':     list(agrup.values()),
+        })
+    return Response(data)
