@@ -16,6 +16,7 @@ import Contador from './estructura/contador/Contador';
 import Administrador from './estructura/administrador/Admin';
 import Bodega from './estructura/bodega/Bodega';
 import Error from './estructura/error/Error';
+import Productos from './estructura/productos/Productos'; 
 
 
 import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
@@ -46,6 +47,9 @@ function App() {
         />
         <Route path="/bodega"
           element={<ProtectedRoute roles={[31]}><Bodega/></ProtectedRoute>}
+        />
+        <Route path="/productos" 
+          element={<ProtectedRoute allowedRoles={[31]}><Productos /></ProtectedRoute>}
         />
         <Route path="/admin"
           element={<ProtectedRoute roles={[11]}><Administrador/></ProtectedRoute>}
