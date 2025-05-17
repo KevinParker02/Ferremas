@@ -29,6 +29,8 @@ urlpatterns = [
     path('categorias/', listar_categorias),
     path('sucursales/', listar_sucursales),
     path('producto/crear/', crear_producto),
+    path('bodega/pedidos/', listar_pedidos_bodega),
+    path('producto/<int:id_prod>/', detalle_producto),
 
     ##PARA VENDEDOR
     path('pedidos/', listar_pedidos),
@@ -39,7 +41,5 @@ urlpatterns = [
     path('webpay/respuesta/', respuesta_pago, name='respuesta_pago'),
     path('stripe/crear-sesion/', crear_sesion_pago),
     path('pedido/crear/', crear_pedido),
-
-    ##PARA BODEGA
-    path('bodega/pedidos/', listar_pedidos_bodega),
+    
 ]

@@ -110,9 +110,21 @@ const Catalogo = () => {
                   <strong>Stock:</strong> {prod.stock}<br />
                   <strong>Categoría:</strong> {prod.categoria__nom_cat_prod}
                 </p>
-                <button className="btn btn-primary w-100 mt-2" onClick={() => agregarAlCarrito(prod.id_prod)}>
-                  🛒 Agregar al carro
-                </button>
+                {prod.estado_prod ? (
+                  <button
+                    className="btn btn-primary w-100 mt-2"
+                    onClick={() => agregarAlCarrito(prod.id_prod)}
+                  >
+                    🛒 Agregar al carro
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-secondary w-100 mt-2"
+                    disabled
+                  >
+                    No disponible
+                  </button>
+                )}
               </div>
             </div>
           </div>

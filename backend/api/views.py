@@ -158,7 +158,7 @@ def listar_productos(request):
             'estado_prod': prod.estado_prod,
             'categoria__nom_cat_prod': prod.categoria.nom_cat_prod,
             'inventario__sucursal_id': prod.inventario.sucursal_id,
-            'foto_prod': foto_base64
+            'foto_prod': foto_base64,
         })
 
     return Response(producto_list)
@@ -719,3 +719,63 @@ def listar_pedidos_bodega(request):
             'productos':     list(agrup.values()),
         })
     return Response(data)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@parser_classes([MultiPartParser, FormParser])
+def detalle_producto(request, id_prod):
+    prod = get_object_or_404(Producto, pk=id_prod)
+
+    if request.method == 'GET':
+        return Response({
+            'id_prod': prod.id_prod,
+            'nom_prod': prod.nom_prod,
+            'marca_prod': prod.marca_prod,
+            'codigo_fabricante': prod.codigo_fabricante,
+            'precio_prod': prod.precio_prod,
+            'stock': prod.stock,
+            'estado_prod': prod.estado_prod,
+            'id_categoria': prod.categoria_id,
+            'foto_prod': prod.foto_prod and base64.b64encode(prod.foto_prod).decode('utf-8'),
+        })
+
+    if request.method == 'DELETE':
+        prod.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # PUT → actualización parcial
+    data = request.data
+
+    # Campos texto y numéricos básicos
+    for field in ['nom_prod', 'marca_prod']:
+        val = data.get(field)
+        if val not in (None, '', 'undefined'):
+            setattr(prod, field, val)
+
+    # Campos numéricos
+    for field in ['precio_prod', 'stock', 'codigo_fabricante']:
+        val = data.get(field)
+        if val not in (None, '', 'undefined'):
+            try:
+                setattr(prod, field, int(val))
+            except ValueError:
+                pass
+
+    # Estado (booleano)
+    if 'estado_prod' in data:
+        prod.estado_prod = str(data.get('estado_prod')).lower() in ['true', '1']
+
+    # Categoría
+    cat_id = data.get('id_categoria')
+    if cat_id not in (None, '', 'undefined'):
+        try:
+            prod.categoria = CategoriaProducto.objects.get(pk=int(cat_id))
+        except (ValueError, CategoriaProducto.DoesNotExist):
+            pass
+
+    # Imagen
+    if 'foto_prod' in request.FILES:
+        prod.foto_prod = request.FILES['foto_prod'].read()
+
+    prod.save()
+    return Response({'mensaje': 'Producto actualizado'}, status=status.HTTP_200_OK)
+
