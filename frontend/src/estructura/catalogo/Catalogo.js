@@ -1,37 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Menu, X, ShoppingCart, LogOut } from 'react-feather';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import MenuService from '../../Servicios/Menu/MenuService';
-import './Catalogocs.css';
 import CarritoService from '../../Servicios/Carrito/CarritoService';
 import Carrito from '../../Servicios/Carrito/Carrito';
+import './Catalogocs.css';
+import logoFerremas from '../../img/logo-ferremas.png'; // Ajusta la ruta según tu estructura
+
 const Catalogo = () => {
-  // Estado y navegación
   const navigate = useNavigate();
   const usuario = authguard.obtenerUsuario();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [productos, setProductos] = useState([]);
-  //estado carrito
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
-  const toggleCarrito = () => setMostrarCarrito(!mostrarCarrito);
   const [recargarCarrito, setRecargarCarrito] = useState(false);
-  //agregar al carritou
-  const agregarAlCarrito = async (id_producto) => {
-    await CarritoService.agregarAlCarritoConFeedback(
-      usuario.id_user,
-      id_producto,
-      1,
-      () => setRecargarCarrito(prev => !prev) 
-    );
-  };
-  // Menú según rol
-  const menuItems = MenuService.obtenerMenuPorRol(usuario?.rol?.id);
+  const [cargando, setCargando] = useState(true);
+  const [nombreSucursal, setNombreSucursal] = useState('');
+
+  const toggleCarrito = () => setMostrarCarrito(!mostrarCarrito);
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
 
-  // Obtener productos
+  const agregarAlCarrito = async (id_producto) => {
+    // Deshabilitar el botón durante la operación
+    const boton = document.activeElement;
+    if (boton) boton.disabled = true;
+
+    try {
+      await CarritoService.agregarAlCarritoConFeedback(
+        usuario.id_user,
+        id_producto,
+        1,
+        () => {
+          // Usar función de actualización que no dependa del valor previo
+          setRecargarCarrito(prev => !prev);
+        }
+      );
+    } catch (error) {
+      console.error('Error al agregar al carrito:', error);
+    } finally {
+      if (boton) boton.disabled = false;
+    }
+  };
+
+  // Obtener menú según el rol
+  const menuItems = MenuService.obtenerMenuPorRol(usuario?.rol?.id);
+
+  // Cargar nombre de la sucursal
+  useEffect(() => {
+    const cargarSucursal = async () => {
+      if (usuario?.id_sucursal) {
+        try {
+          const response = await fetch(
+            `http://localhost:8000/api/sucursales/${usuario.id_sucursal}`
+          );
+          const data = await response.json();
+          setNombreSucursal(data.nombre_sucursal || `Sucursal ${usuario.id_sucursal}`);
+        } catch (error) {
+          console.error('Error al cargar sucursal:', error);
+          setNombreSucursal(`Sucursal ${usuario.id_sucursal}`);
+        }
+      }
+    };
+    cargarSucursal();
+  }, [usuario?.id_sucursal]);
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
+        setCargando(true);
         const favSucursal = usuario.id_sucursal;
         const response = await fetch(
           `http://localhost:8000/api/productos/?sucursal=${favSucursal}`
@@ -40,6 +77,8 @@ const Catalogo = () => {
         setProductos(data);
       } catch (err) {
         console.error('Error al cargar productos', err);
+      } finally {
+        setCargando(false);
       }
     };
     fetchProductos();
@@ -50,96 +89,136 @@ const Catalogo = () => {
 
       {/* Menú lateral */}
       <div className={`menu-lateral ${menuAbierto ? 'abierto' : ''}`}>
-        <h5 className="menu-header">{usuario?.rol?.nombre || 'Menú'}</h5>
-        <button className="btn btn-sm btn-outline-secondary mb-3" onClick={toggleMenu}>
-          ✕ Cerrar menú
-        </button>
+        <div className="menu-header">
+          <h5>{usuario?.rol?.nombre || 'Menú'}</h5>
+          <button className="btn-cerrar-menu" onClick={toggleMenu}>
+            <X size={20} />
+          </button>
+        </div>
         <ul className="menu-items">
           {menuItems.map((item, index) => (
             <li key={index}>
-              <a href={item.ruta} className="menu-link">{item.nombre}</a>
+              <a href={item.ruta} className="menu-link">
+                {item.icono && <span className="menu-icon">{item.icono}</span>}
+                {item.nombre}
+              </a>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Contenido principal */}
-      <div className="contenido">
-        <button className="btn btn-secondary mt-3 me-2" onClick={toggleMenu}>☰ Menú</button>
-        <button className="btn btn-danger mt-3" onClick={() => {
-          authguard.cerrarSesion();
-          navigate('/login');
-        }}>
-          Cerrar sesión
-        </button>
-        <button className="btn btn-success mt-3 ms-2" onClick={toggleCarrito}>
-          🛒 {mostrarCarrito ? 'Ocultar' : 'Ver'} carrito
-        </button>
-
-        <h1 className="mt-4">Catálogo de Productos</h1>
-        <p>Aquí se mostrarán los productos disponibles en Ferremas.</p>
-
-        {/* Datos del usuario  (esto es temporal) */}
-        {usuario && (
-          <div className="alert alert-info mt-3">
-            <strong>Bienvenido:</strong> {usuario.nombre_user} ({usuario.email_user})<br />
-            <strong>Rol:</strong> {usuario.rol?.nombre} (ID: {usuario.rol?.id})
+      <div className="contenido-principal">
+        <header className="catalogo-header">
+          <div className="header-left">
+            <button className="btn-menu" onClick={toggleMenu}>
+              <Menu size={20} />
+            </button>
+            <img 
+              src={logoFerremas} 
+              alt="Logo Ferremas" 
+              className="header-logo"
+            />
           </div>
-        )}
+          <div className="header-actions">
+            <button className="btn-carrito" onClick={toggleCarrito}>
+              <ShoppingCart size={18} />
+              <span>{mostrarCarrito ? 'Ocultar' : 'Ver'} carrito</span>
+            </button>
+            <button className="btn-logout" onClick={() => {
+              authguard.cerrarSesion();
+              navigate('/login');
+            }}>
+              <LogOut size={18} />
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+        </header>
 
-        {/* Tarjetas de productos */}
-        <div className="row mt-4">
-        {productos.map((prod) => (
-          <div className="col-md-4 mb-4" key={prod.id_prod}>
-            <div className="card h-100 shadow">
-              <img
-                src={
-                  typeof prod.foto_prod === 'string' && prod.foto_prod.trim() !== '' && prod.foto_prod !== 'null'
-                    ? `data:image/jpeg;base64,${prod.foto_prod}`
-                    : 'https://placehold.co/600x400?text=Sin+Imagen'
-                }
-                alt="Producto"
-                className="card-img-top"
-                style={{ maxHeight: '200px', objectFit: 'cover' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{prod.nom_prod}</h5>
-                <p className="card-text">
-                  <strong>Marca:</strong> {prod.marca_prod}<br />
-                  <strong>Precio:</strong> ${prod.precio_prod}<br />
-                  <strong>Stock:</strong> {prod.stock}<br />
-                  <strong>Categoría:</strong> {prod.categoria__nom_cat_prod}
-                </p>
-                {prod.estado_prod ? (
-                  <button
-                    className="btn btn-primary w-100 mt-2"
-                    onClick={() => agregarAlCarrito(prod.id_prod)}
-                  >
-                    🛒 Agregar al carro
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-secondary w-100 mt-2"
-                    disabled
-                  >
-                    No disponible
-                  </button>
-                )}
-              </div>
+        <main className="catalogo-main">
+          <div className="usuario-info">
+            <h2>Bienvenido, {usuario.nombre_user}</h2>
+            <p>Rol: {usuario.rol?.nombre}</p>
+            <p>Sucursal: {nombreSucursal || 'Cargando...'}</p>
+          </div>
+          
+          <h1 className="titulo-catalogo">Catálogo de Productos</h1>
+          
+          {cargando ? (
+            <div className="cargando-productos">
+              <div className="spinner"></div>
+              <p>Cargando productos...</p>
             </div>
-          </div>
-        ))}
-        </div>
+          ) : (
+            <div className="grid-productos">
+              {productos.map((prod) => (
+                <div className="card-producto" key={prod.id_prod}>
+                  <div className="producto-imagen-container">
+                    <img
+                      src={
+                        typeof prod.foto_prod === 'string' && 
+                        prod.foto_prod.trim() !== '' && 
+                        prod.foto_prod !== 'null'
+                          ? `data:image/jpeg;base64,${prod.foto_prod}`
+                          : 'https://placehold.co/600x400?text=Sin+Imagen'
+                      }
+                      alt={prod.nom_prod}
+                      className="producto-imagen"
+                    />
+                  </div>
+                  
+                  <div className="producto-info">
+                    {/* Marca arriba */}
+                    <div className="producto-marca">
+                      {prod.marca_prod || 'Marca no especificada'}
+                    </div>
+                    
+                    {/* Nombre del producto */}
+                    <h3 className="producto-nombre">{prod.nom_prod}</h3>
+                    
+                    {/* Precio y stock en misma línea */}
+                    <div className="producto-precio-stock">
+                      <span className="producto-precio">
+                        ${prod.precio_prod.toLocaleString()}
+                      </span>
+                      <span className={`producto-stock ${prod.stock > 0 ? 'disponible' : 'agotado'}`}>
+                        {prod.stock > 0 ? `${prod.stock} disponibles` : 'Agotado'}
+                      </span>
+                    </div>
+                    
+                    {/* Categoría */}
+                    <div className="producto-categoria">
+                      {prod.categoria__nom_cat_prod || 'Sin categoría'}
+                    </div>
+                    
+                    {/* Botón de acción */}
+                    <button 
+                      className="btn-agregar-carrito" 
+                      onClick={() => agregarAlCarrito(prod.id_prod)}
+                      disabled={prod.stock <= 0 || !prod.estado_prod}
+                    >
+                      <ShoppingCart size={16} />
+                      {prod.stock <= 0 ? 'Sin stock' : 'Agregar al carrito'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
-      {/* Aqui se ve el carrito */}
-      <div className={`carrito-sidebar ${mostrarCarrito ? 'abierto' : ''} w-full max-w-full`}>
-        <button className="btn btn-sm btn-outline-secondary mb-3" onClick={toggleCarrito}>
-          ✕ Cerrar carrito
-        </button>
+
+      {/* Carrito lateral */}
+      <div className={`carrito-sidebar ${mostrarCarrito ? 'abierto' : ''}`}>
+        <div className="carrito-header">
+          <h3>Tu Carrito</h3>
+          <button className="btn-cerrar-carrito" onClick={toggleCarrito}>
+            <X size={20} />
+          </button>
+        </div>
         <Carrito idUsuario={usuario.id_user} recargar={recargarCarrito} />
       </div>
     </div>
-    
   );
 };
 

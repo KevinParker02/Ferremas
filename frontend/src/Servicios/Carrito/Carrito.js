@@ -39,7 +39,7 @@ const Carrito = ({ idUsuario, recargar  }) => {
 
   return (
   <div className="w-full px-4">
-      <h2 className="text-xl font-bold mb-4">🛒 Carrito</h2>
+      <h2 className="text-xl font-bold mt-4 mb-4">🛒 Carrito</h2>
       {carrito.length === 0 ? (
         <p className="text-gray-500">Tu carrito está vacío.</p>
       ) : (
@@ -65,9 +65,9 @@ const Carrito = ({ idUsuario, recargar  }) => {
           </button>
         </div>
       ))}
-          <div className="mt-4 font-bold text-right">Total: ${total}</div>
+          <div className="mt-4 mb-4 font-bold text-right">Total: ${total}</div>
           <button
-            className="btn btn-danger btn-block fw-bold"
+            className="btn btn-danger btn-block fw-bold mb-2"
             onClick={vaciarTodo}
           >
             🗑 Vaciar carrito

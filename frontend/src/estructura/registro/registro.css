@@ -61,7 +61,7 @@
 }
 
 /* Formulario */
-.registro-form {
+.registro-formulario {
   margin-top: 20px;
 }
 
@@ -71,11 +71,11 @@
   margin-bottom: 15px;
 }
 
-.form-row .form-group {
+.form-row .form-grupo {
   flex: 1;
 }
 
-.form-group {
+.form-grupo {
   margin-bottom: 20px;
   text-align: left;
 }

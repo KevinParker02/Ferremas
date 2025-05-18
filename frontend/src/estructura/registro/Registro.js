@@ -110,7 +110,7 @@ const Registro = () => {
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleRegister} className="registro-form">
+        <form onSubmit={handleRegister} className="registro-formulario">
           {/* Mensajes */}
           {mensaje && (
             <div className={`registro-message ${mensaje.includes('exitoso') ? 'success' : 'error'}`}>
@@ -120,7 +120,7 @@ const Registro = () => {
 
           {/* Nombre y Apellido */}
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-grupo">
               <div className="input-field">
                 <User className="input-icon" />
                 <input
@@ -139,7 +139,7 @@ const Registro = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="form-grupo">
               <div className="input-field">
                 <User className="input-icon" />
                 <input
@@ -160,7 +160,7 @@ const Registro = () => {
           </div>
 
           {/* RUT */}
-          <div className="form-group">
+          <div className="form-grupo">
             <label className="form-label">RUT</label>
             <div className="input-field-rut">
               <Fingerprint   className="input-icon" />
@@ -194,7 +194,7 @@ const Registro = () => {
           </div>
 
           {/* Celular */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Phone className="input-icon" />
               <input
@@ -214,7 +214,7 @@ const Registro = () => {
           </div>
 
           {/* Email */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Mail className="input-icon" />
               <input
@@ -235,7 +235,7 @@ const Registro = () => {
           </div>
 
           {/* Dirección */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Home className="input-icon" />
               <input
@@ -255,7 +255,7 @@ const Registro = () => {
           </div>
 
           {/* Contraseña */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Lock className="input-icon" />
               <input
@@ -273,7 +273,7 @@ const Registro = () => {
 
           {/* Región y Comuna */}
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-grupo">
               <div className="input-field">
                 <Map className="input-icon" />
                 <select 
@@ -292,7 +292,7 @@ const Registro = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="form-grupo">
               <div className="input-field">
                 <MapPin className="input-icon" />
                 <select 
@@ -314,7 +314,7 @@ const Registro = () => {
           </div>
 
           {/* Sucursal */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <MapPin className="input-icon" />
               <select

@@ -9,7 +9,6 @@
     --white: #ffffff;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
-
 /* Estilos base */
 * {
     box-sizing: border-box;
@@ -22,7 +21,7 @@ body {
 }
 
 /* Contenedor principal */
-.login-container {
+.login-contenedor {
     background-image: url('../../img/fondo.png');
     background-size: cover;
     background-position: center;
@@ -34,18 +33,18 @@ body {
 }
 
 /* Tarjeta de login */
-.login-card {
+.login-carta {
     background-color: var(--white);
     border-radius: 10px;
     box-shadow: var(--shadow);
-    padding: 40px;
+    padding: 40px 40px 20px 40px;
     width: 450px;
     max-width: 600px;
     text-align: center;
 }
 
 /* Encabezado */
-.login-header {
+.login-cabeza {
     margin-bottom: 30px;
 }
 
@@ -58,7 +57,7 @@ body {
     margin-bottom: 20px;
 }
 
-.login-title {
+.login-titulo {
     color: var(--text-color);
     font-size: 25px;
     font-weight: 600;
@@ -66,7 +65,7 @@ body {
 }
 
 /* Alertas */
-.login-alert {
+.login-alerta {
     background-color: #d1ecf1;
     color: #0c5460;
     padding: 10px 15px;
@@ -76,19 +75,19 @@ body {
 }
 
 /* Grupos de formulario */
-.form-group {
+.form-grupo {
     margin-bottom: 25px;
     text-align: left;
 }
 
 /* Campos de entrada */
-.input-field {
+.input-fieldd {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.input-icon {
+.input-icono {
     position: absolute;
     left: 15px;
     color: #6c757d;
@@ -96,7 +95,7 @@ body {
     height: 20px;
 }
 
-.form-input {
+.form-inputt {
     width: 100%;
     padding: 12px 15px 12px 45px;
     border: 1px solid #ced4da;
@@ -105,13 +104,13 @@ body {
     transition: border-color 0.3s;
 }
 
-.form-input:focus {
+.form-inputt:focus {
     border-color: var(--primary-color);
     outline: none;
 }
 
 /* Mensajes de error */
-.error-message {
+.mensaje-error {
     color: var(--error-color);
     font-size: 14px;
     margin-top: 5px;
@@ -126,7 +125,7 @@ body {
     margin-top: 30px;
 }
 
-.btn-primary, .btn-secondary, .btn-tertiary {
+.btn-ingresar, .btn-recuperar, .btn-registrarse {
     padding: 12px;
     border: none;
     border-radius: 5px;
@@ -137,34 +136,34 @@ body {
     width: 100%;
 }
 
-.btn-primary {
+.btn-ingresar {
     background-color: var(--primary-color);
     color: var(--white);
 }
 
-.btn-primary:hover {
+.btn-ingresar:hover {
     background-color: #5D2F15;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary {
+.btn-recuperar {
     background-color: var(--secondary-color);
     color: var(--white);
 }
 
-.btn-secondary:hover {
+.btn-recuperar:hover {
     background-color: #7a7560;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn-tertiary {
+.btn-registrarse {
     background-color: var(--tertiary-color);
     color: var(--white);
 }
 
-.btn-tertiary:hover {
+.btn-registrarse:hover {
     background-color: #c19d00;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -172,7 +171,7 @@ body {
 
 /* Responsive */
 @media (max-width: 576px) {
-    .login-card {
+    .login-carta {
         padding: 25px;
     }
     

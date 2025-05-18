@@ -1,0 +1,263 @@
+.payment-header {
+  background-color: #793E1C;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: flex-start;
+  padding-left: 2rem; /* Ajusta este valor según necesites */
+  margin-left: 0;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.header-logo {
+  height: 40px;
+}
+
+/* Estilos base */
+.success-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.success-header {
+  background-color: #793E1C;
+  color: white;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 0 0 8px 8px;
+}
+
+.success-logo {
+  height: 40px;
+}
+
+.success-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.success-content {
+  padding: 0 2rem;
+}
+
+/* Mensajes de estado */
+.status-message {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.status-message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-message.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  border: 1px solid #ffcdd2;
+}
+
+/* Información de la sesión */
+.session-info {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.session-info h3 {
+  margin-top: 0;
+  color: #5D2F15;
+}
+
+.session-info code {
+  background-color: #e0e0e0;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  word-break: break-all;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* Detalles del pago */
+.payment-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.customer-info,
+.payment-summary,
+.shipping-info,
+.invoice-info {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.payment-details h2 {
+  color: #5D2F15;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.amount {
+  font-weight: 600;
+  color: #793E1C;
+}
+
+/* Spinner de carga */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(121, 62, 28, 0.2);
+  border-radius: 50%;
+  border-top-color: #793E1C;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Botones */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.btn-primary {
+  background-color: #793E1C;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #5D2F15;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #793E1C;
+  border: 1px solid #793E1C;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .success-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .success-title {
+    font-size: 1.5rem;
+  }
+  
+  .success-content {
+    padding: 0 1rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media print {
+  .action-buttons {
+    display: none;
+  }
+  
+  .success-header {
+    background-color: white;
+    color: #333;
+    border-bottom: 2px solid #793E1C;
+  }
+}

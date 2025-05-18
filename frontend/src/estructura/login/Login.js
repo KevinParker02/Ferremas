@@ -58,33 +58,33 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <form onSubmit={handleSubmit} className="login-form">
-                <div className="login-card">
+        <div className="login-contenedor">
+            <form onSubmit={handleSubmit} className="login-formulario">
+                <div className="login-carta">
                     {/* Encabezado con logo */}
-                    <div className="login-header">
+                    <div className="login-cabeza">
                         <img 
                             src={logoImagen} 
                             alt="Logo de la empresa" 
                             className="login-logo" 
                         />
-                        <h2 className="login-title">Iniciar Sesión</h2>
+                        <h2 className="login-titulo">Iniciar Sesión</h2>
                     </div>
 
                     {/* Mensajes de error */}
                     {error && (
-                        <div className="login-alert">
+                        <div className="login-alerta">
                             {error}
                         </div>
                     )}
 
                     {/* Campos del formulario */}
-                    <div className="form-group">
-                        <div className="input-field">
-                            <Mail className="input-icon" />
+                    <div className="form-grupo">
+                        <div className="input-fieldd">
+                            <Mail className="input-icono" />
                             <input
                                 type="text"
-                                className="form-input"
+                                className="form-inputt"
                                 maxLength={40}
                                 placeholder="Correo electrónico"
                                 value={usuario}
@@ -101,15 +101,15 @@ const Login = () => {
                                 required
                             />
                         </div>
-                        {mensaje && <span className="error-message">{mensaje}</span>}
+                        {mensaje && <span className="mensaje-error">{mensaje}</span>}
                     </div>
 
-                    <div className="form-group">
-                        <div className="input-field">
-                            <Lock className="input-icon" />
+                    <div className="form-grupo">
+                        <div className="input-fieldd">
+                            <Lock className="input-icono" />
                             <input
                                 type="password"
-                                className="form-input"
+                                className="form-inputt"
                                 placeholder="Contraseña (6 a 8 caracteres)"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -119,7 +119,7 @@ const Login = () => {
                             />
                         </div>
                         {password.length > 0 && (password.length < 6 || password.length > 8) && (
-                            <span className="error-message">
+                            <span className="mensaje-error">
                                 La contraseña debe tener entre 6 y 8 caracteres
                             </span>
                         )}
@@ -127,19 +127,19 @@ const Login = () => {
 
                     {/* Botones de acción */}
                     <div className="action-buttons">
-                        <button type="submit" className="btn-primary">
+                        <button type="submit" className="btn-ingresar">
                             Ingresar
                         </button>
                         <button 
                             type="button" 
-                            className="btn-secondary"
+                            className="btn-recuperar"
                             onClick={() => navigate('/recuperar')}
                         >
                             Olvidé mi contraseña
                         </button>
                         <button 
                             type="button" 
-                            className="btn-tertiary"
+                            className="btn-registrarse"
                             onClick={() => navigate('/registro')}
                         >
                             Registrarse

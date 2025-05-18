@@ -63,7 +63,7 @@ const Recuperar = () => {
 
         {/* Formulario */}
         <form onSubmit={handleRecuperar} className="recovery-form">
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Mail className="input-icon" />
               <input
@@ -81,16 +81,16 @@ const Recuperar = () => {
 
           {/* Mensajes */}
           {mensaje && (
-            <div className={`recovery-message ${mensaje.includes('envia') ? 'success' : 'error'}`}>
+            <div className={`recovery-mensaje ${mensaje.includes('envia') ? 'success' : 'error'}`}>
               {mensaje}
             </div>
           )}
 
           {/* Botones */}
-          <div className="action-buttons">
+          <div className="action-buttons mt-4">
             <button 
               type="submit" 
-              className="btn-primary"
+              className="btn-instrucciones"
               disabled={isLoading}
             >
               {isLoading ? 'Enviando...' : 'Enviar Instrucciones'}

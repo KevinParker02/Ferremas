@@ -70,7 +70,7 @@ const Restablecer = () => {
 
   return (
     <div className="reset-container">
-      <div className="reset-card">
+      <div className="reset-carta">
         {/* Encabezado con logo */}
         <div className="reset-header">
           <img 
@@ -85,7 +85,7 @@ const Restablecer = () => {
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="reset-form">
           {/* Campo de email */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Mail className="input-icon" />
               <input
@@ -102,7 +102,7 @@ const Restablecer = () => {
           </div>
 
           {/* Campo de token */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Key className="input-icon" />
               <input
@@ -118,7 +118,7 @@ const Restablecer = () => {
           </div>
 
           {/* Campo de nueva contraseña */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <Lock className="input-icon" />
               <input
@@ -135,7 +135,7 @@ const Restablecer = () => {
           </div>
 
           {/* Campo de confirmación de contraseña */}
-          <div className="form-group">
+          <div className="form-grupo">
             <div className="input-field">
               <LockKeyhole className="input-icon" />
               <input
