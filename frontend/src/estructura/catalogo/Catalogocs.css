@@ -124,7 +124,7 @@ body {
   z-index: 100;
 }
 
-.btn-menu {
+.btn-menú {
   background: none;
   border: none;
   cursor: pointer;
@@ -136,7 +136,7 @@ body {
   transition: var(--transition);
 }
 
-.btn-menu:hover {
+.btn-menú:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -239,7 +239,7 @@ body {
 
 .producto-imagen {
   width: auto;
-  height: auto;
+  height: 180px;
   object-fit: cover;
   transition: var(--transition);
 }
@@ -411,7 +411,7 @@ body {
   object-fit: contain;
 }
 
-.btn-menu {
+.btn-menú {
   background: none;
   border: none;
   color: white;

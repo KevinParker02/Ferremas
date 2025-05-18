@@ -43,6 +43,11 @@ const Catalogo = () => {
     }
   };
 
+  const cerrarSesion = () => {
+    authguard.cerrarSesion();
+    navigate('/login');
+  };
+
   // Obtener menú según el rol
   const menuItems = MenuService.obtenerMenuPorRol(usuario?.rol?.id);
 
@@ -104,6 +109,15 @@ const Catalogo = () => {
               </a>
             </li>
           ))}
+          <li>
+            <button 
+              className="menu-link logout-link" 
+              onClick={cerrarSesion}
+            >
+            <LogOut size={18} className="me-2" />
+              Cerrar sesión
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -111,7 +125,7 @@ const Catalogo = () => {
       <div className="contenido-principal">
         <header className="catalogo-header">
           <div className="header-left">
-            <button className="btn-menu" onClick={toggleMenu}>
+            <button className="btn-menú" onClick={toggleMenu}>
               <Menu size={20} />
             </button>
             <img 
@@ -124,13 +138,6 @@ const Catalogo = () => {
             <button className="btn-carrito" onClick={toggleCarrito}>
               <ShoppingCart size={18} />
               <span>{mostrarCarrito ? 'Ocultar' : 'Ver'} carrito</span>
-            </button>
-            <button className="btn-logout" onClick={() => {
-              authguard.cerrarSesion();
-              navigate('/login');
-            }}>
-              <LogOut size={18} />
-              <span>Cerrar sesión</span>
             </button>
           </div>
         </header>
