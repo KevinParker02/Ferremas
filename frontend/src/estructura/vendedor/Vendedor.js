@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate }            from 'react-router-dom';
-import authguard                  from '../../Servicios/AuthGuard/authguard';
+import { useNavigate } from 'react-router-dom';
+import authguard from '../../Servicios/AuthGuard/authguard';
+import { LogOut, Search, X, RefreshCw, Truck, CheckCircle, AlertCircle } from 'react-feather';
+import './vendedor.css'; // Nuevo archivo CSS para estilos
 
 const Vendedor = () => {
   const navigate = useNavigate();
   const { id_sucursal } = authguard.obtenerUsuario();
 
-  const [pedidos, setPedidos]       = useState([]);
-  const [search, setSearch]         = useState('');
+  const [pedidos, setPedidos] = useState([]);
+  const [search, setSearch] = useState('');
   const [filtroDespacho, setFiltro] = useState('');
-  const [selected, setSelected]     = useState(null);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -60,27 +62,34 @@ const Vendedor = () => {
   };
 
   return (
-    <div className="p-4">
-      <nav className="d-flex justify-content-between mb-3">
-        <h3>Vista Vendedor</h3>
-        <button className="btn btn-danger" onClick={() => {
+    <div className="vendedor-container">
+      {/* Header */}
+      <header className="vendedor-header">
+        <h1 className="vendedor-title">Panel de Vendedor</h1>
+        <button 
+          className="btn-logout"
+          onClick={() => {
             authguard.cerrarSesion();
             navigate('/login');
-          }}>
+          }}
+        >
+          <LogOut size={18} className="me-2" />
           Cerrar sesión
         </button>
-      </nav>
+      </header>
 
-      {/* FILTROS */}
-      <div className="d-flex gap-2 mb-3">
-        <input
-          className="form-control"
-          placeholder="Buscar # pedido"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+      {/* Filtros */}
+      <div className="filters-container">
+        <div className="search-box">
+          <Search size={18} className="search-icon" />
+          <input
+            placeholder="Buscar por # pedido o cliente"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        
         <select
-          className="form-control"
           value={filtroDespacho}
           onChange={e => setFiltro(e.target.value)}
         >
@@ -88,110 +97,169 @@ const Vendedor = () => {
           <option value="100">Retiro en tienda</option>
           <option value="200">Despacho a domicilio</option>
         </select>
-        <button className="btn btn-outline-secondary" onClick={handleReset}>
-          Mostrar todos
+        
+        <button className="btn btn-reset" onClick={handleReset}>
+          <RefreshCw size={16} className="me-2" />
+          Limpiar filtros
         </button>
       </div>
 
-      {/* TABLA */}
-      <div style={{
-        maxHeight: 6 * 48 + 32,
-        overflowY: 'auto',
-        border: '1px solid #ddd'
-      }}>
-        <table className="table mb-0">
-          <thead className="table-light">
+      {/* Tabla de pedidos */}
+      <div className="pedidos-table-container">
+        <table className="pedidos-table">
+          <thead>
             <tr>
               <th># Pedido</th>
               <th>Cliente</th>
               <th>Fecha</th>
               <th>Despacho</th>
               <th>Total</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             {pedidos.map(p => (
-              <tr
+              <tr 
                 key={p.id_pedido}
+                className={selected?.id_pedido === p.id_pedido ? 'selected' : ''}
                 onClick={() => setSelected(p)}
-                style={{
-                  cursor: 'pointer',
-                  background: selected?.id_pedido === p.id_pedido ? '#eef' : ''
-                }}
               >
                 <td>{p.id_pedido}</td>
                 <td>{p.cliente}</td>
-                <td>{new Date(p.fecha_pedido).toLocaleString()}</td>
+                <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
                 <td>{p.despacho}</td>
-                <td>{p.total_pedido.toLocaleString()}</td>
+                <td>${p.total_pedido.toLocaleString('es-CL')}</td>
+                <td>
+                  <span className={`status-badge ${getStatusClass(p.estado)}`}>
+                    {p.estado}
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* DETALLE */}
+      {/* Detalle del pedido */}
       {selected && (
-        <div className="mt-4 border p-3">
-          <h5>
-            Pedido #{selected.id_pedido}
+        <div className="pedido-detail">
+          <div className="detail-header">
+            <h3>
+              Pedido #{selected.id_pedido}
+              <button
+                className="btn-close-detail"
+                onClick={() => setSelected(null)}
+              >
+                <X size={20} />
+              </button>
+            </h3>
+          </div>
+          
+          <div className="detail-content">
+            <div className="detail-section">
+              <h4>Información del Pedido</h4>
+              <div className="detail-grid">
+                <div className="detail-row">
+                  <span className="detail-label">Cliente:</span>
+                  <span>{selected.cliente}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Fecha pedido:</span>
+                  <span>{new Date(selected.fecha_pedido).toLocaleString()}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Fecha entrega:</span>
+                  <span>{new Date(selected.fecha_entrega).toLocaleString()}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Sucursal:</span>
+                  <span>{selected.sucursal}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Comprobante:</span>
+                  <span>{selected.comprobante}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Estado:</span>
+                  <span className={`status-badge ${getStatusClass(selected.estado)}`}>
+                    {selected.estado}
+                  </span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Total:</span>
+                  <span>${selected.total_pedido.toLocaleString('es-CL')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="detail-section">
+              <h4>Detalle de Entrega</h4>
+              {selected.despacho === 'Retiro en tienda' ? (
+                <div className="retiro-tienda">
+                  <CheckCircle size={20} className="me-2" />
+                  <span>El cliente retirará en tienda</span>
+                </div>
+              ) : (
+                <div className="detail-grid">
+                  <div className="detail-row">
+                    <span className="detail-label">Dirección:</span>
+                    <span>{selected.direc_desp}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Comuna:</span>
+                    <span>{selected.comuna_dep}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Región:</span>
+                    <span>{selected.region_dep}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="detail-actions">
+            {/* Solo para domicilio mostramos "Enviado" */}
+            {selected.despacho === 'Despacho a domicilio' && (
+              <button
+                className="btn btn-action"
+                onClick={() => cambiarEstado(selected.id_pedido, 3)}
+              >
+                <Truck size={16} className="me-2" />
+                Marcar Enviado
+              </button>
+            )}
+
+            {/* Estos dos valen para ambos tipos de despacho */}
             <button
-              className="btn btn-sm btn-outline-secondary ms-2"
-              onClick={() => setSelected(null)}
+              className="btn btn-action success"
+              onClick={() => cambiarEstado(selected.id_pedido, 4)}
             >
-              Cerrar
+              <CheckCircle size={16} className="me-2" />
+              Marcar Entregado
             </button>
-          </h5>
-
-          {/* Campos comunes */}
-          <p><strong>Cliente:</strong> {selected.cliente}</p>
-          <p><strong>Fecha pedido:</strong> {new Date(selected.fecha_pedido).toLocaleString()}</p>
-          <p><strong>Fecha entrega:</strong> {new Date(selected.fecha_entrega).toLocaleString()}</p>
-          <p><strong>Sucursal:</strong> {selected.sucursal}</p>
-          <p><strong>Comprobante:</strong> {selected.comprobante}</p>
-          <p><strong>Estado:</strong> {selected.estado}</p>
-          <p><strong>Total:</strong> {selected.total_pedido.toLocaleString()}</p>
-
-          {/* Detalle según tipo de despacho */}
-          {selected.despacho === 'Retiro en tienda' ? (
-            <p className="mt-3 text-success">El cliente retirará en tienda</p>
-          ) : (
-            <>
-              <p><strong>Dirección despacho:</strong> {selected.direc_desp}</p>
-              <p><strong>Comuna:</strong> {selected.comuna_dep}</p>
-              <p><strong>Región:</strong> {selected.region_dep}</p>
-            </>
-          )}
-          <div className="mt-3 d-flex gap-2">
-      {/* Solo para domicilio (200) mostramos “Enviado” */}
-      {selected.despacho === 'Despacho a domicilio' && (
-        <button
-          className="btn btn-sm btn-primary"
-          onClick={() => cambiarEstado(selected.id_pedido, 3)}
-        >
-          Marcar Enviado
-        </button>
-      )}
-
-      {/* Estos dos valen para ambos tipos de despacho */}
-      <button
-        className="btn btn-sm btn-success"
-        onClick={() => cambiarEstado(selected.id_pedido, 4)}
-      >
-        Marcar Entregado
-      </button>
-      <button
-        className="btn btn-sm btn-warning"
-        onClick={() => cambiarEstado(selected.id_pedido, 5)}
-      >
-        Marcar Confirmado
-      </button>
-    </div>
-
+            <button
+              className="btn btn-action warning"
+              onClick={() => cambiarEstado(selected.id_pedido, 5)}
+            >
+              <AlertCircle size={16} className="me-2" />
+              Marcar Confirmado
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
+
+  // Función auxiliar para clases de estado
+  function getStatusClass(estado) {
+    switch(estado) {
+      case 'Entregado': return 'success';
+      case 'Enviado': return 'info';
+      case 'Confirmado': return 'warning';
+      default: return 'default';
+    }
+  }
 };
 
 export default Vendedor;

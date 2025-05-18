@@ -1,7 +1,8 @@
-// src/estructure/administrador/Administrador.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate }            from 'react-router-dom';
-import authguard                  from '../../Servicios/AuthGuard/authguard';
+import { useNavigate } from 'react-router-dom';
+import authguard from '../../Servicios/AuthGuard/authguard';
+import './admin.css'; // Nuevo archivo CSS para estilos
+import { X, Plus, LogOut, Search, RefreshCw } from 'react-feather'; // Iconos
 
 const Administrador = () => {
   const navigate = useNavigate();
@@ -159,39 +160,43 @@ const Administrador = () => {
   };
 
   return (
-    <div className="p-4">
-      {/* NAVBAR */}
-      <nav className="d-flex justify-content-between align-items-center mb-3">
-        <h3>Menú administrador</h3>
-        <div>
-          <button
-            className="btn btn-primary me-2"
+    <div className="admin-container">
+      {/* Header */}
+      <header className="admin-header">
+        <h1 className="admin-title">Panel de Administración</h1>
+        <div className="admin-actions">
+          <button 
+            className="btn btn-primary"
             onClick={() => setDrawerOpen(true)}
           >
+            <Plus size={18} className="me-2" />
             Agregar empleado
           </button>
           <button
-            className="btn btn-danger"
+            className="btn btn-logout"
             onClick={() => {
               authguard.cerrarSesion();
               navigate('/login');
             }}
           >
+            <LogOut size={18} className="me-2" />
             Cerrar sesión
           </button>
         </div>
-      </nav>
+      </header>
 
-      {/* FILTROS */}
-      <div className="d-flex gap-2 mb-3">
-        <input
-          className="form-control"
-          placeholder="Ingresa nombre o rut"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+      {/* Filtros */}
+      <div className="filters-container">
+        <div className="search-box">
+          <Search size={18} className="search-icon" />
+          <input
+            placeholder="Buscar por nombre o RUT"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        
         <select
-          className="form-control"
           value={filtroSuc}
           onChange={e => setFiltroSuc(e.target.value)}
         >
@@ -202,117 +207,156 @@ const Administrador = () => {
             </option>
           ))}
         </select>
-        <button className="btn btn-outline-secondary" onClick={handleReset}>
-          Mostrar todos
+        
+        <button className="btn btn-reset" onClick={handleReset}>
+          <RefreshCw size={16} className="me-2" />
+          Limpiar filtros
         </button>
       </div>
 
-      {/* TABLA DE USUARIOS */}
-      <div style={{
-        maxHeight: 6 * 48 + 32,
-        overflowY: 'auto',
-        border: '1px solid #ddd'
-      }}>
-        <table className="table mb-0">
-          <thead className="table-light">
+      {/* Tabla de usuarios */}
+      <div className="users-table-container">
+        <table className="users-table">
+          <thead>
             <tr>
               <th>Nombre</th>
               <th>Apellido</th>
               <th>RUT</th>
               <th>Rol</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {usuarios.map(u => (
-              <tr
+              <tr 
                 key={u.id_user}
+                className={selectedUser?.id_user === u.id_user ? 'selected' : ''}
                 onClick={() => setSelectedUser(u)}
-                style={{
-                  cursor: 'pointer',
-                  background: selectedUser?.id_user === u.id_user ? '#eef' : ''
-                }}
               >
                 <td>{u.nombre_user}</td>
                 <td>{u.apellido_user}</td>
                 <td>{u.rut_user}-{u.dv_user}</td>
                 <td>{u.nom_rol}</td>
-                <td>{u.estado_user ? 'Activo' : 'Inactivo'}</td>
+                <td>
+                  <span className={`status-badge ${u.estado_user ? 'active' : 'inactive'}`}>
+                    {u.estado_user ? 'Activo' : 'Inactivo'}
+                  </span>
+                </td>
+                <td>
+                  <button 
+                    className="btn-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleEstado(u.id_user);
+                    }}
+                    title="Cambiar estado"
+                  >
+                    {u.estado_user ? '🔴' : '🟢'}
+                  </button>
+                  <button 
+                    className="btn-icon danger"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      eliminarUsuario(u.id_user);
+                    }}
+                    title="Eliminar"
+                  >
+                    🗑️
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* DETALLE DEL USUARIO SELECCIONADO */}
+      {/* Detalle del usuario */}
       {selectedUser && (
-            <div className="mt-4 border p-3">
-              <h5>
-                {selectedUser.nombre_user} {selectedUser.apellido_user}
-                <button
-                  className="btn btn-sm btn-outline-secondary ms-2"
-                  onClick={() => setSelectedUser(null)}
-                >
-                  Cerrar detalle
-                </button>
-              </h5>
-              <p><strong>RUT:</strong> {selectedUser.rut_user}-{selectedUser.dv_user}</p>
-              <p><strong>Correo:</strong> {selectedUser.email_user}</p>
-              <p><strong>Dirección:</strong> {selectedUser.direccion_user}</p>
-              <p><strong>Rol:</strong> {selectedUser.nom_rol}</p>
-              <p><strong>Estado:</strong> {selectedUser.estado_user ? 'Activo' : 'Inactivo'}</p>
-
-              <div className="d-flex gap-2">
-                <button
-                className="btn btn-warning"
-                onClick={() => toggleEstado(selectedUser.id_user)}
-              >
-                Cambiar estado
-              </button>
+        <div className="user-detail">
+          <div className="detail-header">
+            <h3>
+              {selectedUser.nombre_user} {selectedUser.apellido_user}
               <button
-                className="btn btn-danger"
-                onClick={() => eliminarUsuario(selectedUser.id_user)}
+                className="btn-close-detail"
+                onClick={() => setSelectedUser(null)}
               >
-                Eliminar usuario
+                <X size={20} />
               </button>
+            </h3>
+          </div>
+          
+          <div className="detail-content">
+            <div className="detail-row">
+              <span className="detail-label">RUT:</span>
+              <span>{selectedUser.rut_user}-{selectedUser.dv_user}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Correo:</span>
+              <span>{selectedUser.email_user}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Dirección:</span>
+              <span>{selectedUser.direccion_user}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Rol:</span>
+              <span>{selectedUser.nom_rol}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Estado:</span>
+              <span className={`status-badge ${selectedUser.estado_user ? 'active' : 'inactive'}`}>
+                {selectedUser.estado_user ? 'Activo' : 'Inactivo'}
+              </span>
             </div>
           </div>
+          
+          <div className="detail-actions">
+            <button
+              className="btn btn-warning"
+              onClick={() => toggleEstado(selectedUser.id_user)}
+            >
+              {selectedUser.estado_user ? 'Desactivar' : 'Activar'}
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() => eliminarUsuario(selectedUser.id_user)}
+            >
+              Eliminar usuario
+            </button>
+          </div>
+        </div>
       )}
 
-      {/* DRAWER AGREGAR EMPLEADO */}
-      <div
-        className="position-fixed top-0 end-0 h-100 bg-white shadow-lg"
-        style={{
-          width: '400px',
-          transform: drawerOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s ease-in-out',
-          zIndex: 1050
-        }}
-      >
-        <div className="p-3 border-bottom d-flex justify-content-between">
-          <h4>Agregar Empleado</h4>
-          <button className="btn-close" onClick={() => setDrawerOpen(false)} />
+      {/* Drawer para agregar empleado */}
+      <div className={`add-employee-drawer ${drawerOpen ? 'open' : ''}`}>
+        <div className="drawer-header">
+          <h3>Agregar Nuevo Empleado</h3>
+          <button 
+            className="btn-close-drawer"
+            onClick={() => setDrawerOpen(false)}
+          >
+            <X size={24} />
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 overflow-auto" style={{ height: 'calc(100% - 60px)' }}>
-          {/* --- Tu formulario tal cual lo tenías --- */}
-          {/* Nombre / Apellido */}
-          <div className="row mb-3">
-            <div className="col">
+        
+        <form onSubmit={handleSubmit} className="drawer-form">
+          {/* Grupo Nombre/Apellido */}
+          <div className="form-group-row">
+            <div className="form-group">
               <label>Nombre</label>
               <input
                 name="nombre_user"
-                className="form-control"
                 value={form.nombre_user}
                 onChange={handleChange}
                 maxLength={60}
                 required
               />
             </div>
-            <div className="col">
+            <div className="form-group">
               <label>Apellido</label>
               <input
                 name="apellido_user"
-                className="form-control"
                 value={form.apellido_user}
                 onChange={handleChange}
                 maxLength={60}
@@ -321,24 +365,22 @@ const Administrador = () => {
             </div>
           </div>
 
-          {/* RUT / DV */}
-          <div className="row mb-3">
-            <div className="col-8">
+          {/* Grupo RUT/DV */}
+          <div className="form-group-row">
+            <div className="form-group">
               <label>RUT</label>
               <input
                 name="rut_user"
-                className="form-control"
-                placeholder="21202977"
+                placeholder="12345678"
                 value={form.rut_user}
                 onChange={handleChange}
                 required
               />
             </div>
-            <div className="col-4">
+            <div className="form-group">
               <label>DV</label>
               <input
                 name="dv_user"
-                className="form-control"
                 placeholder="K"
                 value={form.dv_user}
                 onChange={handleChange}
@@ -348,7 +390,7 @@ const Administrador = () => {
           </div>
 
           {/* Celular */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Celular</label>
             <input
               name="celular_user"
@@ -361,7 +403,7 @@ const Administrador = () => {
           </div>
 
           {/* Correo */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Correo</label>
             <input
               name="email_user"
@@ -377,7 +419,7 @@ const Administrador = () => {
           </div>
 
           {/* Dirección */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Dirección</label>
             <input
               name="direccion_user"
@@ -391,7 +433,7 @@ const Administrador = () => {
           </div>
 
           {/* Contraseña */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Contraseña</label>
             <input
               name="password"
@@ -410,7 +452,7 @@ const Administrador = () => {
           </div>
           
           {/* Rol */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Rol</label>
             <select
               name="rol_id"
@@ -428,7 +470,7 @@ const Administrador = () => {
             </select>
           </div>
           {/* Sucursal */}
-          <div className="mb-3">
+          <div className="form-group">
             <label>Sucursal</label>
             <select
               name="sucursal_id"
@@ -445,12 +487,20 @@ const Administrador = () => {
               ))}
             </select>
           </div>
-          {/* Botón Crear */}
-          <button type="submit" className="btn btn-primary w-100">
+
+          <button type="submit" className="btn btn-submit">
             Crear Empleado
           </button>
         </form>
       </div>
+      
+      {/* Overlay para el drawer */}
+      {drawerOpen && (
+        <div 
+          className="drawer-overlay"
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
     </div>
   );
 };
