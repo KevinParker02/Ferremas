@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import MenuService from '../../Servicios/Menu/MenuService';
-import { LogOut, Search, X, RefreshCw, Package, CheckCircle, List, ChevronLeft, Menu } from 'react-feather';
+import { LogOut, Search, X, RefreshCw, Package, CheckCircle, List, Menu } from 'react-feather';
 import './bodega.css';
 
 const Bodega = () => {
@@ -14,7 +14,7 @@ const Bodega = () => {
   const [pedidos, setPedidos] = useState([]);
   const [search, setSearch] = useState('');
   const [filtroDespacho, setFiltro] = useState('');
-  const [selected, setSelected] = useState(null);
+  const [selected, setPedidoSel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -54,7 +54,7 @@ const Bodega = () => {
   const resetFiltros = () => {
     setSearch('');
     setFiltro('');
-    setSelected(null);
+    setPedidoSel(null);
   };
 
   const cambiarEstado = async (id_pedido, nuevoEstado) => {
@@ -75,7 +75,7 @@ const Bodega = () => {
       const data = await res.json();
       
       // Actualizar el pedido seleccionado
-      setSelected(prev => ({
+      setPedidoSel(prev => ({
         ...prev,
         id_estado: data.id_estado,
         estado: data.nom_estado
@@ -209,7 +209,7 @@ const Bodega = () => {
               <tr 
                 key={p.id_pedido}
                 className={selected?.id_pedido === p.id_pedido ? 'selected' : ''}
-                onClick={() => setSelected(p)}
+                onClick={() => setPedidoSel(p)}
               >
                 <td>{p.id_pedido}</td>
                 <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
@@ -240,7 +240,7 @@ const Bodega = () => {
               Pedido #{selected.id_pedido}
               <button
                 className="btn-close-detail"
-                onClick={() => setSelected(null)}
+                onClick={() => setPedidoSel(null)}
               >
                 <X size={20} />
               </button>
