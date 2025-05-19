@@ -450,21 +450,38 @@ select {
   display: flex;
   align-items: center;
   transition: all 0.2s;
+  background-color: var(--secondary-color);
+  color: white;
 }
 
-.btn-action.success {
+.completado {
   background-color: var(--success-color);
   color: white;
 }
 
-.btn-action:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.completado:hover {
+  background-color: #16812f;
+  color: white;
 }
 
-.btn-action:hover:not(:disabled) {
+.normal :disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: var(--secondary-color);
+}
+
+.normal {
+  background-color: var(--secondary-color);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.normal:hover {
+  background-color: #7a7560;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 /* Responsive */

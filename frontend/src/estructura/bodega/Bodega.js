@@ -341,7 +341,7 @@ const Bodega = () => {
           
           <div className="detail-actions">
             <button
-              className="btn btn-action"
+              className="btn btn-action normal"
               onClick={() => cambiarEstado(selected.id_pedido, 6)}
               disabled={selected.id_estado === 6}
             >
@@ -351,7 +351,7 @@ const Bodega = () => {
 
             {selected.id_estado === 6 && (
               <button
-                className="btn btn-action success"
+                className="btn btn-action completado"
                 onClick={() => marcarCompletado(selected.id_pedido)}
               >
                 <CheckCircle size={16} className="me-2" />
