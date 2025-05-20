@@ -14,6 +14,10 @@ const MiCuenta = () => {
   const [sucursales, setSucursales] = useState([]);
   const [nombreSucursal, setNombreSucursal] = useState('');
 
+  const [pedidos, setPedidos] = useState([]);
+  const [detallePedido, setDetallePedido] = useState([]);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
+
   const menuItems = MenuService.obtenerMenuPorRol(rol?.id);
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
 
@@ -39,7 +43,7 @@ const MiCuenta = () => {
           celular_user: data.celular_user,
           email_user: data.email_user,
           direccion_user: data.direccion_user,
-          id_sucursal: data.comuna.id, // se asume que comuna.id es la sucursal inicial
+          id_sucursal: data.comuna.id, 
           id_comuna: data.comuna.id
         });
       })
@@ -50,7 +54,22 @@ const MiCuenta = () => {
       .then(res => res.json())
       .then(setSucursales)
       .catch(() => setError('No se pudieron cargar las sucursales'));
+    
+    fetch(`http://localhost:8000/api/pedidos/cliente/?id_user=${id_user}`)
+      .then(res => res.json())
+      .then(data => setPedidos(data))
+      .catch(() => console.error('Error al cargar pedidos'));
   }, [id_user]);
+
+  const verDetallePedido = (id_pedido) => {
+    fetch(`http://localhost:8000/api/pedidos/${id_pedido}/detalle/`)
+      .then(res => res.json())
+      .then(data => {
+        setPedidoSeleccionado(id_pedido);
+        setDetallePedido(data);
+      })
+      .catch(() => alert('Error al cargar el detalle del pedido'));
+  };
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -127,6 +146,23 @@ const MiCuenta = () => {
       });
   }, [id_user]);
 
+  const eliminarPedido = (id_pedido) => {
+    const confirmar = window.confirm('¿Estás seguro de que deseas eliminar este pedido?');
+    if (!confirmar) return;
+
+    fetch(`http://localhost:8000/api/pedidos/${id_pedido}/`, {
+      method: 'DELETE'
+    })
+      .then(res => {
+        if (res.status === 204) {
+          setPedidos(prev => prev.filter(p => p.id_pedido !== id_pedido));
+          alert('Pedido eliminado correctamente.');
+        } else {
+          throw new Error();
+        }
+      })
+      .catch(() => alert('Error al eliminar el pedido.'));
+  };
 
   return (
     <div className={`catalogo-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>
@@ -220,6 +256,22 @@ const MiCuenta = () => {
                       </option>
                     ))}
                   </select>
+                  {form.id_sucursal && (
+                    <div style={{ height: '300px', width: '100%', marginTop: '1rem' }}>
+                      <iframe
+                        title="Mapa sucursal seleccionada"
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        style={{ border: 0 }}
+                        referrerPolicy="no-referrer-when-downgrade"
+                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.API_MAPS_KEY}&q=${encodeURIComponent(
+                          sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal))?.direccion_sucursal || ''
+                        )}`}
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  )}
                 </div>
                 <button className="btn btn-success me-2" onClick={handleGuardar}>Guardar</button>
                 <button className="btn btn-secondary" onClick={() => setEditando(false)}>Cancelar</button>
@@ -241,6 +293,101 @@ const MiCuenta = () => {
           </>
         )}
       </div>
+      <div>
+        <h3 className="mt-5">Historial de pedidos</h3>
+          {pedidos.length === 0 ? (
+            <p>No has realizado pedidos aún.</p>
+          ) : (
+            <table className="table table-bordered mt-2">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Fecha pedido</th>
+                  <th>Entrega estimada</th>
+                  <th>Dirección de despacho</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Comprobante</th>
+                  <th>Despacho</th>
+                  <th>Sucursal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pedidos.map(p => (
+                  <tr
+                    key={p.id_pedido}
+                    onClick={() => verDetallePedido(p.id_pedido)}
+                    style={{ cursor: 'pointer', backgroundColor: pedidoSeleccionado === p.id_pedido ? '#f0f0f0' : 'white' }}
+                  >
+                    <td>{p.id_pedido}</td>
+                    <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
+                    <td>{new Date(p.fecha_estimada).toLocaleDateString()}</td>
+                    <td>{p.direccion_despacho}</td>
+                    <td>${p.total_pedido.toLocaleString()}</td>
+                    <td>{p.estado}</td>
+                    <td>{p.comprobante}</td>
+                    <td>{p.despacho}</td>
+                    <td>{p.sucursal}</td>
+                    <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => eliminarPedido(p.id_pedido)}
+                      disabled={!([1, 5, 6].includes(p.id_estado))}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+      </div>
+        {pedidoSeleccionado && (
+          <div className="mt-4">
+            <h4>Detalle del Pedido #{pedidoSeleccionado}</h4>
+            {detallePedido.length === 0 ? (
+              <p>No hay productos en este pedido.</p>
+            ) : (
+              <table className="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Imagen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detallePedido.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.nom_prod}</td>
+                      <td>{item.marca_prod}</td>
+                      <td>{item.cantidad}</td>
+                      <td>
+                        {item.precio_prod != null
+                          ? `$${item.precio_prod.toLocaleString('es-CL')}`
+                          : 'No disponible'}
+                      </td>
+                      <td>
+                        {item.foto ? (
+                          <img
+                              src={item.foto}
+                              alt="producto"
+                              width="60"
+                            />
+                        ) : (
+                          'Sin imagen'
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
     </div>
   );
 };

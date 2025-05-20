@@ -13,8 +13,12 @@ urlpatterns = [
         detalle_datos_cliente, 
         name='datos_cliente'
     ),
+    path('pedidos/cliente/', pedidos_cliente),
+    path('pedidos/<int:id_pedido>/detalle/', detalle_pedido),
+    path('pedidos/<int:id_pedido>/', eliminar_pedido),
     path('usuarios/editar_cliente/', editar_datos_cliente),
     path('sucursales/del_usuario/', detalle_sucursal_usuario),
+
     ##PARA LA VISTA ADMIN (Aún en proceso) 
     path('sucursales/', listar_sucursales),
     path('roles/',      listar_roles),
@@ -25,6 +29,7 @@ urlpatterns = [
 
     path('reset_password/', reset_password_view),
     path('productos/', listar_productos, name='listar_productos'),
+
     ##esto es para el carrito
     path('carrito/agregar/', agregar_al_carrito),
     path('carrito/<int:id_usuario>/', obtener_carrito_usuario),

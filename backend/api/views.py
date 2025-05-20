@@ -15,7 +15,7 @@ import random
 import string
 from django.core.mail import send_mail
 from .models import Usuario, Sucursal, Role
-from django.db.models import Q, CharField, Sum, F
+from django.db.models import Q, CharField, Sum, F, Count
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Cast
 import base64
@@ -885,3 +885,65 @@ def detalle_sucursal_usuario(request):
     except Sucursal.DoesNotExist:
         return Response({'error': 'Sucursal no encontrada'}, status=404)
 
+@api_view(['GET'])
+def pedidos_cliente(request):
+    id_user = request.query_params.get('id_user')
+
+    if not id_user:
+        return Response({'error': 'Falta el parámetro id_user'}, status=400)
+
+    pedidos = (
+        Pedido.objects
+        .select_related('usuario', 'tipo_despacho', 'estado', 'tipo_comprobante', 'sucursal')
+        .filter(usuario_id=id_user)
+        .order_by('-fecha_pedido')
+        .annotate(id_str=Cast('id_pedido', CharField()))
+    )
+
+    data = []
+    for p in pedidos:
+        data.append({
+            'id_pedido':       p.id_pedido,
+            'fecha_pedido':    p.fecha_pedido,
+            'fecha_entrega':   p.fecha_entrega_stm,
+            'total_pedido':    p.total_pedido,
+            'id_estado': p.estado.id_estado if p.estado else None,
+            'estado':          p.estado.nom_estado if p.estado else 'Sin estado',
+            'comprobante':     p.tipo_comprobante.nom_tipo_comprobante if p.tipo_comprobante else 'Sin comprobante',
+            'despacho':        p.tipo_despacho.nom_despacho if p.tipo_despacho else 'Sin tipo',
+            'sucursal':        p.sucursal.direccion_sucursal if p.sucursal else 'Sin sucursal',
+            'fecha_estimada':  p.fecha_entrega_stm,
+            'direccion_despacho': p.direc_desp if p.tipo_despacho_id == 200 else 'No Aplica',
+        })
+
+    return Response(data)
+
+@api_view(['GET'])
+def detalle_pedido(request, id_pedido):
+    detalles = DetallePedido.objects.filter(pedido_id=id_pedido).select_related('producto')
+
+    data = []
+
+    for d in detalles:
+        prod = d.producto
+
+        data.append({
+            'id_prod': prod.id_prod,
+            'nom_prod': prod.nom_prod,
+            'marca_prod': prod.marca_prod,
+            'codigo_fabricante': prod.codigo_fabricante,
+            'precio_prod': prod.precio_prod,
+            'cantidad': d.cantidad_producto,
+            'foto': f"data:image/jpeg;base64,{base64.b64encode(prod.foto_prod).decode('utf-8')}" if prod.foto_prod else None
+        })
+
+    return Response(data)
+
+@api_view(['DELETE'])
+def eliminar_pedido(request, id_pedido):
+    try:
+        pedido = Pedido.objects.get(pk=id_pedido)
+        pedido.delete()
+        return Response(status=204)
+    except Pedido.DoesNotExist:
+        return Response({'error': 'Pedido no encontrado'}, status=404)
