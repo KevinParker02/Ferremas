@@ -820,3 +820,47 @@ def detalle_datos_cliente(request):
         }
     }
     return Response(data)
+
+## API para Cliente
+@api_view(['PATCH'])
+def editar_datos_cliente(request):
+    idu = request.data.get('id_user')
+    if not idu:
+        return Response({'error': 'Falta parámetro id_user'}, status=400)
+
+    try:
+        u = Usuario.objects.get(pk=idu)
+    except Usuario.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=404)
+
+    # Asignar comuna como objeto
+    if 'id_comuna' in request.data:
+        try:
+            comuna_obj = Comuna.objects.get(pk=request.data['id_comuna'])
+            u.comuna = comuna_obj
+        except Comuna.DoesNotExist:
+            return Response({'error': 'Comuna no válida'}, status=400)
+
+    # Asignar otros campos
+    campos_editables = [
+        'nombre_user', 'apellido_user', 'celular_user',
+        'email_user', 'direccion_user', 'id_sucursal'
+    ]
+
+    for campo in campos_editables:
+        if campo in request.data:
+            setattr(u, campo, request.data[campo])
+
+    u.save()
+
+    return Response({
+        'mensaje': 'Datos actualizados correctamente',
+        'usuario': {
+            'id_user': u.id_user,
+            'nombre_user': u.nombre_user,
+            'apellido_user': u.apellido_user,
+            'id_sucursal': u.id_sucursal,
+            'id_comuna': u.comuna.id_comuna
+        }
+    })
+
