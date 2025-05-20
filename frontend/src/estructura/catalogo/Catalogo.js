@@ -6,7 +6,7 @@ import MenuService from '../../Servicios/Menu/MenuService';
 import CarritoService from '../../Servicios/Carrito/CarritoService';
 import Carrito from '../../Servicios/Carrito/Carrito';
 import './Catalogocs.css';
-import logoFerremas from '../../img/logo-ferremas.png'; // Ajusta la ruta según tu estructura
+import logoFerremas from '../../img/logo-ferremas.png'; 
 
 const Catalogo = () => {
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ const Catalogo = () => {
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
 
   const agregarAlCarrito = async (id_producto) => {
-    // Deshabilitar el botón durante la operación
     const boton = document.activeElement;
     if (boton) boton.disabled = true;
 
@@ -32,7 +31,6 @@ const Catalogo = () => {
         id_producto,
         1,
         () => {
-          // Usar función de actualización que no dependa del valor previo
           setRecargarCarrito(prev => !prev);
         }
       );
@@ -54,21 +52,21 @@ const Catalogo = () => {
   // Cargar nombre de la sucursal
   useEffect(() => {
     const cargarSucursal = async () => {
-      if (usuario?.id_sucursal) {
+      if (usuario?.id_user) {
         try {
           const response = await fetch(
-            `http://localhost:8000/api/sucursales/${usuario.id_sucursal}`
+            `http://localhost:8000/api/sucursales/del_usuario/?id_user=${usuario.id_user}`
           );
           const data = await response.json();
-          setNombreSucursal(data.nombre_sucursal || `Sucursal ${usuario.id_sucursal}`);
+          setNombreSucursal(`${data.direccion_sucursal}`);
         } catch (error) {
           console.error('Error al cargar sucursal:', error);
-          setNombreSucursal(`Sucursal ${usuario.id_sucursal}`);
+          setNombreSucursal(`Sucursal ID ${usuario.id_sucursal}`);
         }
       }
     };
     cargarSucursal();
-  }, [usuario?.id_sucursal]);
+  }, [usuario?.id_user]);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -145,7 +143,6 @@ const Catalogo = () => {
         <main className="catalogo-main">
           <div className="usuario-info">
             <h2>Bienvenido, {usuario.nombre_user}</h2>
-            <p>Rol: {usuario.rol?.nombre}</p>
             <p>Sucursal: {nombreSucursal || 'Cargando...'}</p>
           </div>
           

@@ -14,6 +14,7 @@ urlpatterns = [
         name='datos_cliente'
     ),
     path('usuarios/editar_cliente/', editar_datos_cliente),
+    path('sucursales/del_usuario/', detalle_sucursal_usuario),
     ##PARA LA VISTA ADMIN (Aún en proceso) 
     path('sucursales/', listar_sucursales),
     path('roles/',      listar_roles),

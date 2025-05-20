@@ -12,6 +12,7 @@ const MiCuenta = () => {
   const [editando, setEditando] = useState(false);
   const [form, setForm] = useState({});
   const [sucursales, setSucursales] = useState([]);
+  const [nombreSucursal, setNombreSucursal] = useState('');
 
   const menuItems = MenuService.obtenerMenuPorRol(rol?.id);
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
@@ -112,6 +113,20 @@ const MiCuenta = () => {
     })
     .catch(() => alert('Error al eliminar la cuenta.'));
   };
+
+  useEffect(() => {
+    if (!id_user) return;
+
+    fetch(`http://localhost:8000/api/sucursales/del_usuario/?id_user=${id_user}`)
+      .then(res => res.json())
+      .then(data => {
+        setNombreSucursal(`${data.direccion_sucursal}`);
+      })
+      .catch(() => {
+        setNombreSucursal(`Sucursal ID ${usuarioLocal.id_sucursal}`);
+      });
+  }, [id_user]);
+
 
   return (
     <div className={`catalogo-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>
@@ -218,6 +233,7 @@ const MiCuenta = () => {
                 <h3>Dirección</h3>
                 <p>{datos.direccion_user}</p>
                 <p><strong>Comuna:</strong> {datos.comuna.nombre}</p>
+                <p><strong>Sucursal de preferencia:</strong> {nombreSucursal || 'Cargando...'}</p>
                 <button className="btn btn-primary me-2" onClick={() => setEditando(true)}>Editar datos</button>
                 <button className="btn btn-danger" onClick={handleEliminar}>Eliminar cuenta</button>
               </>

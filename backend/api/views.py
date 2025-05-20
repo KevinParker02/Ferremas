@@ -864,3 +864,24 @@ def editar_datos_cliente(request):
         }
     })
 
+@api_view(['GET'])
+def detalle_sucursal_usuario(request):
+    id_user = request.query_params.get('id_user')
+    if not id_user:
+        return Response({'error': 'Falta id_user'}, status=400)
+
+    try:
+        usuario = Usuario.objects.get(pk=id_user)
+        sucursal = Sucursal.objects.select_related('comuna__region').get(pk=usuario.id_sucursal)
+        data = {
+            "id_sucursal": sucursal.id_sucursal,
+            "direccion_sucursal": sucursal.direccion_sucursal,
+            "nom_comuna": sucursal.comuna.nom_comuna,
+            "nom_region": sucursal.comuna.region.nom_region
+        }
+        return Response(data)
+    except Usuario.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=404)
+    except Sucursal.DoesNotExist:
+        return Response({'error': 'Sucursal no encontrada'}, status=404)
+
