@@ -8,6 +8,13 @@ urlpatterns = [
     path('comunas/', listar_comunas),
     path('recuperar/', recuperar_view),
     path('regiones/', listar_regiones),
+
+    path(
+        'usuarios/datos_cliente/', 
+        detalle_datos_cliente, 
+        name='datos_cliente'
+    ),
+
     ##PARA LA VISTA ADMIN (Aún en proceso) 
     path('sucursales/', listar_sucursales),
     path('roles/',      listar_roles),

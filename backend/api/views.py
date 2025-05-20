@@ -779,3 +779,44 @@ def detalle_producto(request, id_prod):
     prod.save()
     return Response({'mensaje': 'Producto actualizado'}, status=status.HTTP_200_OK)
 
+##PARA CLIENTE
+@api_view(['GET'])
+def detalle_datos_cliente(request):
+    """
+    GET /api/usuarios/datos_cliente/?id_user=5
+    Devuelve los datos del usuario cuyo id_user viene en la querystring.
+    """
+    idu = request.query_params.get('id_user')
+    if not idu:
+        return Response(
+            {'error': 'Falta parámetro id_user'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        u = Usuario.objects.select_related('rol', 'comuna').get(pk=idu)
+    except Usuario.DoesNotExist:
+        return Response(
+            {'error':'Usuario no encontrado'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    data = {
+        'id_user':        u.id_user,
+        'nombre_user':    u.nombre_user,
+        'apellido_user':  u.apellido_user,
+        'rut_user':       u.rut_user,
+        'dv_user':        u.dv_user,
+        'celular_user':   u.celular_user,
+        'email_user':     u.email_user,
+        'direccion_user': u.direccion_user,
+        'comuna': {
+            'id':     u.comuna_id,
+            'nombre': u.comuna.nom_comuna
+        },
+        'rol': {
+            'id':     u.rol_id,
+            'nombre': u.rol.nom_rol
+        }
+    }
+    return Response(data)
