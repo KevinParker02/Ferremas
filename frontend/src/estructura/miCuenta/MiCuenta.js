@@ -265,7 +265,7 @@ const MiCuenta = () => {
                         frameBorder="0"
                         style={{ border: 0 }}
                         referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.API_MAPS_KEY}&q=${encodeURIComponent(
+                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyALIfPxz3MqW2xJbVhR4fVvnMPGZ6r3hro&q=${encodeURIComponent(
                           sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal))?.direccion_sucursal || ''
                         )}`}
                         allowFullScreen
