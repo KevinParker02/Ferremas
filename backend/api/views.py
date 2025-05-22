@@ -167,15 +167,9 @@ def listar_productos(request):
 @api_view(['POST'])
 def agregar_al_carrito(request):
     try:
-        print("📦 DATA RECIBIDA:", request.data)
-
         id_usuario = request.data.get('id_usuario')
         id_producto = request.data.get('id_producto')
         cantidad = int(request.data.get('cantidad'))
-
-        print("👉 id_usuario:", id_usuario)
-        print("👉 id_producto:", id_producto)
-        print("👉 cantidad:", cantidad)
 
         usuario = Usuario.objects.get(id_user=id_usuario)
         producto = Producto.objects.get(id_prod=id_producto)
@@ -183,18 +177,31 @@ def agregar_al_carrito(request):
         carrito_item, creado = Carrito.objects.get_or_create(
             usuario=usuario,
             producto=producto,
-            defaults={'cantidad_producto': cantidad, 'fecha_carrito': timezone.now()}
+            defaults={
+                'cantidad_producto': cantidad,
+                'fecha_carrito': timezone.now()
+            }
         )
+
+        cantidad_total = cantidad if creado else carrito_item.cantidad_producto + cantidad
+        if cantidad_total > producto.stock:
+            return Response(
+                {'error': f'Stock insuficiente. Solo quedan {producto.stock} unidades disponibles.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if not creado:
             carrito_item.cantidad_producto += cantidad
             carrito_item.fecha_carrito = timezone.now()
             carrito_item.save()
 
-        return Response({'mensaje': 'Producto agregado al carrito'}, status=status.HTTP_200_OK)
+        return Response(
+            {'mensaje': 'Producto agregado al carrito correctamente'},
+            status=status.HTTP_200_OK
+        )
 
     except Exception as e:
-        traceback.print_exc()  # ⬅️ Muestra el error exacto en consola
+        traceback.print_exc()
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
