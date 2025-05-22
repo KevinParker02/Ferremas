@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
+import logoFerremas from '../../img/logo-ferremas.png';
 import './admin.css'; // Nuevo archivo CSS para estilos
 import { X, Plus, LogOut, Search, RefreshCw } from 'react-feather'; // Iconos
 
@@ -163,10 +164,16 @@ const Administrador = () => {
     <div className="admin-container">
       {/* Header */}
       <header className="admin-header">
-        <h1 className="admin-title">Panel de Administración</h1>
+        <div className="header-izquierda">
+            <img 
+              src={logoFerremas} 
+              alt="Logo Ferremas" 
+              className="header-logo"
+              />
+        </div>
         <div className="admin-actions">
           <button 
-            className="btn btn-primary"
+            className="btn btn-desactivar"
             onClick={() => setDrawerOpen(true)}
           >
             <Plus size={18} className="me-2" />
@@ -184,6 +191,10 @@ const Administrador = () => {
           </button>
         </div>
       </header>
+
+      <div className='administrador-header'>
+        <h1 className="administrador-title">Panel de Administración</h1>
+      </div>
 
       {/* Filtros */}
       <div className="filters-container">
@@ -311,15 +322,15 @@ const Administrador = () => {
             </div>
           </div>
           
-          <div className="detail-actions">
+          <div className="detail-actionss">
             <button
-              className="btn btn-warning"
+              className="btn btn-desactivar"
               onClick={() => toggleEstado(selectedUser.id_user)}
             >
               {selectedUser.estado_user ? 'Desactivar' : 'Activar'}
             </button>
             <button
-              className="btn btn-danger"
+              className="btn btn-eliminar"
               onClick={() => eliminarUsuario(selectedUser.id_user)}
             >
               Eliminar usuario

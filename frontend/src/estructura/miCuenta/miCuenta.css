@@ -1,0 +1,587 @@
+:root {
+  --primary-color: #793E1C;
+  --secondary-color: #8b8466;
+  --accent-color: #d5aa00;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Estilos base */
+.mi-cuenta-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Menú lateral (igual que en otros componentes) */
+.menu-lateral {
+  width: 280px;
+  background-color: #fff;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -280px;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-lateral.abierto {
+  left: 0;
+}
+
+.menu-header {
+  padding: 20px;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.btn-cerrar-menu {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.menu-items {
+  list-style: none;
+  padding: 20px 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.menu-items li {
+  margin-bottom: 5px;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: var(--dark-color);
+  text-decoration: none;
+  transition: var(--transition);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.menu-link:hover {
+  background-color: rgba(121, 62, 28, 0.1);
+  color: var(--primary-color);
+}
+
+.menu-icon {
+  margin-right: 10px;
+}
+
+.logout-link {
+  color: var(--danger-color);
+}
+
+/* Contenido principal */
+.contenido-principal {
+  flex-grow: 1;
+  margin-left: 0;
+  transition: var(--transition);
+}
+
+.mi-cuenta-wrapper.menu-abierto .contenido-principal {
+  margin-left: 280px;
+}
+
+.mi-cuenta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #793E1C;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  color: var(--light-color);
+}
+
+.header-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
+.btn-menu {
+  background: none;
+  border: none;
+  --color: white;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.btn-menu:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.header-actions h1 {
+  color: var(--light-color);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.mi-cuenta-main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Contenedor principal */
+.mi-cuenta-container {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Información del usuario */
+.usuario-info {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+}
+
+.usuario-info h2 {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Formulario de edición */
+.form-edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-gridd {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.form-grupo {
+  margin-bottom: 1rem;
+}
+
+.form-grupo label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark-color);
+}
+
+.formulario-control {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.formulario-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(121, 62, 28, 0.2);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.mapa-sucursal {
+  margin-top: 1rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #5D2F15;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #7a7560;
+}
+
+.btn-dangerr {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-dangerr:hover {
+  background-color: #c11c2d;
+  color: white;
+}
+
+.btn-editar {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.btn-editar:hover {
+  background-color: #c5a519;
+  color: white;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Información del usuario (modo visualización) */
+.info-usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-gridd {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.info-label {
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-value {
+  color: var(--dark-color);
+}
+
+.usuario-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Historial de pedidos */
+.historial-pedidos {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+}
+
+.historial-pedidos h2 {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.no-pedidos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.pedidos-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .pedidos-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pedido-card {
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pedido-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--box-shadow);
+}
+
+.pedido-card.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(121, 62, 28, 0.05);
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.pedido-id {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.pedido-estado {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.pedido-estado.completado {
+  background-color: #e6f7ee;
+  color: var(--success-color);
+}
+
+.pedido-estado.en-preparación {
+  background-color: #e6f7f8;
+  color: var(--info-color);
+}
+
+.pedido-estado.confirmado {
+  background-color: #fff8e6;
+  color: var(--warning-color);
+}
+
+.pedido-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.pedido-total {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.pedido-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Detalle del pedido */
+.pedido-detalle {
+  background-color: #f9f9f9;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+}
+
+.pedido-detalle h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.no-productos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.productos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.productos-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.producto-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.producto-informacion {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.producto-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.producto-img-placeholder {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  color: #999;
+}
+
+.producto-nombre {
+  font-weight: 500;
+}
+
+.producto-marca {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.producto-cantidad {
+  text-align: center;
+}
+
+.producto-precio {
+  text-align: right;
+  font-weight: 500;
+}
+
+.producto-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid #eee;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mi-cuenta-wrapper.menu-abierto .contenido-principal {
+    margin-left: 0;
+    transform: translateX(280px);
+  }
+  
+  .mi-cuenta-main {
+    padding: 1rem;
+  }
+  
+  .form-gridd, .info-gridd {
+    grid-template-columns: 1fr;
+  }
+  
+  .usuario-actions {
+    flex-direction: column;
+  }
+  
+  .pedidos-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .producto-item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .producto-cantidad, .producto-precio {
+    text-align: left;
+    padding-left: 66px; /* Align with image */
+  }
+}

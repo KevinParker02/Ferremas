@@ -14,13 +14,10 @@
 
 /* Estilos base */
 .vendedor-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Header */
+
 .vendedor-header {
   display: flex;
   justify-content: space-between;
@@ -28,6 +25,30 @@
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
+  max-width: 1200px;
+  margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.vendedor-title{
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+}
+/* Header */
+.seller-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #793E1C;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .vendedor-title {
@@ -35,6 +56,10 @@
   margin: 0;
 }
 
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
 .btn-logout {
   background-color: var(--danger-color);
   color: white;

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
-import MenuService from '../../Servicios/Menu/MenuService';
 import { LogOut, Search, X, RefreshCw, Package, CheckCircle, List, Menu } from 'react-feather';
+import logoFerremas from '../../img/logo-ferremas.png';
 import './bodega.css';
 
 const Bodega = () => {
   const navigate = useNavigate();
-  const usuario = authguard.obtenerUsuario();
-  const [menuAbierto, setMenuAbierto] = useState(false);
   const { id_sucursal } = authguard.obtenerUsuario();
 
   const [pedidos, setPedidos] = useState([]);
@@ -17,11 +15,6 @@ const Bodega = () => {
   const [selected, setPedidoSel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // Obtener menú según el rol
-  const menuItems = MenuService.obtenerMenuPorRol(usuario?.rol?.id);
-
-  const toggleMenu = () => setMenuAbierto(!menuAbierto);
 
   // Cargar pedidos con productos
   const cargarPedidos = async () => {
@@ -113,56 +106,32 @@ const Bodega = () => {
   };
 
   return (
-      <div className={`bodega-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>
-      {/* Menú lateral */}
-      <div className={`menu-lateral ${menuAbierto ? 'abierto' : ''}`}>
-        <div className="menu-header">
-          <h5>{usuario?.rol?.nombre || 'Menú'}</h5>
-          <button className="btn-cerrar-menu" onClick={toggleMenu}>
-            <X size={20} />
-          </button>
-        </div>
-        <ul className="menu-items">
-          {MenuService.obtenerMenuPorRol(usuario?.rol?.id).map((item, index) => (
-            <li key={index}>
-              <button 
-                className="menu-link"
-                onClick={() => {
-                  navigate(item.ruta);
-                  setMenuAbierto(false);
-                }}
-              >
-                {item.nombre}
-              </button>
-            </li>
-          ))}
-          <li>
-            <button 
-              className="menu-link logout-link" 
-              onClick={cerrarSesion}
-            >
-              <LogOut size={18} className="me-2" />
-              Cerrar sesión
-            </button>
-          </li>
-        </ul>
-      </div>
-
     <div className="bodega-container">
       {/* Header */}
       <header className="bodega-header">
-        <div className="header-left">
-          <button className="btn-menu" onClick={toggleMenu}>
-              <Menu size={20} />
-            </button>
-          <h1 className="bodega-title">Panel de Bodega</h1>
-        </div>
-        <button className="btn btn-secondary" onClick={irProductos}>
-            <List size={18} className="me-2" />
-            Gestión de Stock
+        <div className="header-izquierda">
+                    <img 
+                      src={logoFerremas} 
+                      alt="Logo Ferremas" 
+                      className="header-logo"
+                    />
+                  </div>
+        <div className="header-actions">
+          <button className="btn btn-gestion" onClick={irProductos}>
+              <List size={18} className="me-2" />
+              Gestión de Stock
           </button>
-      </header>
 
+          <button className="btn-logout" onClick={cerrarSesion}>
+            <LogOut size={18} className="me-2" />
+            Cerrar sesión
+          </button>
+        </div>
+      </header>
+      
+      <div className='bodeguero-header'>
+        <h1 className="bodeguero-title">Panel de Bodega</h1>
+      </div>
       {/* Filtros */}
       <div className="filters-container">
         <div className="search-box">
@@ -276,7 +245,7 @@ const Bodega = () => {
             <div className="detail-section">
               <h4>Productos ({selected.productos?.length || 0})</h4>
               {selected.productos && selected.productos.length > 0 ? (
-                <div className="productos-table-container">
+                <div className="productos-tabla-container">
                   <table className="productos-table">
                     <thead>
                       <tr>
@@ -361,7 +330,6 @@ const Bodega = () => {
           </div>
         </div>
       )}
-    </div>
     </div>
   );
 

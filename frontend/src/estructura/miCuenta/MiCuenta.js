@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Menu, X, LogOut, Edit, Trash2, ShoppingBag, MapPin, Phone, Mail, User, CreditCard, CheckCircle, Package } from 'react-feather';
 import MenuService from '../../Servicios/Menu/MenuService';
 import authguard from '../../Servicios/AuthGuard/authguard';
+import logoFerremas from '../../img/logo-ferremas.png';
+import './miCuenta.css';
 
 const MiCuenta = () => {
   const usuarioLocal = authguard.obtenerUsuario() || {};
@@ -119,7 +122,7 @@ const MiCuenta = () => {
     if (!confirmar) return;
 
     fetch(`http://localhost:8000/api/usuarios/${id_user}/`, {
-  method: 'DELETE'
+      method: 'DELETE'
     })
     .then(res => {
       if (res.status === 204) {
@@ -164,230 +167,335 @@ const MiCuenta = () => {
       .catch(() => alert('Error al eliminar el pedido.'));
   };
 
-  return (
-    <div className={`catalogo-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>
-      {/* NAVBAR */}
-      <nav className="d-flex justify-content-between align-items-center p-3 bg-light">
-        <div className="d-flex align-items-center">
-          <button
-            className="btn-hamburguesa-mi-cuenta btn btn-sm me-2"
-            onClick={toggleMenu}
-            aria-label="Abrir menú"
-          >
-            ☰
-          </button>
-          <h1 className="mb-0">
-            Hola{usuarioLocal?.nombre_user ? `, ${usuarioLocal.nombre_user}` : ''}
-          </h1>
-        </div>
-      </nav>
+  const cerrarSesion = () => {
+    authguard.cerrarSesion();
+    window.location.href = '/login';
+  };
 
-      {/* MENÚ LATERAL */}
+  return (
+    <div className={`mi-cuenta-wrapper ${menuAbierto ? 'menu-abierto' : ''}`}>
+      {/* Menú lateral */}
       <div className={`menu-lateral ${menuAbierto ? 'abierto' : ''}`}>
-        <h5 className="menu-header">{rol?.nombre || 'Menú'}</h5>
-        <button
-          className="btn btn-sm btn-outline-secondary mb-3"
-          onClick={toggleMenu}
-        >
-          ✕ Cerrar menú
-        </button>
-        <ul className="menu-items list-unstyled">
-          {menuItems.map((item, idx) => (
-            <li key={idx}>
-              <a href={item.ruta} className="menu-link d-block py-1">
+        <div className="menu-header">
+          <h5>{rol?.nombre || 'Menú'}</h5>
+          <button className="btn-cerrar-menu" onClick={toggleMenu}>
+            <X size={20} />
+          </button>
+        </div>
+        <ul className="menu-items">
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <button 
+                className="menu-link"
+                onClick={() => {
+                  window.location.href = item.ruta;
+                  setMenuAbierto(false);
+                }}
+              >
+                {item.icono && <span className="menu-icon">{item.icono}</span>}
                 {item.nombre}
-              </a>
+              </button>
             </li>
           ))}
+          <li>
+            <button 
+              className="menu-link logout-link" 
+              onClick={cerrarSesion}
+            >
+              <LogOut size={18} className="me-2" />
+              Cerrar sesión
+            </button>
+          </li>
         </ul>
       </div>
 
-      {/* CONTENIDO */}
-      <div className="contenido p-3">
-        {error && <div className="alert alert-danger">{error}</div>}
-        {!error && !datos && <div>Cargando datos...</div>}
-
-        {datos && (
-          <>
-            <h2>Datos personales del cliente</h2>
-
-            {editando ? (
-              <>
-                <div className="mb-2">
-                  <label className="form-label">Nombre:</label>
-                  <input name="nombre_user" value={form.nombre_user} onChange={handleInputChange} className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">Apellido:</label>
-                  <input name="apellido_user" value={form.apellido_user} onChange={handleInputChange} className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">RUT:</label>
-                  <input name="rut_user" value={form.rut_user} readOnly className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">DV:</label>
-                  <input name="dv_user" value={form.dv_user} readOnly className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">Celular:</label>
-                  <input name="celular_user" value={form.celular_user} onChange={handleInputChange} className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">Email:</label>
-                  <input name="email_user" value={form.email_user} onChange={handleInputChange} className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">Dirección:</label>
-                  <input name="direccion_user" value={form.direccion_user} onChange={handleInputChange} className="form-control" />
-                </div>
-                <div className="mb-2">
-                  <label className="form-label">Sucursal de preferencia:</label>
-                  <select
-                    name="id_sucursal"
-                    className="form-select"
-                    value={form.id_sucursal}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Seleccione una sucursal</option>
-                    {sucursales.map(s => (
-                      <option key={s.id_sucursal} value={s.id_sucursal}>
-                        {`${s.direccion_sucursal}`}
-                      </option>
-                    ))}
-                  </select>
-                  {form.id_sucursal && (
-                    <div style={{ height: '300px', width: '100%', marginTop: '1rem' }}>
-                      <iframe
-                        title="Mapa sucursal seleccionada"
-                        width="100%"
-                        height="100%"
-                        frameBorder="0"
-                        style={{ border: 0 }}
-                        referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyALIfPxz3MqW2xJbVhR4fVvnMPGZ6r3hro&q=${encodeURIComponent(
-                          sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal))?.direccion_sucursal || ''
-                        )}`}
-                        allowFullScreen
-                      ></iframe>
-                    </div>
-                  )}
-                </div>
-                <button className="btn btn-success me-2" onClick={handleGuardar}>Guardar</button>
-                <button className="btn btn-secondary" onClick={() => setEditando(false)}>Cancelar</button>
-              </>
-            ) : (
-              <>
-                <p><strong>Nombre:</strong> {datos.nombre_user} {datos.apellido_user}</p>
-                <p><strong>RUT:</strong> {datos.rut_user}-{datos.dv_user}</p>
-                <p><strong>Celular:</strong> {datos.celular_user}</p>
-                <p><strong>Email:</strong> {datos.email_user}</p>
-                <h3>Dirección</h3>
-                <p>{datos.direccion_user}</p>
-                <p><strong>Comuna:</strong> {datos.comuna.nombre}</p>
-                <p><strong>Sucursal de preferencia:</strong> {nombreSucursal || 'Cargando...'}</p>
-                <button className="btn btn-primary me-2" onClick={() => setEditando(true)}>Editar datos</button>
-                <button className="btn btn-danger" onClick={handleEliminar}>Eliminar cuenta</button>
-              </>
-            )}
-          </>
-        )}
-      </div>
-      <div>
-        <h3 className="mt-5">Historial de pedidos</h3>
-          {pedidos.length === 0 ? (
-            <p>No has realizado pedidos aún.</p>
-          ) : (
-            <table className="table table-bordered mt-2">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Fecha pedido</th>
-                  <th>Entrega estimada</th>
-                  <th>Dirección de despacho</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                  <th>Comprobante</th>
-                  <th>Despacho</th>
-                  <th>Sucursal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidos.map(p => (
-                  <tr
-                    key={p.id_pedido}
-                    onClick={() => verDetallePedido(p.id_pedido)}
-                    style={{ cursor: 'pointer', backgroundColor: pedidoSeleccionado === p.id_pedido ? '#f0f0f0' : 'white' }}
-                  >
-                    <td>{p.id_pedido}</td>
-                    <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
-                    <td>{new Date(p.fecha_estimada).toLocaleDateString()}</td>
-                    <td>{p.direccion_despacho}</td>
-                    <td>${p.total_pedido.toLocaleString()}</td>
-                    <td>{p.estado}</td>
-                    <td>{p.comprobante}</td>
-                    <td>{p.despacho}</td>
-                    <td>{p.sucursal}</td>
-                    <td>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => eliminarPedido(p.id_pedido)}
-                      disabled={!([1, 5, 6].includes(p.id_estado))}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-      </div>
-        {pedidoSeleccionado && (
-          <div className="mt-4">
-            <h4>Detalle del Pedido #{pedidoSeleccionado}</h4>
-            {detallePedido.length === 0 ? (
-              <p>No hay productos en este pedido.</p>
-            ) : (
-              <table className="table table-sm table-bordered">
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Marca</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Imagen</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {detallePedido.map((item, idx) => (
-                    <tr key={idx}>
-                      <td>{item.nom_prod}</td>
-                      <td>{item.marca_prod}</td>
-                      <td>{item.cantidad}</td>
-                      <td>
-                        {item.precio_prod != null
-                          ? `$${item.precio_prod.toLocaleString('es-CL')}`
-                          : 'No disponible'}
-                      </td>
-                      <td>
-                        {item.foto ? (
-                          <img
-                              src={item.foto}
-                              alt="producto"
-                              width="60"
-                            />
-                        ) : (
-                          'Sin imagen'
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+      {/* Contenido principal */}
+      <div className="contenido-principal">
+        <header className="mi-cuenta-header">
+          <div className="header-izquierda">
+            <button className="btn-menu" style={{ color: 'white' }} onClick={toggleMenu}>
+              <Menu size={20} />
+            </button>
+            <img 
+              src={logoFerremas} 
+              alt="Logo Ferremas" 
+              className="header-logo"
+            />
           </div>
-        )}
+          <div className="header-actions">
+            <h1>Mi Cuenta</h1>
+          </div>
+        </header>
+
+        <main className="mi-cuenta-main">
+          {error && <div className="alert alert-danger">{error}</div>}
+          {!error && !datos && <div className="loading">Cargando datos...</div>}
+
+          {datos && (
+            <div className="mi-cuenta-container">
+              <div className="usuario-info">
+                <h2><User size={20} className="me-2" /> Información Personal</h2>
+                
+                {editando ? (
+                  <div className="form-edicion">
+                    <div className="form-gridd">
+                      <div className="form-grupo">
+                        <label>Nombre</label>
+                        <input 
+                          name="nombre_user" 
+                          value={form.nombre_user} 
+                          onChange={handleInputChange} 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label>Apellido</label>
+                        <input 
+                          name="apellido_user" 
+                          value={form.apellido_user} 
+                          onChange={handleInputChange} 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label>RUT</label>
+                        <input 
+                          name="rut_user" 
+                          value={form.rut_user} 
+                          readOnly 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label>DV</label>
+                        <input 
+                          name="dv_user" 
+                          value={form.dv_user} 
+                          readOnly 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label><Phone size={16} className="me-2" /> Celular</label>
+                        <input 
+                          name="celular_user" 
+                          value={form.celular_user} 
+                          onChange={handleInputChange} 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label><Mail size={16} className="me-2" /> Email</label>
+                        <input 
+                          name="email_user" 
+                          value={form.email_user} 
+                          onChange={handleInputChange} 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo">
+                        <label><MapPin size={16} className="me-2" /> Dirección</label>
+                        <input 
+                          name="direccion_user" 
+                          value={form.direccion_user} 
+                          onChange={handleInputChange} 
+                          className="formulario-control" 
+                        />
+                      </div>
+                      <div className="form-grupo full-width">
+                        <label>Sucursal de preferencia</label>
+                        <select
+                          name="id_sucursal"
+                          className="formulario-control"
+                          value={form.id_sucursal}
+                          onChange={handleInputChange}
+                        >
+                          <option value="">Seleccione una sucursal</option>
+                          {sucursales.map(s => (
+                            <option key={s.id_sucursal} value={s.id_sucursal}>
+                              {`${s.direccion_sucursal}`}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {form.id_sucursal && (
+                      <div className="mapa-sucursal">
+                        <iframe
+                          title="Mapa sucursal seleccionada"
+                          width="100%"
+                          height="300"
+                          frameBorder="0"
+                          style={{ border: 0, borderRadius: '8px' }}
+                          referrerPolicy="no-referrer-when-downgrade"
+                          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyALIfPxz3MqW2xJbVhR4fVvnMPGZ6r3hro&q=${encodeURIComponent(
+                            sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal))?.direccion_sucursal || ''
+                          )}`}
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    )}
+
+                    <div className="form-actions">
+                      <button className="btn btn-primary" onClick={handleGuardar}>
+                        <CheckCircle size={16} className="me-2" /> Guardar cambios
+                      </button>
+                      <button className="btn btn-secondary" onClick={() => setEditando(false)}>
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="info-usuario">
+                    <div className="info-gridd">
+                      <div className="info-item">
+                        <span className="info-label">Nombre completo:</span>
+                        <span className="info-value">{datos.nombre_user} {datos.apellido_user}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">RUT:</span>
+                        <span className="info-value">{datos.rut_user}-{datos.dv_user}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label"><Phone size={16} className="me-2" /> Celular:</span>
+                        <span className="info-value">{datos.celular_user}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label"><Mail size={16} className="me-2" /> Email:</span>
+                        <span className="info-value">{datos.email_user}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label"><MapPin size={16} className="me-2" /> Dirección:</span>
+                        <span className="info-value">{datos.direccion_user}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Comuna:</span>
+                        <span className="info-value">{datos.comuna.nombre}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Sucursal de preferencia:</span>
+                        <span className="info-value">{nombreSucursal || 'Cargando...'}</span>
+                      </div>
+                    </div>
+
+                    <div className="usuario-actions">
+                      <button className="btn btn-editar" onClick={() => setEditando(true)}>
+                        <Edit size={16} className="me-2" /> Editar datos
+                      </button>
+                      <button className="btn btn-dangerr" onClick={handleEliminar}>
+                        <Trash2 size={16} className="me-2" /> Eliminar cuenta
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="historial-pedidos">
+                <h2><ShoppingBag size={20} className="me-2" /> Historial de Pedidos</h2>
+                
+                {pedidos.length === 0 ? (
+                  <div className="no-pedidos">
+                    <ShoppingBag size={48} className="mb-3" />
+                    <p>No has realizado pedidos aún.</p>
+                  </div>
+                ) : (
+                  <div className="pedidos-container">
+                    <div className="pedidos-list">
+                      {pedidos.map(p => (
+                        <div 
+                          key={p.id_pedido} 
+                          className={`pedido-card ${pedidoSeleccionado === p.id_pedido ? 'selected' : ''}`}
+                          onClick={() => verDetallePedido(p.id_pedido)}
+                        >
+                          <div className="pedido-header">
+                            <span className="pedido-id">Pedido #{p.id_pedido}</span>
+                            <span className={`pedido-estado ${p.estado.toLowerCase().replace(' ', '-')}`}>
+                              {p.estado}
+                            </span>
+                          </div>
+                          <div className="pedido-info">
+                            <div>
+                              <span className="info-label">Fecha:</span>
+                              <span>{new Date(p.fecha_pedido).toLocaleDateString()}</span>
+                            </div>
+                            <div>
+                              <span className="info-label">Total:</span>
+                              <span className="pedido-total">${p.total_pedido.toLocaleString()}</span>
+                            </div>
+                          </div>
+                          <div className="pedido-actions">
+                            <button
+                              className="btn btn-sm btn-dangerr"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                eliminarPedido(p.id_pedido);
+                              }}
+                              disabled={!([1, 5, 6].includes(p.id_estado))}
+                            >
+                              <Trash2 size={14} /> Eliminar
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {pedidoSeleccionado && (
+                      <div className="pedido-detalle">
+                        <h3>Detalle del Pedido #{pedidoSeleccionado}</h3>
+                        
+                        {detallePedido.length === 0 ? (
+                          <div className="no-productos">
+                            <Package size={48} className="mb-3" />
+                            <p>No hay productos en este pedido.</p>
+                          </div>
+                        ) : (
+                          <div className="productos-list">
+                            <div className="productos-header">
+                              <span>Producto</span>
+                              <span>Cantidad</span>
+                              <span>Precio</span>
+                            </div>
+                            {detallePedido.map((item, idx) => (
+                              <div key={idx} className="producto-item">
+                                <div className="producto-informacion">
+                                  {item.foto ? (
+                                    <img src={item.foto} alt={item.nom_prod} className="producto-img" />
+                                  ) : (
+                                    <div className="producto-img-placeholder">
+                                      <Package size={20} />
+                                    </div>
+                                  )}
+                                  <div>
+                                    <div className="producto-nombre">{item.nom_prod}</div>
+                                    <div className="producto-marca">{item.marca_prod}</div>
+                                  </div>
+                                </div>
+                                <div className="producto-cantidad">{item.cantidad}</div>
+                                <div className="producto-precio">
+                                  ${item.precio_prod?.toLocaleString('es-CL') || '0'}
+                                </div>
+                              </div>
+                            ))}
+                            <div className="producto-total">
+                              <span>Total:</span>
+                              <span>
+                                ${detallePedido.reduce(
+                                  (sum, prod) => sum + (prod.precio_prod * prod.cantidad), 0
+                                ).toLocaleString('es-CL')}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };

@@ -31,7 +31,6 @@ const MenuService = {
         case 51: // Cliente
           return [
             { nombre: 'Catálogo', ruta: '/catalogo' },
-            { nombre: 'Mis pedidos', ruta: '/MiCuenta' },
             { nombre: 'Perfil', ruta: '/MiCuenta' },
           ];
         default:

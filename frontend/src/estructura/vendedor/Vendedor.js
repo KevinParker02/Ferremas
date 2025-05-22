@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import { LogOut, Search, X, RefreshCw, Truck, CheckCircle, AlertCircle } from 'react-feather';
 import './vendedor.css'; // Nuevo archivo CSS para estilos
+import logoFerremas from '../../img/logo-ferremas.png';
 
 const Vendedor = () => {
   const navigate = useNavigate();
@@ -64,8 +65,15 @@ const Vendedor = () => {
   return (
     <div className="vendedor-container">
       {/* Header */}
-      <header className="vendedor-header">
-        <h1 className="vendedor-title">Panel de Vendedor</h1>
+      <header className="seller-header">
+        <div className="header-izquierda">
+                            <img 
+                              src={logoFerremas} 
+                              alt="Logo Ferremas" 
+                              className="header-logo"
+                              />
+                        </div>
+        <div className="header-actions">
         <button 
           className="btn-logout"
           onClick={() => {
@@ -76,7 +84,12 @@ const Vendedor = () => {
           <LogOut size={18} className="me-2" />
           Cerrar sesión
         </button>
+        </div>
       </header>
+
+      <div className='vendedor-header'>
+        <h1 className="vendedor-title">Gestión de Stock</h1>
+      </div>
 
       {/* Filtros */}
       <div className="filters-container">

@@ -67,7 +67,7 @@ const Carrito = ({ idUsuario, recargar  }) => {
       ))}
           <div className="mt-4 mb-4 font-bold text-right">Total: ${total}</div>
           <button
-            className="btn btn-danger btn-block fw-bold mb-2"
+            className="btn btn-danger btn-block fw-bold mb-2 w-100"
             onClick={vaciarTodo}
           >
             🗑 Vaciar carrito

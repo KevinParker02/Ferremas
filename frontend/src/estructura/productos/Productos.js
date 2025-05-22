@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import { LogOut, Search, X, RefreshCw, Package, PlusCircle, Edit2, ToggleLeft, ToggleRight, ChevronLeft } from 'react-feather';
 import './productos.css'; // Nuevo archivo CSS para estilos
+import logoFerremas from '../../img/logo-ferremas.png';
 
 const Productos = () => {
   const navigate = useNavigate();
@@ -145,16 +146,21 @@ const Productos = () => {
   return (
     <div className="productos-container">
       {/* Header */}
-      <header className="productos-header">
-        <div className="header-left">
+      <header className="products-header">
+        <div className="header-izquierda">
+                    <img 
+                      src={logoFerremas} 
+                      alt="Logo Ferremas" 
+                      className="header-logo"
+                      />
+                </div>
+      <div className="header-actions">
           <button className="btn btn-back" onClick={irBodega}>
             <ChevronLeft size={20} className="me-1" />
             Volver a Bodega
           </button>
-          <h1 className="productos-title">Gestión de Stock</h1>
-        </div>
-        <div className="header-actions">
-          <button className="btn btn-primary" onClick={abrirCrear}>
+        
+          <button className="btn btn-desactivar" onClick={abrirCrear}>
             <PlusCircle size={18} className="me-2" />
             Agregar producto
           </button>
@@ -164,6 +170,10 @@ const Productos = () => {
           </button>
         </div>
       </header>
+
+      <div className='productos-header'>
+        <h1 className="productos-title">Gestión de Stock</h1>
+      </div>
 
       {/* Filtros */}
       <div className="filters-container">
@@ -261,7 +271,7 @@ const Productos = () => {
                 <td>
                   <div className="action-buttons">
                     <button 
-                      className="btn btn-sm btn-edit"
+                      className="btn btn-sm btn-editar"
                       onClick={() => {
                         setEditingProduct(p);
                         setForm({
@@ -276,7 +286,7 @@ const Productos = () => {
                         setDrawerOpen(true);
                       }}
                     >
-                      <Edit2 size={14} className="me-1" />
+                      <Edit2 size={14} className="me-1 btn-editar" />
                       Editar
                     </button>
                     <button

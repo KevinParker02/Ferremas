@@ -10,11 +10,50 @@
   --border-color: #e0e0e0;
 }
 
+.btn-eliminar{
+  background-color: var(--danger-color);
+  color: white;
+  align-items: right;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-desactivar{
+  background-color: var(--accent-color);
+  color: white;
+  align-items: right;
+}
+.btn-desactivar:hover {
+  background-color: #c19d00;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.administrador-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  max-width: 1200px;
+  margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.administrador-title{
+  color: var(--primary-color);
+  margin-bottom: 30px;
+}
+
 /* Estilos base */
 .admin-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -23,9 +62,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  background-color: #793E1C;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .admin-title {
@@ -121,6 +164,12 @@ select {
   margin-bottom: 2rem;
   max-height: 60vh;
   overflow-y: auto;
+  align-items: center;
+  display: flex;
+  max-width: 1200px;
+  margin: 2rem auto;
+    display: grid;
+    gap: 1rem;
 }
 
 .users-table {
@@ -174,7 +223,7 @@ select {
   font-size: 1rem;
 }
 
-.btn-icon.danger {
+.btn-icon .danger {
   color: var(--danger-color);
 }
 
@@ -184,6 +233,11 @@ select {
   border-radius: 8px;
   padding: 1.5rem;
   margin-top: 1rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: 1rem;
 }
 
 .detail-header {
@@ -218,10 +272,11 @@ select {
   color: var(--primary-color);
 }
 
-.detail-actions {
+.detail-actionss {
   display: flex;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 20px;
+  margin-bottom: 40px;
 }
 
 /* Drawer para agregar empleado */
@@ -299,7 +354,10 @@ select {
 }
 
 .btn-submit:hover {
-  background-color: #5D2F15;
+  background-color: green;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .drawer-overlay {
