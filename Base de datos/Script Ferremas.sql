@@ -295,6 +295,7 @@ CREATE TABLE IF NOT EXISTS CARRITO (
 );
 
 -- TRIGGERS
+-- Para insertar el detalle del pedido
 DELIMITER $$
 CREATE TRIGGER trg_insertar_det_pedido
 AFTER INSERT ON PEDIDO
@@ -311,6 +312,43 @@ BEGIN
     c.cantidad_producto
   FROM CARRITO AS c
   WHERE c.Id_user = NEW.Id_user;
+END$$
+DELIMITER ;
+
+-- Para restar stock y vaciar el carrito.
+DELIMITER $$
+CREATE TRIGGER trg_actualizar_stock_y_limpiar_carrito
+AFTER INSERT ON PEDIDO
+FOR EACH ROW
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE v_id_prod INT;
+    DECLARE v_cantidad INT;
+
+    DECLARE cur CURSOR FOR
+        SELECT id_prod, cantidad_producto
+        FROM CARRITO
+        WHERE id_user = NEW.id_user;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO v_id_prod, v_cantidad;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        UPDATE PRODUCTO
+        SET stock = stock - v_cantidad
+        WHERE id_prod = v_id_prod;
+    END LOOP;
+    
+    CLOSE cur;
+
+    DELETE FROM CARRITO
+    WHERE id_user = NEW.id_user;
 END$$
 DELIMITER ;
 
@@ -415,26 +453,18 @@ INSERT INTO estado_pedido (id_estado, nom_estado) VALUES
 (6, 'Preparación'),
 (7, 'Completado');
 
-SELECT * FROM estado_pedido;
+INSERT INTO USUARIO (
+    id_user, nombre_user, apellido_user, rut_user, dv_user, celular_user, pass_user,
+    email_user, direccion_user, id_sucursal, token, estado_user, id_rol, id_comuna
+) VALUES
+(1, 'Admin', 'sas', 12345678, 9, 33333333,'pbkdf2_sha256$1000000$GwkrftJxGU6Pdt3pbvCiOH$vJMWWPVuDUBlvHnP/ofApV0a7yLoSfMEaDnVCh7nysg=', 'adminferremas@gmail.com', 'en mi casa', 3, NULL, 1, 11, 315),
+(2, 'Luciano', 'Rivera', 12345677, 1, 26011754,'pbkdf2_sha256$1000000$GwkrftJxGU6Pdt3pbvCiOH$vJMWWPVuDUBlvHnP/ofApV0a7yLoSfMEaDnVCh7nysg=', 'Kev.vivanco@duocuc.cl', 'no seé Xd', 3, NULL, 1, 51, 335),
+(3, 'Vendedor', 'Condes', 12345688, 5, 55555555,'pbkdf2_sha256$1000000$GwkrftJxGU6Pdt3pbvCiOH$vJMWWPVuDUBlvHnP/ofApV0a7yLoSfMEaDnVCh7nysg=', 'vendedorcondes5@gmail.com', 'no sabo', 3, NULL, 1, 21, 335),
+(4, 'Bodega', 'Condes', 12345699, 4, 99999999,'pbkdf2_sha256$1000000$GwkrftJxGU6Pdt3pbvCiOH$vJMWWPVuDUBlvHnP/ofApV0a7yLoSfMEaDnVCh7nysg=', 'BodegaCondes4@gmail.com', 'Las Condes', 3, NULL, 1, 31, 335),
+(5, 'Contador', 'Condes', 12345655, 2, 11111111,'pbkdf2_sha256$1000000$GwkrftJxGU6Pdt3pbvCiOH$vJMWWPVuDUBlvHnP/ofApV0a7yLoSfMEaDnVCh7nysg=', 'ContadorCondes5@gmail.com', 'El que cuenta', 3, NULL, 1, 41, 335);
 
 USE FERREMAS;
 SELECT * FROM USUARIO;
-SELECT * FROM SUCURSAL;
 SELECT * FROM PRODUCTO;
 SELECT * FROM INVENTARIO;
 SELECT * FROM ROL_USER;
-
-
-SELECT * FROM COMUNA;
-select * FROM REGION;
-SELECT * FROM SUCURSAL;
-
-SELECT * FROM CARRITO;
-
-USE FERREMAS;
-SELECT * FROM USUARIO
-WHERE ID_SUCURSAL=3;
-
-USE FERREMAS;
-SELECT * FROM PEDIDO;
-SELECT * FROM DETALLE_PEDIDO;
