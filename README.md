@@ -34,8 +34,8 @@
 
  - Implementación del sistema en módulos separados para frontend, backend y base de datos.
  - Desarrollo del frontend con React, HTML5 y CSS3, probando en entornos locales de navegador.
- - Backend desarrollado con TypeScript y desplegado mediante Railway, facilitando pruebas continuas y despliegues rápidos.
- - Uso de PHP y MySQL para la capa de datos, con pruebas de consultas y lógica directamente sobre la base de datos.
+ - Backend desarrollado con TypeScript, Node.js y Django, facilitando pruebas continuas y despliegues rápidos.
+ - Uso de MySQL para la capa de datos, con pruebas de consultas y lógica directamente sobre la base de datos.
  - Comunicación entre capas mediante APIs REST, permitiendo testeo modular e integración progresiva.
  
 ---
