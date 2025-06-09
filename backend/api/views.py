@@ -954,3 +954,33 @@ def eliminar_pedido(request, id_pedido):
         return Response(status=204)
     except Pedido.DoesNotExist:
         return Response({'error': 'Pedido no encontrado'}, status=404)
+
+# views.py
+@api_view(['GET'])
+def pedidos_contador(request):
+    id_sucursal = request.GET.get('id_sucursal')
+    tipo_comprobante = request.GET.get('tipo_comprobante')  # 1: sin factura, 2: con factura
+
+    if not id_sucursal:
+        return Response({'error': 'Falta id_sucursal'}, status=400)
+
+    pedidos = Pedido.objects.filter(sucursal_id=id_sucursal)
+
+    if tipo_comprobante == '1':
+        pedidos = pedidos.filter(tipo_comprobante_id=1)
+    elif tipo_comprobante == '2':
+        pedidos = pedidos.filter(tipo_comprobante_id=2)
+
+    datos = [
+        {
+            'id_pedido': p.id_pedido,
+            'fecha_pedido': p.fecha_pedido,
+            'total': p.total_pedido,
+            'tipo_comprobante': p.tipo_comprobante_id,
+            'rut_factura': p.rut_factura,
+            'razon_social': p.razon_social,
+        }
+        for p in pedidos
+    ]
+
+    return Response(datos)

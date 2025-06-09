@@ -53,5 +53,8 @@ urlpatterns = [
     path('webpay/respuesta/', respuesta_pago, name='respuesta_pago'),
     path('stripe/crear-sesion/', crear_sesion_pago),
     path('pedido/crear/', crear_pedido),
+
+    ##CONTADOR
+    path('pedidos/contador/', pedidos_contador),
     
 ]
