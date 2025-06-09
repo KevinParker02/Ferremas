@@ -17,6 +17,7 @@ python -m venv env
 
 # Luego de activar el entorno virtual hay que install dovent para alamcenar las credenciales senibles
 pip install python-dotenv
+npm install xlsx file-saver
 
 (En SETTINGS.PY colocar la contraseña de tu base de datos local)
 

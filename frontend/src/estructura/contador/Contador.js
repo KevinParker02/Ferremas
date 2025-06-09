@@ -5,6 +5,9 @@ import { LogOut, RefreshCw, FileText } from 'react-feather';
 import './contador.css';
 import logoFerremas from '../../img/logo-ferremas.png';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 const Contador = () => {
   const navigate = useNavigate();
   const { id_sucursal } = authguard.obtenerUsuario();
@@ -15,7 +18,6 @@ const Contador = () => {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    if (filtroComprobante) params.append('comprobante', filtroComprobante);
     params.append('sucursal', id_sucursal);
 
     fetch(`http://localhost:8000/api/pedidos/?${params.toString()}`)
@@ -27,10 +29,32 @@ const Contador = () => {
         setResumen({ conFactura, sinFactura });
       })
       .catch(console.error);
-  }, [filtroComprobante, id_sucursal]);
+  }, [id_sucursal]);
 
   const handleReset = () => {
     setFiltroComprobante('');
+  };
+
+  const exportarExcel = () => {
+    const dataFiltrada = pedidos.filter(p =>
+      filtroComprobante === '' ||
+      p.comprobante?.toLowerCase() === filtroComprobante.toLowerCase()
+    );
+
+    const worksheet = XLSX.utils.json_to_sheet(dataFiltrada.map(p => ({
+      'N° Pedido': p.id_pedido,
+      'Cliente': p.cliente,
+      'Fecha': new Date(p.fecha_pedido).toLocaleDateString(),
+      'Comprobante': p.comprobante,
+      'Total': p.total_pedido
+    })));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'pedidos_contador.xlsx');
   };
 
   return (
@@ -86,7 +110,7 @@ const Contador = () => {
           Limpiar filtros
         </button>
 
-        <button className="btn btn-export">
+        <button className="btn btn-export" onClick={exportarExcel}>
           <FileText size={16} className="me-2" />
           Exportar Excel
         </button>
@@ -105,14 +129,19 @@ const Contador = () => {
             </tr>
           </thead>
           <tbody>
-            {pedidos.map(p => (
-              <tr key={p.id_pedido}>
-                <td>{p.id_pedido}</td>
-                <td>{p.cliente}</td>
-                <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
-                <td>{p.comprobante}</td>
-                <td>${p.total_pedido.toLocaleString('es-CL')}</td>
-              </tr>
+            {pedidos
+              .filter(p =>
+                filtroComprobante === '' ||
+                p.comprobante?.toLowerCase() === filtroComprobante.toLowerCase()
+              )
+              .map(p => (
+                <tr key={p.id_pedido}>
+                  <td>{p.id_pedido}</td>
+                  <td>{p.cliente}</td>
+                  <td>{new Date(p.fecha_pedido).toLocaleDateString()}</td>
+                  <td>{p.comprobante}</td>
+                  <td>${p.total_pedido.toLocaleString('es-CL')}</td>
+                </tr>
             ))}
           </tbody>
         </table>
