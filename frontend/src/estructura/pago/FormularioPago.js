@@ -5,7 +5,7 @@ import authguard from '../../Servicios/AuthGuard/authguard';
 import './FormularioPago.css';
 import logoFerremas from '../../img/logo-ferremas.png';
 
-const FormularioPago = () => {
+const FormularioPago = ({ moneda, tipoCambio }) => {
     const stripePromise = loadStripe('pk_test_51ROTKbC0ISZZKwGbP50NTgZ4WaZIlLBR28pk052WyyYxLEsPwahrBjdQXRFiRHmzXK7peeNG8f9GjhCP9Nd0WMrN00riz24rCi');
     const navigate = useNavigate();
     const location = useLocation();
@@ -247,19 +247,43 @@ const FormularioPago = () => {
                 <aside className="payment-summary">
                     <h3 className="summary-title">Resumen de Compra</h3>
                     <div className="summary-content">
-                        <div className="summary-row">
-                            <span>Subtotal:</span>
-                            <span>${totalSeguro.toLocaleString('es-CL')}</span>
-                        </div>
+                    <div className="summary-row">
+                        <span>Subtotal:</span>
+                        <span>
+                            {moneda === 'clp'
+                            ? `$${totalSeguro.toLocaleString('es-CL')}`
+                            : `US$ ${(totalSeguro / tipoCambio).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                                })}`}
+                        </span>
+                    </div>
                         {form.tipo_despacho === '200' && (
-                            <div className="summary-row">
-                                <span>Envío:</span>
-                                <span>$2.990</span>
+                            <div class="summary-row">
+                            <span>Envío:</span>
+                            <span>
+                                US$ 3.15
+                                (≈ $2.990 CLP)
+                            </span>
                             </div>
                         )}
                         <div className="summary-total">
-                            <span>Total:</span>
-                            <span>${totalConEnvio.toLocaleString('es-CL')}</span>
+                        <span>Total:</span>
+                        <span>
+                            {moneda === 'clp' ? (
+                            `$${totalConEnvio.toLocaleString('es-CL')}`
+                            ) : (
+                            <>
+                                US$ {(totalConEnvio / tipoCambio).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                                })}{' '}
+                                <span className="text-muted" style={{ fontSize: '0.85em' }}>
+                                (≈ ${totalConEnvio.toLocaleString('es-CL')} CLP)
+                                </span>
+                            </>
+                            )}
+                        </span>
                         </div>
                     </div>
                     <button className="payment-button" onClick={handleContinuar}>

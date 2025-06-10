@@ -8,7 +8,7 @@ import Carrito from '../../Servicios/Carrito/Carrito';
 import './Catalogocs.css';
 import logoFerremas from '../../img/logo-ferremas.png'; 
 
-const Catalogo = () => {
+const Catalogo  = ({ moneda, tipoCambio, setMoneda }) => {
   const navigate = useNavigate();
   const usuario = authguard.obtenerUsuario();
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -182,9 +182,10 @@ const Catalogo = () => {
                     
                     {/* Precio y stock en misma línea */}
                     <div className="producto-precio-stock">
-                      <span className="producto-precio">
-                        ${prod.precio_prod.toLocaleString()}
-                      </span>
+                    <span className="producto-precio">
+                      {moneda === 'clp' && `$${prod.precio_prod.toLocaleString('es-CL')}`}
+                      {moneda === 'usd' && `US$ ${(prod.precio_prod / tipoCambio).toFixed(2)}`}
+                    </span>
                       <span className={`producto-stock ${prod.stock > 0 ? 'disponible' : 'agotado'}`}>
                         {prod.stock > 0 ? `${prod.stock} disponibles` : 'Agotado'}
                       </span>
@@ -220,7 +221,12 @@ const Catalogo = () => {
             <X size={20} />
           </button>
         </div>
-        <Carrito idUsuario={usuario.id_user} recargar={recargarCarrito} />
+        <Carrito
+          idUsuario={usuario.id_user}
+          recargar={recargarCarrito}
+          moneda={moneda}
+          tipoCambio={tipoCambio}
+        />
       </div>
     </div>
   );

@@ -955,6 +955,8 @@ def eliminar_pedido(request, id_pedido):
     except Pedido.DoesNotExist:
         return Response({'error': 'Pedido no encontrado'}, status=404)
 
+
+
 # views.py
 @api_view(['GET'])
 def pedidos_contador(request):
@@ -984,3 +986,39 @@ def pedidos_contador(request):
     ]
 
     return Response(datos)
+
+
+# views.py
+import requests
+import xml.etree.ElementTree as ET
+from django.http import JsonResponse
+from datetime import date
+def obtener_dolar_bcentral(request):
+    usuario = 'kiboden673@gotemv.com'
+    clave = 'Kevingay12'
+    url = 'https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx'
+    hoy = date.today().strftime('%Y-%m-%d')
+
+    params = {
+        'user': usuario,
+        'pass': clave,
+        'firstdate': hoy,
+        'lastdate': hoy,
+        'timeseries': 'F073.TCO.PRE.Z.D',
+        'function': 'GetSeries',
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        # Acceder a la serie de observaciones
+        obs = data.get('Series', {}).get('Obs', [])
+        if obs:
+            valor_dolar = float(obs[-1]['value'])
+            return JsonResponse({'dolar': valor_dolar})
+        else:
+            return JsonResponse({'error': 'No se encontraron valores para hoy'})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import carritoService from './CarritoService';
 import { useNavigate } from 'react-router-dom';
 import './Carrito.css';
-const Carrito = ({ idUsuario, recargar  }) => {
+const Carrito = ({ idUsuario, recargar, moneda, tipoCambio }) => {
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
   const [total, setTotal] = useState(0);
@@ -52,8 +52,16 @@ const Carrito = ({ idUsuario, recargar  }) => {
           {/* Detalles alineados horizontalmente */}
           <div className="carrito-detalles">
             <span>Cantidad: {item.cantidad}</span>
-            <span>Precio: ${item.precio}</span>
-            <span className="carrito-total">Total: ${item.precio * item.cantidad}</span>
+            <span>
+              Precio: {moneda === 'clp'
+                ? `$${item.precio.toLocaleString('es-CL')}`
+                : `US$ ${(item.precio / tipoCambio).toFixed(2)}`}
+            </span>
+            <span className="carrito-total">
+              Total: {moneda === 'clp'
+                ? `$${(item.precio * item.cantidad).toLocaleString('es-CL')}`
+                : `US$ ${((item.precio * item.cantidad) / tipoCambio).toFixed(2)}`}
+            </span>
           </div>
 
           {/* Botón eliminar */}
@@ -65,7 +73,21 @@ const Carrito = ({ idUsuario, recargar  }) => {
           </button>
         </div>
       ))}
-          <div className="mt-4 mb-4 font-bold text-right">Total: ${total}</div>
+          <div className="mt-4 mb-4 font-bold text-right">
+            {moneda === 'clp' ? (
+              <>Total: ${total.toLocaleString('es-CL')}</>
+            ) : (
+              <>
+                Total: US$ {(total / tipoCambio).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })} <br />
+                <span className="text-muted" style={{ fontSize: '0.9em' }}>
+                  (≈ ${total.toLocaleString('es-CL')} CLP)
+                </span>
+              </>
+            )}
+          </div>
           <button
             className="btn btn-danger btn-block fw-bold mb-2 w-100"
             onClick={vaciarTodo}

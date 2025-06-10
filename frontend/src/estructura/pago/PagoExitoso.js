@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './PagoExitoso.css'; // Archivo CSS para los estilos
 import logoFerremas from '../../img/logo-ferremas.png';
 
-const PagoExitoso = () => {
+const PagoExitoso  = ({ moneda, tipoCambio }) => {
   const [mensaje, setMensaje] = useState('Cargando...');
   const [sessionId, setSessionId] = useState(null);
   const [datosSesion, setDatosSesion] = useState(null);
@@ -130,7 +130,21 @@ const PagoExitoso = () => {
                 <h2>Resumen del Pago</h2>
                 <div className="info-row">
                   <span className="info-label">Total:</span>
-                  <span className="amount">${(datosSesion.amount_total).toLocaleString('es-CL')} CLP</span>
+                  <span className="amount">
+                    {moneda === 'clp' ? (
+                      `$${datosSesion.amount_total.toLocaleString('es-CL')} CLP`
+                    ) : (
+                      <>
+                        US$ {(datosSesion.amount_total / tipoCambio).toLocaleString('en-US', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{' '}
+                        <span className="text-muted" style={{ fontSize: '0.85em' }}>
+                          (≈ ${datosSesion.amount_total.toLocaleString('es-CL')} CLP)
+                        </span>
+                      </>
+                    )}
+                  </span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">Método:</span>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 
@@ -22,8 +22,28 @@ import Productos from './estructura/productos/Productos';
 import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
 import { GuestRoute} from './Servicios/AuthGuard/GuestRoute';
 function App() {
+
+  const [moneda, setMoneda] = useState('clp');
+  const [tipoCambio, setTipoCambio] = useState(1);
+
+  useEffect(() => {
+    if (moneda === 'usd') {
+      fetch('http://localhost:8000/api/dolar/')
+        .then(res => res.json())
+        .then(data => setTipoCambio(data.dolar));
+    } else {
+      setTipoCambio(1);
+    }
+  }, [moneda]);
   return (
     <Router>
+      <div className="text-end p-3">
+        <label>Moneda: </label>
+        <select value={moneda} onChange={(e) => setMoneda(e.target.value)}>
+          <option value="clp">CLP</option>
+          <option value="usd">USD</option>
+        </select>
+      </div>
       <Routes>
         {/* rutas de invitado */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -33,11 +53,21 @@ function App() {
         <Route path="/restablecer" element={<GuestRoute><Restablecer/></GuestRoute>} />
 
         {/* definir estas rutas mas tarde */}
-        <Route path="/formulario-pago" element={<FormularioPago />}/>
-        <Route path="/pago-exitoso" element={<PagoExitoso />} />
+        <Route
+          path="/formulario-pago"
+          element={<FormularioPago moneda={moneda} tipoCambio={tipoCambio} />}
+        />
+        <Route
+          path="/pago-exitoso"
+          element={<PagoExitoso moneda={moneda} tipoCambio={tipoCambio} />}
+        />
         {/* rutas protegidas */}
         <Route path="/catalogo"
-          element={<ProtectedRoute roles={[51]}><Catalogo/></ProtectedRoute>}
+          element={
+            <ProtectedRoute roles={[51]}>
+              <Catalogo moneda={moneda} tipoCambio={tipoCambio} />
+            </ProtectedRoute>
+          }
         />
         <Route path="/miCuenta"
           element={<ProtectedRoute roles={[51]}><MiCuenta/></ProtectedRoute>}

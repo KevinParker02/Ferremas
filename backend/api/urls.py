@@ -56,5 +56,8 @@ urlpatterns = [
 
     ##CONTADOR
     path('pedidos/contador/', pedidos_contador),
+
+    #divisa
+    path('dolar/', obtener_dolar_bcentral, name='dolar_bcentral')
     
 ]
