@@ -320,22 +320,27 @@ const MiCuenta = () => {
                       </div>
                     </div>
 
-                    {form.id_sucursal && (
-                      <div className="mapa-sucursal">
-                        <iframe
-                          title="Mapa sucursal seleccionada"
-                          width="100%"
-                          height="300"
-                          frameBorder="0"
-                          style={{ border: 0, borderRadius: '8px' }}
-                          referrerPolicy="no-referrer-when-downgrade"
-                          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyALIfPxz3MqW2xJbVhR4fVvnMPGZ6r3hro&q=${encodeURIComponent(
-                            sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal))?.direccion_sucursal || ''
-                          )}`}
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    )}
+                    {form.id_sucursal && sucursales.length > 0 && (
+                        (() => {
+                          const sucursal = sucursales.find(s => s.id_sucursal === parseInt(form.id_sucursal));
+                          if (!sucursal || !sucursal.direccion_sucursal) return null;
+
+                          return (
+                            <div className="mapa-sucursal">
+                              <iframe
+                                title="Mapa sucursal seleccionada"
+                                width="100%"
+                                height="300"
+                                frameBorder="0"
+                                style={{ border: 0, borderRadius: '8px' }}
+                                referrerPolicy="no-referrer-when-downgrade"
+                                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyALIfPxz3MqW2xJbVhR4fVvnMPGZ6r3hro&q=${encodeURIComponent(sucursal.direccion_sucursal)}`}
+                                allowFullScreen
+                              ></iframe>
+                            </div>
+                          );
+                        })()
+                      )}
 
                     <div className="form-actions">
                       <button className="btn btn-primary" onClick={handleGuardar}>
