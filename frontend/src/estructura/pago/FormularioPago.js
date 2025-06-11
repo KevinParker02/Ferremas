@@ -38,6 +38,21 @@ const FormularioPago = ({ moneda, tipoCambio }) => {
     };
 
     const handleContinuar = async () => {
+        // Validaciones previas
+        if (form.tipo_despacho === '200') {
+            if (!form.direc_desp || !regionSeleccionada || !form.id_comuna_dep) {
+                alert('Completa todos los campos de dirección para el despacho a domicilio.');
+                return;
+            }
+        }
+    
+        if (form.tipo_comprobante === '2') {
+            if (!form.rut_factura || !form.razon_social) {
+                alert('Completa el RUT y la Razón Social para emitir factura.');
+                return;
+            }
+        }
+    
         const costoEnvio = form.tipo_despacho === '200' ? 2990 : 0;
         const totalConEnvio = parseInt(total) + costoEnvio;
     
@@ -45,16 +60,16 @@ const FormularioPago = ({ moneda, tipoCambio }) => {
         let idSucursalFinal = '';
         let idComunaFinal = form.id_comuna_dep;
         let idRegionFinal = regionSeleccionada;
-        
+    
         if (form.tipo_despacho === '200') {
             const idSucursalCliente = authguard.obtenerUsuario()?.id_sucursal;
             idSucursalFinal = idSucursalCliente;
         }
-        
+    
         if (form.tipo_despacho === '100') {
             const idSucursalCliente = authguard.obtenerUsuario()?.id_sucursal;
             idSucursalFinal = idSucursalCliente;
-        
+    
             const sucursal = sucursales.find(s => s.id_sucursal === idSucursalCliente);
             if (sucursal) {
                 direccionDespacho = sucursal.direccion_sucursal || '';
@@ -94,7 +109,6 @@ const FormularioPago = ({ moneda, tipoCambio }) => {
             alert(data.error || 'No se pudo iniciar el pago');
         }
     };
-
     useEffect(() => {
         fetch('http://localhost:8000/api/regiones/')
             .then(res => res.json())
@@ -160,6 +174,7 @@ const FormularioPago = ({ moneda, tipoCambio }) => {
                                             value={form.direc_desp} 
                                             onChange={handleChange}
                                             placeholder="Calle, número, departamento"
+                                            required
                                         />
                                     </div>
 
