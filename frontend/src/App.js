@@ -30,7 +30,21 @@ function App() {
     if (moneda === 'usd') {
       fetch('http://localhost:8000/api/dolar/')
         .then(res => res.json())
-        .then(data => setTipoCambio(data.dolar));
+        .then(data => {
+          const cambio = parseFloat(data.dolar);
+          if (isNaN(cambio)) {
+            console.warn('❌ Tipo de cambio inválido, usando CLP como fallback');
+            setTipoCambio(1);
+            setMoneda('clp');  // <-- Fallback automático
+          } else {
+            setTipoCambio(cambio);
+          }
+        })
+        .catch(error => {
+          console.error('❌ Error al obtener tipo de cambio:', error);
+          setTipoCambio(1);
+          setMoneda('clp');  // <-- También cae a CLP si hay error
+        });
     } else {
       setTipoCambio(1);
     }
