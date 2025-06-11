@@ -216,6 +216,10 @@ def obtener_carrito_usuario(request, id_usuario):
 
         data = []
         for item in carrito:
+            foto_base64 = None
+            if item.producto.foto_prod:
+                foto_base64 = base64.b64encode(item.producto.foto_prod).decode('utf-8')
+
             data.append({
                 'id_carrito': item.id_carrito,
                 'id_producto': item.producto.id_prod,
@@ -223,6 +227,8 @@ def obtener_carrito_usuario(request, id_usuario):
                 'marca': item.producto.marca_prod,
                 'precio': item.producto.precio_prod,
                 'cantidad': item.cantidad_producto,
+                'stock_disponible': item.producto.stock,
+                'foto_producto': foto_base64,              
                 'fecha_agregado': item.fecha_carrito
             })
 
@@ -249,6 +255,15 @@ def actualizar_cantidad_carrito(request):
             producto__id_prod=id_producto
         )
 
+        # Validar si excede el stock
+        producto = carrito_item.producto
+        if nueva_cantidad > producto.stock:
+            return Response(
+                {'error': f'Stock insuficiente. Solo quedan {producto.stock} unidades disponibles.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Si la cantidad es menor o igual a 0, eliminar el ítem
         if nueva_cantidad <= 0:
             carrito_item.delete()
             return Response(
@@ -256,6 +271,7 @@ def actualizar_cantidad_carrito(request):
                 status=status.HTTP_200_OK
             )
 
+        # Actualizar la cantidad
         carrito_item.cantidad_producto = nueva_cantidad
         carrito_item.fecha_carrito = timezone.now()
         carrito_item.save()

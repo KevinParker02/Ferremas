@@ -50,3 +50,31 @@
 .carrito-eliminar:hover {
   color: #cc1f1a;
 }
+
+.btn-cantidad {
+  margin: 0 4px;
+  padding: 4px 10px;
+  font-size: 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cantidad:hover {
+  background-color: #ddd;
+}
+
+.btn-cantidad:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.carrito-imagen {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
