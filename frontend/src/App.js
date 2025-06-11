@@ -23,7 +23,7 @@ import { ProtectedRoute } from './Servicios/AuthGuard/ProtectedRoute';
 import { GuestRoute} from './Servicios/AuthGuard/GuestRoute';
 function App() {
 
-  const [moneda, setMoneda] = useState('clp');
+  const [moneda, setMoneda] = useState(() => localStorage.getItem('moneda') || 'clp');
   const [tipoCambio, setTipoCambio] = useState(1);
 
   useEffect(() => {
@@ -37,13 +37,6 @@ function App() {
   }, [moneda]);
   return (
     <Router>
-      <div className="text-end p-3">
-        <label>Moneda: </label>
-        <select value={moneda} onChange={(e) => setMoneda(e.target.value)}>
-          <option value="clp">CLP</option>
-          <option value="usd">USD</option>
-        </select>
-      </div>
       <Routes>
         {/* rutas de invitado */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -65,7 +58,11 @@ function App() {
         <Route path="/catalogo"
           element={
             <ProtectedRoute roles={[51]}>
-              <Catalogo moneda={moneda} tipoCambio={tipoCambio} />
+              <Catalogo
+                moneda={moneda}
+                tipoCambio={tipoCambio}
+                setMoneda={setMoneda} // <- agregar esto
+              />
             </ProtectedRoute>
           }
         />

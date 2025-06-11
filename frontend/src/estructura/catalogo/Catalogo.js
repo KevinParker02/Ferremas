@@ -132,6 +132,16 @@ const Catalogo  = ({ moneda, tipoCambio, setMoneda }) => {
               className="header-logo"
             />
           </div>
+          <div className="text-end p-3">
+            <label>Moneda: </label>
+            <select value={moneda} onChange={(e) => {
+              setMoneda(e.target.value);
+              localStorage.setItem('moneda', e.target.value);  // guardar persistente
+            }}>
+              <option value="clp">CLP</option>
+              <option value="usd">USD</option>
+            </select>
+          </div>
           <div className="header-actions">
             <button className="btn-carrito" onClick={toggleCarrito}>
               <ShoppingCart size={18} />
