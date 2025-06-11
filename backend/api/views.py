@@ -955,13 +955,10 @@ def eliminar_pedido(request, id_pedido):
     except Pedido.DoesNotExist:
         return Response({'error': 'Pedido no encontrado'}, status=404)
 
-
-
-# views.py
 @api_view(['GET'])
 def pedidos_contador(request):
     id_sucursal = request.GET.get('id_sucursal')
-    tipo_comprobante = request.GET.get('tipo_comprobante')  # 1: sin factura, 2: con factura
+    tipo_comprobante = request.GET.get('tipo_comprobante')  
 
     if not id_sucursal:
         return Response({'error': 'Falta id_sucursal'}, status=400)
@@ -987,8 +984,6 @@ def pedidos_contador(request):
 
     return Response(datos)
 
-
-# views.py
 import requests
 import xml.etree.ElementTree as ET
 from django.http import JsonResponse

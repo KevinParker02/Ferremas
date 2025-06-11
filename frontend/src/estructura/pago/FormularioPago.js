@@ -222,11 +222,23 @@ const FormularioPago = ({ moneda, tipoCambio }) => {
                                         <label>RUT</label>
                                         <input 
                                             type="text" 
-                                            name="rut_factura" 
-                                            value={form.rut_factura} 
-                                            onChange={handleChange}
-                                            placeholder="12.345.678-9"
+                                            name="rut_factura"
+                                            value={form.rut_factura}
+                                            onChange={(e) => {
+                                                let val = e.target.value.toUpperCase();
+                                                if (/^[0-9K]{0,9}$/.test(val)) {
+                                                    val = val.replace(/K/g, '0');
+                                                    setForm(prev => ({ ...prev, rut_factura: val }));
+                                                }
+                                            }}
+                                            placeholder="Sin puntos ni guión"
+                                            required
                                         />
+                                        {(form.rut_factura.length > 0 && (form.rut_factura.length < 8 || form.rut_factura.length > 9)) && (
+                                            <small style={{ color: 'red' }}>
+                                                El RUT debe tener 8 o 9 caracteres en total.
+                                            </small>
+                                        )}
                                     </div>
                                     <div className="form-group">
                                         <label>Razón Social</label>
