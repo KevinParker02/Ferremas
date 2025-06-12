@@ -88,7 +88,7 @@ const Vendedor = () => {
       </header>
 
       <div className='vendedor-header'>
-        <h1 className="vendedor-title">Gestión de Stock</h1>
+        <h1 className="vendedor-title">Gestión de pedidos</h1>
       </div>
 
       {/* Filtros */}
