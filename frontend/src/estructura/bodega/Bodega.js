@@ -16,29 +16,42 @@ const Bodega = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Cargar pedidos con productos
-  const cargarPedidos = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const params = new URLSearchParams();
-      params.append('sucursal', id_sucursal);
-      if (search) params.append('search', search);
-      if (filtroDespacho) params.append('despacho', filtroDespacho);
+  const hoyISO = new Date().toISOString().split('T')[0];
 
-      const response = await fetch(`http://localhost:8000/api/bodega/pedidos/?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error('Error al cargar pedidos');
-      }
-      const data = await response.json();
-      setPedidos(data);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
+  // Cargar pedidos con productos
+ const cargarPedidos = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const params = new URLSearchParams();
+    params.append('sucursal', id_sucursal);
+    if (search) params.append('search', search);
+    if (filtroDespacho) params.append('despacho', filtroDespacho);
+
+    const response = await fetch(`http://localhost:8000/api/bodega/pedidos/?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error('Error al cargar pedidos');
     }
-  };
+
+    const data = await response.json(); // <--- AQUÍ sí se define `data`
+
+    // Obtener fecha actual en formato ISO
+    const hoyISO = new Date().toISOString().split('T')[0];
+
+    // Filtrar pedidos con fecha del día
+    const pedidosHoy = data.filter(p =>
+      new Date(p.fecha_pedido).toISOString().split('T')[0] === hoyISO
+    );
+
+    setPedidos(pedidosHoy);
+  } catch (err) {
+    setError(err.message);
+    console.error('Error:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     cargarPedidos();
@@ -132,6 +145,24 @@ const Bodega = () => {
       <div className='bodeguero-header'>
         <h1 className="bodeguero-title">Panel de Bodega</h1>
       </div>
+
+      <div className="dashboard-resumen">
+        <div className="card-resumen warning">
+          <h3>Confirmados</h3>
+          <p>{pedidos.filter(p => 
+              p.estado === 'Confirmado' &&
+              new Date(p.fecha_pedido).toISOString().split('T')[0] === hoyISO
+            ).length}</p>
+        </div>
+        <div className="card-resumen info">
+          <h3>Preparación</h3>
+          <p>{pedidos.filter(p => 
+              p.estado === 'Preparación' &&
+              new Date(p.fecha_pedido).toISOString().split('T')[0] === hoyISO
+            ).length}</p>
+        </div>
+      </div>
+
       {/* Filtros */}
       <div className="filters-container">
         <div className="search-box">
