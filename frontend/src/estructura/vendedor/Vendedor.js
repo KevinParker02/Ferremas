@@ -5,6 +5,14 @@ import { LogOut, Search, X, RefreshCw, Truck, CheckCircle, AlertCircle } from 'r
 import './vendedor.css';
 import logoFerremas from '../../img/logo-ferremas.png';
 
+function getHoyLocal() {
+  const hoy = new Date();
+  const año = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  return `${año}-${mes}-${dia}`;
+}
+
 const Vendedor = () => {
   const navigate = useNavigate();
   const { id_sucursal } = authguard.obtenerUsuario();
@@ -16,24 +24,28 @@ const Vendedor = () => {
 
   const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
   const completados = pedidos.filter(p => p.estado === 'Completado').length;
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(() => getHoyLocal());
 
+useEffect(() => {
+  const params = new URLSearchParams();
+  if (search)         params.append('search', search);
+  if (filtroDespacho) params.append('despacho', filtroDespacho);
+  if (fechaSeleccionada) params.append('fecha', fechaSeleccionada);
+  params.append('sucursal', id_sucursal);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (search)         params.append('search', search);
-    if (filtroDespacho) params.append('despacho', filtroDespacho);
-    params.append('sucursal', id_sucursal);
+  fetch(`http://localhost:8000/api/pedidos/?${params.toString()}`)
+    .then(r => r.json())
+    .then(setPedidos)
+    .catch(console.error);
+}, [search, filtroDespacho, fechaSeleccionada, id_sucursal]);
 
-    fetch(`http://localhost:8000/api/pedidos/?${params.toString()}`)
-      .then(r => r.json())
-      .then(setPedidos)
-      .catch(console.error);
-  }, [search, filtroDespacho, id_sucursal]);
 
   const handleReset = () => {
     setSearch('');
     setFiltro('');
     setSelected(null);
+    setFechaSeleccionada(getHoyLocal());
+
   };
 
   const cambiarEstado = async (id_pedido, nuevoEstado) => {
@@ -117,7 +129,11 @@ const Vendedor = () => {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        
+        <input
+          type="date"
+          value={fechaSeleccionada}
+          onChange={e => setFechaSeleccionada(e.target.value)}
+        />
         <select
           value={filtroDespacho}
           onChange={e => setFiltro(e.target.value)}
