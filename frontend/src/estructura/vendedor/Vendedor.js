@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import { LogOut, Search, X, RefreshCw, Truck, CheckCircle, AlertCircle } from 'react-feather';
-import './vendedor.css'; // Nuevo archivo CSS para estilos
+import './vendedor.css';
 import logoFerremas from '../../img/logo-ferremas.png';
 
 const Vendedor = () => {
@@ -13,6 +13,10 @@ const Vendedor = () => {
   const [search, setSearch] = useState('');
   const [filtroDespacho, setFiltro] = useState('');
   const [selected, setSelected] = useState(null);
+
+  const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
+  const completados = pedidos.filter(p => p.estado === 'Completado').length;
+
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -90,6 +94,18 @@ const Vendedor = () => {
       <div className='vendedor-header'>
         <h1 className="vendedor-title">Gestión de pedidos</h1>
       </div>
+
+      <div className="dashboard-resumen">
+        <div className="card-resumen pendiente">
+          <h3>Pendientes</h3>
+          <p>{pendientes}</p>
+        </div>
+        <div className="card-resumen completado">
+          <h3>Completados</h3>
+          <p>{completados}</p>
+        </div>
+      </div>
+
 
       {/* Filtros */}
       <div className="filters-container">
