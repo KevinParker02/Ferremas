@@ -19,6 +19,10 @@ from django.db.models import Q, CharField, Sum, F, Count
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Cast
 import base64
+from datetime import date
+from datetime import datetime, timedelta
+
+
 
 import stripe
 stripe.api_key = 'sk_test_51ROTKbC0ISZZKwGbD573Oh5wcePqMB0VCyCo73LJhb2pS5kJ3c1iGB0j7bNum2RYUCTWSBOFiujiFXmzzBGKj8Jk00Dgk6Ue1k'
@@ -500,7 +504,6 @@ def crear_producto(request):
 ## API PARA EL VENDEDOR
 @api_view(['GET'])
 def listar_pedidos(request):
-
     qs = (
         Pedido.objects
         .select_related(
@@ -513,38 +516,47 @@ def listar_pedidos(request):
         .annotate(id_str=Cast('id_pedido', CharField()))
     )
 
-
+    # Filtro por búsqueda (ID o nombre cliente)
     q = request.query_params.get('search', '').strip()
     if q:
         qs = qs.filter(id_str__icontains=q)
 
+    # Filtro por tipo de despacho
     despacho = request.query_params.get('despacho')
-    if despacho in ('100','200'):
+    if despacho in ('100', '200'):
         qs = qs.filter(tipo_despacho_id=int(despacho))
 
+    # Filtro por sucursal
     sucursal = request.query_params.get('sucursal')
     if sucursal and sucursal.isdigit():
         qs = qs.filter(sucursal_id=int(sucursal))
 
+    # 🔍 Filtro por fecha específica (YYYY-MM-DD)
+    fecha_str = request.query_params.get('fecha')
+    if fecha_str:
+        try:
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            qs = qs.filter(fecha_pedido__date=fecha)
+        except ValueError:
+            pass
+
     data = []
     for p in qs.order_by('-fecha_pedido'):
-
         data.append({
-            'id_pedido':      p.id_pedido,
-            'cliente':        f"{p.usuario.nombre_user} {p.usuario.apellido_user}",
-            'fecha_pedido':   p.fecha_pedido,
-            'fecha_entrega':  p.fecha_entrega_stm,
-            'despacho':       p.tipo_despacho.nom_despacho,
-            'sucursal':       p.sucursal.direccion_sucursal,
-            'comprobante':    p.tipo_comprobante.nom_tipo_comprobante,
-            'estado':         p.estado.nom_estado,
-            'total_pedido':   p.total_pedido,
-
-
-            'direc_desp':     p.direc_desp,
-            'comuna_dep':     p.id_comuna_dep,
-            'region_dep':     p.id_region_desp,
+            'id_pedido':     p.id_pedido,
+            'cliente':       f"{p.usuario.nombre_user} {p.usuario.apellido_user}",
+            'fecha_pedido':  p.fecha_pedido,
+            'fecha_entrega': p.fecha_entrega_stm,
+            'despacho':      p.tipo_despacho.nom_despacho,
+            'sucursal':      p.sucursal.direccion_sucursal,
+            'comprobante':   p.tipo_comprobante.nom_tipo_comprobante,
+            'estado':        p.estado.nom_estado,
+            'total_pedido':  p.total_pedido,
+            'direc_desp':    p.direc_desp,
+            'comuna_dep':    p.id_comuna_dep,
+            'region_dep':    p.id_region_desp,
         })
+
     return Response(data)
 
 @api_view(['POST'])
@@ -665,12 +677,14 @@ def crear_sesion_pago(request):
 #generar pedido (Ahorasi)
 @api_view(['POST'])
 def crear_pedido(request):
+    from datetime import datetime, timedelta
+
     data = request.data
     try:
         pedido = Pedido.objects.create(
             usuario_id=data.get('usuario_id'),
-            fecha_pedido=timezone.now(),
-            fecha_entrega_stm=timezone.now() + timezone.timedelta(days=3),
+            fecha_pedido=datetime.now(),
+            fecha_entrega_stm=datetime.now() + timedelta(days=3),
             total_pedido=data.get('total_pedido'),
             estado_id=1,
             tipo_despacho_id=data.get('tipo_despacho_id'),

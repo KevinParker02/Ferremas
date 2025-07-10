@@ -2,8 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authguard from '../../Servicios/AuthGuard/authguard';
 import { LogOut, Search, X, RefreshCw, Truck, CheckCircle, AlertCircle } from 'react-feather';
-import './vendedor.css'; // Nuevo archivo CSS para estilos
+import './vendedor.css';
 import logoFerremas from '../../img/logo-ferremas.png';
+
+function getHoyLocal() {
+  const hoy = new Date();
+  const año = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  return `${año}-${mes}-${dia}`;
+}
 
 const Vendedor = () => {
   const navigate = useNavigate();
@@ -14,22 +22,30 @@ const Vendedor = () => {
   const [filtroDespacho, setFiltro] = useState('');
   const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (search)         params.append('search', search);
-    if (filtroDespacho) params.append('despacho', filtroDespacho);
-    params.append('sucursal', id_sucursal);
+  const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
+  const completados = pedidos.filter(p => p.estado === 'Completado').length;
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(() => getHoyLocal());
 
-    fetch(`http://localhost:8000/api/pedidos/?${params.toString()}`)
-      .then(r => r.json())
-      .then(setPedidos)
-      .catch(console.error);
-  }, [search, filtroDespacho, id_sucursal]);
+useEffect(() => {
+  const params = new URLSearchParams();
+  if (search)         params.append('search', search);
+  if (filtroDespacho) params.append('despacho', filtroDespacho);
+  if (fechaSeleccionada) params.append('fecha', fechaSeleccionada);
+  params.append('sucursal', id_sucursal);
+
+  fetch(`http://localhost:8000/api/pedidos/?${params.toString()}`)
+    .then(r => r.json())
+    .then(setPedidos)
+    .catch(console.error);
+}, [search, filtroDespacho, fechaSeleccionada, id_sucursal]);
+
 
   const handleReset = () => {
     setSearch('');
     setFiltro('');
     setSelected(null);
+    setFechaSeleccionada(getHoyLocal());
+
   };
 
   const cambiarEstado = async (id_pedido, nuevoEstado) => {
@@ -91,6 +107,18 @@ const Vendedor = () => {
         <h1 className="vendedor-title">Gestión de pedidos</h1>
       </div>
 
+      <div className="dashboard-resumen">
+        <div className="card-resumen pendiente">
+          <h3>Pendientes</h3>
+          <p>{pendientes}</p>
+        </div>
+        <div className="card-resumen completado">
+          <h3>Completados</h3>
+          <p>{completados}</p>
+        </div>
+      </div>
+
+
       {/* Filtros */}
       <div className="filters-container">
         <div className="search-box">
@@ -101,7 +129,11 @@ const Vendedor = () => {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        
+        <input
+          type="date"
+          value={fechaSeleccionada}
+          onChange={e => setFechaSeleccionada(e.target.value)}
+        />
         <select
           value={filtroDespacho}
           onChange={e => setFiltro(e.target.value)}
