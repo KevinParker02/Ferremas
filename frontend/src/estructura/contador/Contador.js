@@ -58,41 +58,46 @@ const Contador = () => {
   };
 
   return (
-    <div className="contador-container">
+    <div className="vendedor-container">
       {/* Header */}
-      <header className="contador-header">
+      <header className="seller-header">
         <div className="header-izquierda">
-          <img src={logoFerremas} alt="Logo Ferremas" className="header-logo" />
-        </div>
+                            <img 
+                              src={logoFerremas} 
+                              alt="Logo Ferremas" 
+                              className="header-logo"
+                              />
+                        </div>
         <div className="header-actions">
-          <button
-            className="btn-logout"
-            onClick={() => {
-              authguard.cerrarSesion();
-              navigate('/login');
-            }}
-          >
-            <LogOut size={18} className="me-2" />
-            Cerrar sesión
-          </button>
+        <button 
+          className="btn-logout"
+          onClick={() => {
+            authguard.cerrarSesion();
+            navigate('/login');
+          }}
+        >
+          <LogOut size={18} className="me-2" />
+          Cerrar sesión
+        </button>
         </div>
       </header>
 
-      <div className='contador-header'>
-        <h1 className="contador-title">Vista del Contador</h1>
+      <div className='vendedor-header'>
+        <h1 className="vendedor-title">Vista del Contador</h1>
       </div>
 
       {/* Dashboard Resumen */}
       <div className="dashboard-resumen">
-        <div className="resumen-box">
+        <div className="card-resumen factura">
           <h3>Con Factura</h3>
           <p>{resumen.conFactura}</p>
         </div>
-        <div className="resumen-box">
+        <div className="card-resumen boleta">
           <h3>Sin Factura</h3>
           <p>{resumen.sinFactura}</p>
         </div>
       </div>
+
 
       {/* Filtros */}
       <div className="filters-container">
@@ -110,7 +115,7 @@ const Contador = () => {
           Limpiar filtros
         </button>
 
-        <button className="btn btn-export" onClick={exportarExcel}>
+        <button className="btn btn-reset" onClick={exportarExcel}>
           <FileText size={16} className="me-2" />
           Exportar Excel
         </button>

@@ -12,6 +12,50 @@
   --border-color: #e0e0e0;
 }
 
+
+
+
+.dashboard-resumen{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  max-width: 1200px;
+  margin: 2rem auto;
+    padding: 0 1.5rem;
+  padding-bottom: 25px;
+}
+
+.card-resumen.pendiente{
+  background-color: var(--warning-color);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  flex: 1;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.card-resumen.completado{
+  background-color: var(--success-color);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  flex: 1;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.input-filtro {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 200px;
+}
+
 /* Estilos base */
 .vendedor-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

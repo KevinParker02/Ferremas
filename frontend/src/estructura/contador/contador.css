@@ -12,6 +12,40 @@
   --border-color: #e0e0e0;
 }
 
+.dashboard-resumen {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.card-resumen.factura {
+  flex: 1;
+  background-color: var(--success-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: var(--light-color);
+  border-left: 5px solid var(--success-color); /* verde */
+}
+
+.card-resumen.boleta {
+  flex: 1;
+  background-color: var(--warning-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: var(--light-color);
+  border-left: 5px solid var(--warning-color); /* amarillo */
+}
+
 /* Estilos base */
 .vendedor-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

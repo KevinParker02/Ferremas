@@ -15,6 +15,39 @@
   --transition: all 0.3s ease;
 }
 
+.dashboard-resumen{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  max-width: 1200px;
+  margin: 2rem auto;
+    padding: 0 1.5rem;
+  padding-bottom: 25px;
+}
+
+.confirmados{
+  background-color: var(--warning-color);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  flex: 1;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.preparacion{
+  background-color: var(--info-color);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  flex: 1;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
 .btn-gestion{
   background-color: var(--accent-color);
   color: white;

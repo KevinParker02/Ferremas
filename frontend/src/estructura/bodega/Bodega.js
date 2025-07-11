@@ -147,14 +147,14 @@ const Bodega = () => {
       </div>
 
       <div className="dashboard-resumen">
-        <div className="card-resumen warning">
+        <div className="card-resumen confirmados">
           <h3>Confirmados</h3>
           <p>{pedidos.filter(p => 
               p.estado === 'Confirmado' &&
               new Date(p.fecha_pedido).toISOString().split('T')[0] === hoyISO
             ).length}</p>
         </div>
-        <div className="card-resumen info">
+        <div className="card-resumen preparacion">
           <h3>Preparación</h3>
           <p>{pedidos.filter(p => 
               p.estado === 'Preparación' &&

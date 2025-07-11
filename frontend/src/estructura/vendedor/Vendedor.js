@@ -113,7 +113,7 @@ useEffect(() => {
           <p>{pendientes}</p>
         </div>
         <div className="card-resumen completado">
-          <h3>Completados</h3>
+          <h3>Entregados</h3>
           <p>{completados}</p>
         </div>
       </div>
@@ -131,6 +131,7 @@ useEffect(() => {
         </div>
         <input
           type="date"
+          className="input-filtro"
           value={fechaSeleccionada}
           onChange={e => setFechaSeleccionada(e.target.value)}
         />
